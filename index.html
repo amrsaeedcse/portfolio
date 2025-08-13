@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amr Abdelazeem - Flutter Developer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container">
+            <div class="logo">Amr Abdelazeem</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-bg-smartphone">
+            <div class="smartphone-mockup" id="smartphoneMockup">
+                <svg width="110" height="220" viewBox="0 0 110 220" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    class="iphone-svg">
+                    <!-- Phone Frame -->
+                    <rect x="2" y="2" width="106" height="216" rx="22" fill="url(#phoneFrame)" stroke="#e3e7ee"
+                        stroke-width="2" />
+                    <defs>
+                        <linearGradient id="phoneFrame" x1="0" y1="0" x2="110" y2="220" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#2c3e50" />
+                            <stop offset="1" stop-color="#3498db" />
+                        </linearGradient>
+                        <linearGradient id="screenGrad" x1="0" y1="0" x2="110" y2="220" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea" />
+                            <stop offset="1" stop-color="#764ba2" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Screen -->
+                    <rect x="12" y="22" width="86" height="176" rx="16" fill="url(#screenGrad)" />
+                    <!-- Notch/Speaker -->
+                    <rect x="45" y="10" width="20" height="4" rx="2" fill="#fff" opacity="0.3" />
+                    <!-- Home Button -->
+                    <circle cx="55" cy="205" r="10" fill="none" stroke="#bbb" stroke-width="2" />
+                    <!-- App Header -->
+                    <text x="55" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="11"
+                        font-weight="bold" fill="#fff">App bar</text>
+                    <text x="55" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#fff"
+                        opacity="0.8">Mobile App Excellence</text>
+                    <!-- Feature Cards -->
+                    <rect x="20" y="70" width="70" height="18" rx="6" fill="#fff" opacity="0.08" />
+                    <text x="26" y="83" font-size="12" fill="#fff">📱</text>
+                    <text x="38" y="80" font-size="7" fill="#fff">Cross-Platform</text>
+                    <text x="38" y="87" font-size="6" fill="#fff" opacity="0.7">iOS & Android Apps</text>
+                    <rect x="20" y="95" width="70" height="18" rx="6" fill="#fff" opacity="0.08" />
+                    <text x="26" y="108" font-size="12" fill="#fff">🎨</text>
+                    <text x="38" y="105" font-size="7" fill="#fff">Beautiful UI/UX</text>
+                    <text x="38" y="112" font-size="6" fill="#fff" opacity="0.7">Modern Design Systems</text>
+                    <rect x="20" y="120" width="70" height="18" rx="6" fill="#fff" opacity="0.08" />
+                    <text x="26" y="133" font-size="12" fill="#fff">🚀</text>
+                    <text x="38" y="130" font-size="7" fill="#fff">High Performance</text>
+                    <text x="38" y="137" font-size="6" fill="#fff" opacity="0.7">Optimized & Fast</text>
+                    <!-- Bottom Navigation -->
+                    <rect x="20" y="180" width="70" height="2" rx="1" fill="#fff" opacity="0.1" />
+                    <text x="35" y="190" font-size="10" fill="#fff">🏠</text>
+                    <text x="55" y="190" font-size="10" fill="#fff" opacity="0.6">🔍</text>
+                    <text x="75" y="190" font-size="10" fill="#fff" opacity="0.6">❤️</text>
+                    <text x="95" y="190" font-size="10" fill="#fff" opacity="0.6">👤</text>
+                </svg>
+            </div>
+        </div>
+        <div class="hero-content">
+            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='grad1' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23667eea'/><stop offset='100%' stop-color='%23764ba2'/></linearGradient></defs><circle cx='100' cy='100' r='90' fill='url(%23grad1)'/><circle cx='70' cy='70' r='8' fill='white'/><circle cx='130' cy='70' r='8' fill='white'/><path d='M 60 130 Q 100 160 140 130' stroke='white' stroke-width='3' fill='none'/></svg>"
+                alt="Amr Abdelazeem" class="profile-image">
+            <h1>Amr Abdelazeem Saeed Mohamed</h1>
+            <p class="subtitle"></p>
+            <p class="hero-description">Passionate about building cross-platform mobile applications and exploring the
+                intersection of software and hardware development.</p>
+            <a href="#contact" class="cta-button">
+                <i class="fas fa-rocket"></i> Let's Build Something Amazing
+            </a>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section-white">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-image-container">
+                    <div class="about-photo-move">
+                        <img src="c:/Users/Amr/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/TempState/09D37C08F7B129E96277388757530C72/WhatsApp Image 2025-08-06 at 19.10.19_159fe7a6.jpg"
+                            alt="Amr Abdelazeem" class="about-image" />
+                    </div>
+                </div>
+                <div class="about-text">
+                    <p>I'm a highly driven Computer Engineering student at Zagazig University with a deep passion for
+                        Flutter development and building cross-platform mobile applications. My journey in technology
+                        spans both software and hardware domains, giving me a unique perspective on modern development
+                        challenges.</p>
+
+                    <p>Through my training at the Information Technology Institute (ITI) and continuous self-learning,
+                        I've developed strong expertise in Flutter, Firebase, state management, and REST API
+                        integration. I'm particularly excited about creating intuitive user interfaces and solving
+                        complex problems through elegant code solutions.</p>
+
+                    <p>When I'm not coding, you'll find me exploring new technologies, participating in university tech
+                        clubs, or working on personal projects that challenge my creativity and technical skills. I
+                        believe in the power of collaboration and am always eager to contribute to impactful real-world
+                        solutions.</p>
+
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-number">7+</span>
+                            <span class="stat-label">Projects Completed</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">2+</span>
+                            <span class="stat-label">Years Experience</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">15+</span>
+                            <span class="stat-label">Technologies</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section-light">
+        <div class="container">
+            <h2 class="section-title">Skills & Expertise</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3><i class="fab fa-google-play"></i> Mobile Development</h3>
+                    <div class="skill-item">
+                        <span>Flutter & Dart</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="90"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>Firebase Integration</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="85"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>State Management (Bloc, Cubit)</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="80"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>REST APIs & JSON</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="85"></div>
+                        </div>
+                        <span class="skill-percentage">90%%</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-code"></i> Programming Languages</h3>
+                    <div class="skill-item">
+                        <span>Dart</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="90"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>Java</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="75"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>PHP</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="70"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>C/C++</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="70"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-globe"></i> Web Development</h3>
+                    <div class="skill-item">
+                        <span>HTML5</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="85"></div>
+                        </div>
+                        <span class="skill-percentage">85%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>CSS3</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="80"></div>
+                        </div>
+                        <span class="skill-percentage">85%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>JavaScript</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="75"></div>
+                        </div>
+                        <span class="skill-percentage">85%</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-microchip"></i> Hardware & Tools</h3>
+                    <div class="skill-item">
+                        <span>Arduino</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="80"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>VHDL</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="70"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span>Git & GitHub</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="85"></div>
+                        </div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section-white">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fab fa-google-play"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>Flutter E-Commerce App</h3>
+                        <p>
+                            A modern e-commerce mobile application built with Flutter, featuring authentication, product
+                            catalog, cart, and notifications.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Flutter</span>
+                            <span class="tag">Firebase</span>
+                            <span class="tag">Cubit</span>
+                            <span class="tag">GetX</span>
+                            <span class="tag">REST API</span>
+                            <span class="tag">GetIt</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="project-details.html" class="project-link"><i class="fas fa-info-circle"></i> View
+                                Details</a>
+                            <a href="https://github.com/amrsaeedcse/ecommerce-app" target="_blank"
+                                class="project-link"><i class="fab fa-github"></i> Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>MIPS-32 Multi-Cycle Processor (VHDL)</h3>
+                        <p>
+                            A modular MIPS-32 multi-cycle CPU implemented in VHDL, supporting R-type, I-type, and J-type
+                            instructions. Features reusable hardware stages for efficient instruction execution.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">VHDL</span>
+                            <span class="tag">MIPS</span>
+                            <span class="tag">CPU Design</span>
+                            <span class="tag">Hardware</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="mips-details.html" class="project-link"><i class="fas fa-info-circle"></i> View
+                                Details</a>
+                            <a href="https://github.com/amrsaeedcse/mips-32" target="_blank" class="project-link"><i
+                                    class="fab fa-github"></i> Code</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fab fa-spotify"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>Spotify-like Music Streaming App</h3>
+                        <p>
+                            A full-featured music streaming application built with Flutter, using Cubit and Bloc for
+                            robust state management, RESTful API integration, and Firebase for authentication and cloud
+                            features.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Flutter</span>
+                            <span class="tag">Firebase</span>
+                            <span class="tag">Cubit</span>
+                            <span class="tag">Bloc</span>
+                            <span class="tag">REST API</span>
+                            <span class="tag">Music</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="spotify-details.html" class="project-link"><i class="fas fa-info-circle"></i> View
+                                Details</a>
+                            <a href="https://github.com/amrsaeedcse/spotify" target="_blank" class="project-link"><i
+                                    class="fab fa-github"></i> Code</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-glass-martini-alt"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>Drinks-App Project</h3>
+                        <p>
+                            A Flutter-based application for browsing and managing a variety of drinks. Uses Firebase for
+                            real-time data storage and authentication, and Cubit/Bloc for robust state management.
+                            <strong>Status:</strong> Still working on it.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Flutter</span>
+                            <span class="tag">Firebase</span>
+                            <span class="tag">Cubit</span>
+                            <span class="tag">Bloc</span>
+                            <span class="tag">App</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="drinks-details.html" class="project-link"><i class="fas fa-info-circle"></i> View
+                                Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>IoT Smart Home System</h3>
+                        <p>
+                            Arduino-based home automation system with mobile app control, featuring sensors, actuators,
+                            and real-time monitoring capabilities.<br>
+                            <strong>Status:</strong> Under development
+                        </p>
+                        <div class="project-links">
+                            <!-- <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>Data Visualization Dashboard</h3>
+                        <p>
+                            Interactive web dashboard for data analysis and visualization, featuring real-time charts
+                            and
+                            responsive design.<br>
+                            <strong>Status:</strong> Under development
+                        </p>
+                        <div class="project-links">
+                            <!-- <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>Social Media Flutter App</h3>
+                        <p>
+                            Social networking app with user profiles, posts, real-time chat, and media sharing
+                            capabilities built with Flutter.<br>
+                            <strong>Status:</strong> Under development
+                        </p>
+                        <div class="project-links">
+                            <!-- <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a> -->
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section-light">
+        <div class="container">
+            <h2 class="section-title">Experience & Education</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Summer 2024</div>
+                    <h3>Mobile App Development Trainee</h3>
+                    <h4>Information Technology Institute (ITI)</h4>
+                    <p>Comprehensive training on Flutter fundamentals, UI components, app architecture, and state
+                        management. Built structured app prototypes using Flutter and Firebase for authentication and
+                        data storage. Applied various state management approaches including Bloc, Cubit, and Provider.
+                    </p>
+                    <ul>
+                        <li>Worked with REST APIs and JSON parsing</li>
+                        <li>Implemented dynamic UI rendering</li>
+                        <li>Practiced version control using Git & GitHub</li>
+                        <li>Developed passion for Flutter through hands-on projects</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">2021 – Present</div>
+                    <h3>Computer Engineering Student</h3>
+                    <h4>Zagazig University</h4>
+                    <p>Pursuing Bachelor of Science in Computer Engineering with excellent GPA. Completed relevant
+                        coursework in Computer Architecture, Embedded Systems, Data Structures, and Software
+                        Engineering.</p>
+                    <ul>
+                        <li>Active member in university tech clubs and programming communities</li>
+                        <li>Participated in student-led software development activities</li>
+                        <li>Contributed to team-based projects involving mobile apps and embedded systems</li>
+                        <li>Attended workshops on Flutter, Arduino, and software engineering principles</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-white">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <a class="contact-item" href="tel:+201121153059" target="_blank" style="text-decoration:none;">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+20-112-115-3059</p>
+                        </div>
+                    </a>
+                    <a class="contact-item" href="mailto:amrabdelazeem117@gmail.com" target="_blank"
+                        style="text-decoration:none;">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>amrabdelazeem117@gmail.com</p>
+                        </div>
+                    </a>
+                    <a class="contact-item" href="https://wa.me/201121153059" target="_blank"
+                        style="text-decoration:none;">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p>Chat on WhatsApp</p>
+                        </div>
+                    </a>
+                    <a class="contact-item" href="https://www.linkedin.com/in/amrsaeed-cse" target="_blank"
+                        style="text-decoration:none;">
+                        <i class="fab fa-linkedin"></i>
+                        <div>
+                            <h4>LinkedIn</h4>
+                            <p>linkedin.com/in/amrsaeed-cse</p>
+                        </div>
+                    </a>
+                    <a class="contact-item" href="https://github.com/amrsaeedcse" target="_blank"
+                        style="text-decoration:none;">
+                        <i class="fab fa-github"></i>
+                        <div>
+                            <h4>GitHub</h4>
+                            <p>github.com/amrsaeed-cse</p>
+                        </div>
+                    </a>
+                    <a class="contact-item" href="https://www.google.com/maps/search/?api=1&query=Minya+Al+Qamh,+Egypt"
+                        target="_blank" style="text-decoration:none;">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Location</h4>
+                            <p>Minya Al Qamh, Egypt</p>
+                        </div>
+                    </a>
+                </div>
+
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject *</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/amrsaeed-cse/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/amrsaeedcse" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="mailto:amrabdelazeem117@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p>&copy; 2024 Amr Abdelazeem Saeed Mohamed. All rights reserved.</p>
+            <p>Built with passion and dedication to Flutter development.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

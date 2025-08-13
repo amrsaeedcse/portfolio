@@ -1,0 +1,96 @@
+<!-- Create a new file: spotify-details.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify-like Music Streaming App - Project Details</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <div class="logo">Amr Abdelazeem</div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#skills">Skills</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#experience">Experience</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="section-white">
+        <div class="container">
+            <h2 class="section-title">Spotify-like Music Streaming App</h2>
+            <div class="project-details-content"
+                style="display: flex; flex-wrap: wrap; gap: 3rem; align-items: flex-start;">
+                <div style="flex:1; min-width:320px;">
+                    <img src="assets\spoify-app\Screenshot 2025-08-13 063102.png" alt="Spotify App Screenshot"
+                        class="project-details-image"
+                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);margin-bottom:2rem;">
+                    <video controls
+                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);">
+                        <source src="assets\spoify-app\Recording 2025-08-13 062931.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div style="flex:2; min-width:320px;">
+                    <h3 style="margin-bottom:1.5rem;">Spotify-like Music Streaming App</h3>
+                    <p>
+                        A full-featured music streaming application built with Flutter, leveraging Cubit and Bloc for
+                        robust state management. The app integrates with an external RESTful API for fetching track
+                        metadata, playlists, and recommendations, and uses Firebase services for authentication,
+                        real-time database operations, and cloud storage.
+                    </p>
+                    <h4 style="margin-bottom:1rem;">Key Features</h4>
+                    <ul class="project-feature-list">
+                        <li><strong>User Authentication:</strong> Email/Password and Google Sign-In via Firebase
+                            Authentication.</li>
+                        <li><strong>Music Playback:</strong> Smooth streaming with background audio support, play/pause
+                            controls, and seek functionality.</li>
+                        <li><strong>Dynamic Playlists:</strong> Fetch and display curated playlists from the external
+                            API.</li>
+                        <li><strong>Search Functionality:</strong> Real-time search for songs, albums, and artists.</li>
+                        <li><strong>Favorites & History:</strong> Cloud-synced liked songs and playback history.</li>
+                        <li><strong>State Management:</strong> Clean and scalable architecture using Cubit and Bloc for
+                            predictable state flow.</li>
+                        <li><strong>Responsive UI:</strong> Adaptive design for mobile and tablet, with smooth
+                            animations.</li>
+                    </ul>
+                    <h4 style="margin-bottom:1rem;">This project demonstrates expertise in:</h4>
+                    <ul class="project-tech-list">
+                        <li>Building scalable Flutter applications with complex state management.</li>
+                        <li>Integrating Firebase services with third-party APIs.</li>
+                        <li>Designing modern, user-friendly UIs inspired by Spotify’s sleek interface.</li>
+                        <li>Handling real-time data updates and media streaming performance optimization.</li>
+                    </ul>
+                    <p style="margin-top:2rem;">
+                        🎥 <strong>Demo Video:</strong> A short demo showing the app in action, highlighting the main
+                        features and smooth user experience.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/amrsaeed-cse/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/amrsaeedcse" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="mailto:amrabdelazeem117@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p>&copy; 2024 Amr Abdelazeem Saeed Mohamed. All rights reserved.</p>
+            <p>Built with passion and dedication to Flutter development.</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

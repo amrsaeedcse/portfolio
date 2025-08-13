@@ -1,0 +1,97 @@
+<!-- Create a new file: mips-details.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIPS-32 Multi-Cycle Processor (VHDL) - Project Details</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <div class="logo">Amr Abdelazeem</div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#skills">Skills</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#experience">Experience</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="section-white">
+        <div class="container">
+            <h2 class="section-title">MIPS-32 Multi-Cycle Processor (VHDL)</h2>
+            <div class="project-details-content"
+                style="display: flex; flex-wrap: wrap; gap: 3rem; align-items: flex-start;">
+                <div style="flex:1; min-width:320px;">
+                    <img src="d:/DownLoads/projects/mips-32/MIPS32_Block.png" alt="MIPS-32 Block Diagram"
+                        class="project-details-image"
+                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);margin-bottom:2rem;">
+                    <img src="d:/DownLoads/MIPS32_multi-cycle_diagram.png" alt="MIPS-32 Multi-Cycle Diagram"
+                        class="project-details-image"
+                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);">
+                </div>
+                <div style="flex:2; min-width:320px;">
+                    <h3 style="margin-bottom:1.5rem;">Project Overview</h3>
+                    <p>
+                        This project is a MIPS-32 Multi-Cycle Processor implemented in VHDL.<br>
+                        Before building the multi-cycle version, I first implemented a single-cycle processor to fully
+                        understand the datapath, control signals, and instruction execution flow.
+                    </p>
+                    <p>
+                        The multi-cycle design executes each instruction in multiple clock cycles, allowing hardware
+                        resources to be reused across different stages (Fetch, Decode, Execute, Memory, and Write Back).
+                        This approach improves efficiency compared to the single-cycle design while maintaining
+                        functional correctness.
+                    </p>
+                    <h4 style="margin-bottom:1rem;">Supported Instructions</h4>
+                    <ul class="project-tech-list" style="margin-bottom:2rem;">
+                        <li><strong>R-type:</strong> add, sub, and, or, slt</li>
+                        <li><strong>I-type:</strong> addi, lw, sw, beq, bne</li>
+                        <li><strong>J-type:</strong> j</li>
+                    </ul>
+                    <h4 style="margin-bottom:1rem;">Modular VHDL Components</h4>
+                    <ul class="project-feature-list">
+                        <li>ALU</li>
+                        <li>Register File</li>
+                        <li>Program Counter</li>
+                        <li>Instruction Memory</li>
+                        <li>Data Memory</li>
+                        <li>Control Unit</li>
+                        <li>ALU Control Unit</li>
+                    </ul>
+                    <p style="margin-top:2rem;">
+                        This project strengthened my understanding of CPU architecture, pipelining concepts, and VHDL
+                        design practices.
+                    </p>
+                    <div class="project-links" style="margin-top:2rem;">
+                        <a href="https://github.com/amrsaeedcse/mips-32/tree/main/src" target="_blank"
+                            class="project-link"><i class="fab fa-github"></i> GitHub Repository</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/amrsaeed-cse/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/amrsaeedcse" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="mailto:amrabdelazeem117@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p>&copy; 2024 Amr Abdelazeem Saeed Mohamed. All rights reserved.</p>
+            <p>Built with passion and dedication to Flutter development.</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

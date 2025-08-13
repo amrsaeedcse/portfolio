@@ -1,0 +1,80 @@
+<!-- Create a new file: drinks-details.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drinks-App Project - Project Details</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <div class="logo">Amr Abdelazeem</div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#skills">Skills</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#experience">Experience</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="section-white">
+        <div class="container">
+            <h2 class="section-title">Drinks-App Project</h2>
+            <div class="project-details-content"
+                style="display: flex; flex-wrap: wrap; gap: 3rem; align-items: flex-start;">
+                <div style="flex:1; min-width:320px;">
+                    <video controls
+                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);">
+                        <source src="assets/drink-app/Screen Recording 2025-08-13 080841.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div style="flex:2; min-width:320px;">
+                    <h3 style="margin-bottom:1.5rem;">Drinks-App Project <span
+                            style="color:#ff9800;font-size:1rem;">(Still working on it)</span></h3>
+                    <p>
+                        This project is a Flutter-based application for browsing and managing a variety of drinks. It
+                        utilizes Firebase as the backend for data storage and user authentication, providing real-time
+                        data synchronization and secure access.
+                    </p>
+                    <ul class="project-feature-list" style="margin-bottom:2rem;">
+                        <li><strong>Firebase Integration:</strong> Stores drink data, handles user sign-in/registration,
+                            and syncs data between app and cloud.</li>
+                        <li><strong>State Management:</strong> Uses Cubit for simple states and Bloc for complex,
+                            multi-step logic, ensuring clean and scalable code.</li>
+                        <li><strong>Flutter UI:</strong> Responsive and visually appealing interface for both Android
+                            and iOS devices.</li>
+                        <li><strong>Status:</strong> Final stages of development, focusing on performance, interactive
+                            features, and user experience.</li>
+                    </ul>
+                    <p>
+                        <strong>Demo Video:</strong> Watch a short demo of the app in action.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/amrsaeed-cse/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/amrsaeedcse" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="mailto:amrabdelazeem117@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p>&copy; 2024 Amr Abdelazeem Saeed Mohamed. All rights reserved.</p>
+            <p>Built with passion and dedication to Flutter development.</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

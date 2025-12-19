@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Spotify Clone - Project Details</title>
+    <title>Flutter E-Commerce - Project Details</title>
 
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -13,24 +13,20 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-
     <link rel="stylesheet" href="styles.css" />
 
     <style>
-      /* أجبر الناف بار يكون ليه خلفية واضحة في الصفحات الداخلية */
       .header {
         background-color: var(--body-color);
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
       }
-      /* تظبيط مكان المحتوى عشان مايدخلش تحت الناف بار */
       .project-details-section {
-        padding-top: 7rem; /* مسافة عشان الهيدر */
+        padding-top: 7rem;
         padding-bottom: 3rem;
       }
       .project-details-image {
-        object-fit: cover; /* الصور تملأ مكانها بشياكة */
+        object-fit: cover;
       }
     </style>
   </head>
@@ -45,11 +41,10 @@
 
     <header class="header" id="header">
       <nav class="nav container">
-        <a href="index.html" class="nav__logo">
-          <span class="nav__logo-symbol">&lt;</span> Amr
-          <span class="nav__logo-symbol">/&gt;</span>
-        </a>
-
+        <a href="index.html" class="nav__logo"
+          ><span class="nav__logo-symbol">&lt;</span> Amr
+          <span class="nav__logo-symbol">/&gt;</span></a
+        >
         <div class="nav__menu" id="nav-menu">
           <ul class="nav__list">
             <li class="nav__item">
@@ -66,7 +61,6 @@
             <i class="fas fa-times"></i>
           </div>
         </div>
-
         <div class="nav__btns">
           <i class="fas fa-moon change-theme" id="theme-button"></i>
           <div class="nav__toggle" id="nav-toggle">
@@ -79,64 +73,62 @@
     <section class="project-details-section section-white">
       <div class="container">
         <h2 class="section-title" data-aos="fade-down">
-          Spotify-like Music Streaming App
+          Flutter E-Commerce App
         </h2>
 
         <div class="project-details-wrapper">
           <div class="project-media" data-aos="fade-right" data-aos-delay="200">
             <img
-              src="assets/spoify-app/Screenshot 2025-08-13 063102.png"
-              alt="Spotify App Screenshot"
+              src="assets/eccomerce-app/Screenshot 2025-08-13 040331.png"
+              alt="E-Commerce Screenshot"
               class="project-details-image"
             />
-
-            <video
-              controls
-              class="project-details-video"
-              style="margin-top: 1rem"
-            >
-              <source
-                src="assets/spoify-app/Recording 2025-08-13 062931.mp4"
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
           </div>
 
           <div class="project-info" data-aos="fade-left" data-aos-delay="400">
             <h3>Project Overview</h3>
             <p>
-              A full-featured music streaming application built with Flutter,
-              leveraging Cubit and Bloc for robust state management. It
-              integrates with external APIs and Firebase.
+              A complete shopping application built with Flutter. It features a
+              robust authentication system, product filtering, cart management,
+              and order tracking simulation. Built with Clean Architecture.
             </p>
 
-            <h4 style="margin-top: 1.5rem">Key Features</h4>
+            <h4 style="margin-top: 1.5rem">Tech Stack & Features</h4>
             <ul class="project-feature-list">
+              <li><strong>Flutter & Dart:</strong> High-performance UI.</li>
               <li>
-                <strong>Music Playback:</strong> Background audio support,
-                play/pause, seek.
+                <strong>State Management:</strong> Cubit for logic, GetX for UI
+                updates.
               </li>
               <li>
-                <strong>Dynamic Playlists:</strong> Fetch playlists from API.
+                <strong>Firebase:</strong> Auth (Google/Email) & Firestore
+                Database.
               </li>
               <li>
-                <strong>Search & Favorites:</strong> Real-time search and
-                cloud-synced likes.
+                <strong>Architecture:</strong> Clean Architecture with GetIt
+                (DI).
               </li>
               <li>
-                <strong>Architecture:</strong> Scalable architecture using BLoC
-                pattern.
+                <strong>Notifications:</strong> Push notifications via Firebase
+                Messaging.
               </li>
             </ul>
 
             <div class="project-links">
               <a
-                href="https://github.com/amrsaeedcse/spotify"
+                href="https://github.com/amrsaeedcse/ecommerce-app"
                 target="_blank"
                 class="project-link"
               >
                 <i class="fab fa-github"></i> View Code
+              </a>
+              <a
+                href="https://www.linkedin.com/posts/amrsaeed-cse_my-flutter-practice-app-is-ready-here-activity-7359674370950053888-6P4q"
+                target="_blank"
+                class="project-link"
+                style="background-color: #0077b5"
+              >
+                <i class="fab fa-linkedin"></i> Watch Demo
               </a>
             </div>
           </div>
@@ -155,11 +147,8 @@
     </footer>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-
     <script>
-      /* --- 1. PRELOADER & ANIMATION --- */
       window.addEventListener("load", () => {
-        // نخفي اللودر بعد التحميل
         const preloader = document.getElementById("preloader");
         if (preloader) {
           preloader.style.opacity = "0";
@@ -167,16 +156,8 @@
             preloader.style.display = "none";
           }, 500);
         }
-        // نشغل أنيميشن العناصر
-        AOS.init({
-          duration: 1000,
-          offset: 50,
-          once: true,
-        });
+        AOS.init({ duration: 1000, offset: 50, once: true });
       });
-
-      /* --- 2. DARK/LIGHT THEME TOGGLE --- */
-      // (نفس الكود من الصفحة الرئيسية عشان الزرار يشتغل)
       const themeButton = document.getElementById("theme-button");
       const darkTheme = "dark-theme";
       const iconTheme = "fa-sun";
@@ -186,7 +167,6 @@
         document.body.classList.contains(darkTheme) ? "dark" : "light";
       const getCurrentIcon = () =>
         themeButton.classList.contains(iconTheme) ? "fa-moon" : "fa-sun";
-
       if (selectedTheme) {
         document.body.classList[selectedTheme === "dark" ? "add" : "remove"](
           darkTheme
@@ -195,19 +175,15 @@
           iconTheme
         );
       }
-
       themeButton.addEventListener("click", () => {
         document.body.classList.toggle(darkTheme);
         themeButton.classList.toggle(iconTheme);
         localStorage.setItem("selected-theme", getCurrentTheme());
         localStorage.setItem("selected-icon", getCurrentIcon());
       });
-
-      /* --- 3. MOBILE MENU TOGGLE --- */
       const navMenu = document.getElementById("nav-menu"),
         navToggle = document.getElementById("nav-toggle"),
         navClose = document.getElementById("nav-close");
-
       if (navToggle) {
         navToggle.addEventListener("click", () => {
           navMenu.classList.add("show-menu");

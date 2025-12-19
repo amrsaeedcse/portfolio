@@ -1,82 +1,104 @@
-<!-- Create a new file: greenguardian-details.html -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GreenGuardian - Project Details</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GreenGuardian – Smart Irrigation System - Project Details</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="styles.css" />
 
-<body>
-    <nav id="navbar">
-        <div class="container">
-            <div class="logo">Amr Abdelazeem</div>
-            <ul class="nav-links">
-                <li><a href="index.html#home">Home</a></li>
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#skills">Skills</a></li>
-                <li><a href="index.html#projects">Projects</a></li>
-                <li><a href="index.html#experience">Experience</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
+    <style>
+      .header { background-color: var(--body-color); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15); }
+      .project-details-section { padding-top: 7rem; padding-bottom: 3rem; }
+      .project-details-image { object-fit: cover; }
+    </style>
+  </head>
+
+  <body>
+    <div id="preloader"><div class="loader-content"><span class="loader-text">{ Amr }</span><div class="progress-bar"></div></div></div>
+
+    <header class="header" id="header">
+      <nav class="nav container">
+        <a href="index.html" class="nav__logo"><span class="nav__logo-symbol">&lt;</span> Amr <span class="nav__logo-symbol">/&gt;</span></a>
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li class="nav__item"><a href="index.html#home" class="nav__link">Home</a></li>
+            <li class="nav__item"><a href="index.html#projects" class="nav__link">Projects</a></li>
+            <li class="nav__item"><a href="index.html#contact" class="nav__link">Contact</a></li>
+          </ul>
+          <div class="nav__close" id="nav-close"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="nav__btns"><i class="fas fa-moon change-theme" id="theme-button"></i><div class="nav__toggle" id="nav-toggle"><i class="fas fa-bars"></i></div></div>
+      </nav>
+    </header>
+
+    <section class="project-details-section section-white">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-down">GreenGuardian – Smart Irrigation</h2>
+
+        <div class="project-details-wrapper">
+          <div class="project-media" data-aos="fade-right" data-aos-delay="200">
+            <img src="assets/GreenGuardian/cover.jpeg" alt="GreenGuardian Cover" class="project-details-image" style="margin-bottom: 1rem;" />
+            <img src="assets/GreenGuardian/GreenGuardian.png" alt="System Prototype" class="project-details-image" />
+          </div>
+
+          <div class="project-info" data-aos="fade-left" data-aos-delay="400">
+            <h3>Project Overview</h3>
+            <p>
+              GreenGuardian is a smart irrigation system powered by ESP32 to monitor soil moisture and water
+              levels while automatically controlling the water pump. It aims to optimize water usage and improve plant health.
+            </p>
+
+            <h4 style="margin-top: 1.5rem">Key Features</h4>
+            <ul class="project-feature-list">
+              <li><strong>Sensors:</strong> Soil moisture & Water level detection.</li>
+              <li><strong>Automation:</strong> Automatic pump control based on data.</li>
+              <li><strong>IoT Integration:</strong> Web/Mobile interface for remote monitoring.</li>
+              <li><strong>Dashboard:</strong> Real-time system monitoring.</li>
             </ul>
-        </div>
-    </nav>
 
-    <section class="section-white">
-        <div class="container">
-            <h2 class="section-title">GreenGuardian – Smart Irrigation System</h2>
-            <div class="project-details-content"
-                style="display: flex; flex-wrap: wrap; gap: 3rem; align-items: flex-start;">
-                <div style="flex:1; min-width:320px;">
-                    <img src="assets/GreenGuardian/cover.jpeg" alt="GreenGuardian Cover" class="project-details-image"
-                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);margin-bottom:2rem;">
-                    <img src="assets/GreenGuardian/GreenGuardian.png" alt="GreenGuardian System"
-                        class="project-details-image"
-                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);">
-                </div>
-                <div style="flex:2; min-width:320px;">
-                    <h3 style="margin-bottom:1.5rem;">Project Overview</h3>
-                    <p>
-                        GreenGuardian is a smart irrigation system powered by ESP32 to monitor soil moisture and water
-                        levels while automatically controlling the water pump.
-                        The project aims to optimize water usage and improve plant health through:
-                    </p>
-                    <ul class="project-feature-list" style="margin-bottom:2rem;">
-                        <li>Soil moisture sensor for accurate moisture level detection.</li>
-                        <li>Water level sensor to protect the pump from dry running.</li>
-                        <li>Web and mobile interface for remote monitoring and control.</li>
-                        <li>Customizable target moisture levels based on plant type.</li>
-                        <li>Real-time system monitoring and control from anywhere.</li>
-                    </ul>
-                    <p>
-                        With GreenGuardian, farmers and gardeners can save time, reduce effort, conserve water
-                        efficiently, and ensure healthier plant growth.
-                    </p>
-                    <div class="project-links" style="margin-top:2.5rem;">
-                        <a href="https://github.com/amrsaeedcse/greenGurdian" target="_blank" class="project-link"
-                            style="font-size:1.1rem;">
-                            <i class="fab fa-github"></i> View on GitHub
-                        </a>
-                    </div>
-                </div>
+            <div class="project-links">
+              <a href="https://github.com/amrsaeedcse/greenGurdian" target="_blank" class="project-link">
+                <i class="fab fa-github"></i> View on GitHub
+              </a>
             </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <div class="social-links">
-                <a href="https://www.linkedin.com/in/amrsaeed-cse/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/amrsaeedcse" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="mailto:amrabdelazeem117@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
-            </div>
-            <p>&copy; 2024 Amr Abdelazeem Saeed Mohamed. All rights reserved.</p>
-        </div>
-    </footer>
-    <script src="script.js"></script>
-</body>
-
+    <footer class="footer"><div class="footer__bg"><div class="footer__container container"><p class="footer__copy" style="text-align: center">&#169; 2024 Amr Abdelazeem. All rights reserved.</p></div></div></footer>
+    
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const preloader = document.getElementById("preloader");
+        if (preloader) { preloader.style.opacity = "0"; setTimeout(() => { preloader.style.display = "none"; }, 500); }
+        AOS.init({ duration: 1000, offset: 50, once: true });
+      });
+      const themeButton = document.getElementById("theme-button");
+      const darkTheme = "dark-theme";
+      const iconTheme = "fa-sun";
+      const selectedTheme = localStorage.getItem("selected-theme");
+      const selectedIcon = localStorage.getItem("selected-icon");
+      const getCurrentTheme = () => document.body.classList.contains(darkTheme) ? "dark" : "light";
+      const getCurrentIcon = () => themeButton.classList.contains(iconTheme) ? "fa-moon" : "fa-sun";
+      if (selectedTheme) {
+        document.body.classList[selectedTheme === "dark" ? "add" : "remove"](darkTheme);
+        themeButton.classList[selectedIcon === "fa-moon" ? "add" : "remove"](iconTheme);
+      }
+      themeButton.addEventListener("click", () => {
+        document.body.classList.toggle(darkTheme);
+        themeButton.classList.toggle(iconTheme);
+        localStorage.setItem("selected-theme", getCurrentTheme());
+        localStorage.setItem("selected-icon", getCurrentIcon());
+      });
+      const navMenu = document.getElementById("nav-menu"), navToggle = document.getElementById("nav-toggle"), navClose = document.getElementById("nav-close");
+      if (navToggle) { navToggle.addEventListener("click", () => { navMenu.classList.add("show-menu"); }); }
+      if (navClose) { navClose.addEventListener("click", () => { navMenu.classList.remove("show-menu"); }); }
+    </script>
+  </body>
 </html>

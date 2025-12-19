@@ -1,597 +1,1021 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amr Abdelazeem - Flutter Developer</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <title>Amr Abdelazeem | Flutter Developer & Hardware Engineer</title>
+    <meta name="title" content="Amr Abdelazeem - Portfolio" />
+    <meta
+      name="description"
+      content="Portfolio of Amr Abdelazeem, a Cross-Platform Mobile Developer (Flutter) and Computer Systems Engineer based in Egypt. Specialized in clean architecture and IoT."
+    />
+    <meta
+      name="keywords"
+      content="Flutter, Dart, Mobile Developer, Zagazig University, IoT, Embedded Systems, Portfolio"
+    />
+    <meta name="author" content="Amr Abdelazeem" />
 
-<body>
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="container">
-            <div class="logo">Amr Abdelazeem</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="mobile-menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://amrabdelazeem.com/" />
+    <meta property="og:title" content="Amr Abdelazeem | Flutter Developer" />
+    <meta
+      property="og:description"
+      content="Crafting high-performance mobile apps and smart hardware solutions. View my latest projects."
+    />
+    <meta property="og:image" content="assets/og-image.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+  </head>
+
+  <body>
+    <div id="preloader">
+      <div class="loader-content">
+        <span class="loader-text">{ Amr }</span>
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+
+    <header class="header" id="header">
+      <nav class="nav container">
+        <a href="#home" class="nav__logo">
+          <span class="nav__logo-symbol">&lt;</span> Amr
+          <span class="nav__logo-symbol">/&gt;</span>
+        </a>
+
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li class="nav__item">
+              <a href="#home" class="nav__link active-link">Home</a>
+            </li>
+            <li class="nav__item">
+              <a href="#about" class="nav__link">About</a>
+            </li>
+            <li class="nav__item">
+              <a href="#skills" class="nav__link">Skills</a>
+            </li>
+            <li class="nav__item">
+              <a href="#projects" class="nav__link">Projects</a>
+            </li>
+            <li class="nav__item">
+              <a href="#experience" class="nav__link">Experience</a>
+            </li>
+            <li class="nav__item">
+              <a href="#contact" class="nav__link">Contact</a>
+            </li>
+          </ul>
+
+          <div class="nav__close" id="nav-close">
+            <i class="fas fa-times"></i>
+          </div>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-bg-smartphone">
-            <div class="smartphone-mockup" id="smartphoneMockup">
-                <svg width="110" height="220" viewBox="0 0 110 220" fill="none" xmlns="http://www.w3.org/2000/svg"
-                    class="iphone-svg">
-                    <!-- Phone Frame -->
-                    <rect x="2" y="2" width="106" height="216" rx="22" fill="url(#phoneFrame)" stroke="#e3e7ee"
-                        stroke-width="2" />
+        <div class="nav__btns">
+          <i class="fas fa-moon change-theme" id="theme-button"></i>
+          <div class="nav__toggle" id="nav-toggle">
+            <i class="fas fa-bars"></i>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main">
+      <section class="home section" id="home">
+        <div class="home__container container grid">
+          <div class="home__content grid">
+            <div class="home__social">
+              <a
+                href="https://www.linkedin.com/in/amrsaeed-cse"
+                target="_blank"
+                class="home__social-icon"
+                data-aos="fade-right"
+                data-aos-delay="200"
+              >
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a
+                href="https://github.com/amrsaeedcse"
+                target="_blank"
+                class="home__social-icon"
+                data-aos="fade-right"
+                data-aos-delay="300"
+              >
+                <i class="fab fa-github"></i>
+              </a>
+              <a
+                href="mailto:amrabdelazeem117@gmail.com"
+                class="home__social-icon"
+                data-aos="fade-right"
+                data-aos-delay="400"
+              >
+                <i class="fas fa-envelope"></i>
+              </a>
+            </div>
+
+            <div
+              class="home__img-wrapper"
+              data-aos="zoom-in"
+              data-aos-duration="1200"
+            >
+              <div class="home__blob">
+                <div class="smartphone-mockup floating-animation">
+                  <svg
+                    width="220"
+                    height="440"
+                    viewBox="0 0 110 220"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="iphone-svg"
+                  >
                     <defs>
-                        <linearGradient id="phoneFrame" x1="0" y1="0" x2="110" y2="220" gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#2c3e50" />
-                            <stop offset="1" stop-color="#3498db" />
-                        </linearGradient>
-                        <linearGradient id="screenGrad" x1="0" y1="0" x2="110" y2="220" gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#667eea" />
-                            <stop offset="1" stop-color="#764ba2" />
-                        </linearGradient>
+                      <linearGradient
+                        id="phoneFrame"
+                        x1="0"
+                        y1="0"
+                        x2="110"
+                        y2="220"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop stop-color="#2c3e50" />
+                        <stop offset="1" stop-color="#3498db" />
+                      </linearGradient>
+                      <linearGradient
+                        id="screenGrad"
+                        x1="0"
+                        y1="0"
+                        x2="110"
+                        y2="220"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop stop-color="#667eea" />
+                        <stop offset="1" stop-color="#764ba2" />
+                      </linearGradient>
                     </defs>
-                    <!-- Screen -->
-                    <rect x="12" y="22" width="86" height="176" rx="16" fill="url(#screenGrad)" />
-                    <!-- Notch/Speaker -->
-                    <rect x="45" y="10" width="20" height="4" rx="2" fill="#fff" opacity="0.3" />
-                    <!-- Home Button -->
-                    <circle cx="55" cy="205" r="10" fill="none" stroke="#bbb" stroke-width="2" />
-                    <!-- App Header -->
-                    <text x="55" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="11"
-                        font-weight="bold" fill="#fff">App bar</text>
-                    <text x="55" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#fff"
-                        opacity="0.8">Mobile App Excellence</text>
-                    <!-- Feature Cards -->
-                    <rect x="20" y="70" width="70" height="18" rx="6" fill="#fff" opacity="0.08" />
-                    <text x="26" y="83" font-size="12" fill="#fff">📱</text>
-                    <text x="38" y="80" font-size="7" fill="#fff">Cross-Platform</text>
-                    <text x="38" y="87" font-size="6" fill="#fff" opacity="0.7">iOS & Android Apps</text>
-                    <rect x="20" y="95" width="70" height="18" rx="6" fill="#fff" opacity="0.08" />
-                    <text x="26" y="108" font-size="12" fill="#fff">🎨</text>
-                    <text x="38" y="105" font-size="7" fill="#fff">Beautiful UI/UX</text>
-                    <text x="38" y="112" font-size="6" fill="#fff" opacity="0.7">Modern Design Systems</text>
-                    <rect x="20" y="120" width="70" height="18" rx="6" fill="#fff" opacity="0.08" />
-                    <text x="26" y="133" font-size="12" fill="#fff">🚀</text>
-                    <text x="38" y="130" font-size="7" fill="#fff">High Performance</text>
-                    <text x="38" y="137" font-size="6" fill="#fff" opacity="0.7">Optimized & Fast</text>
-                    <!-- Bottom Navigation -->
-                    <rect x="20" y="180" width="70" height="2" rx="1" fill="#fff" opacity="0.1" />
-                    <text x="20" y="190" font-size="10" fill="#fff">🏠</text>
-                    <text x="40" y="190" font-size="10" fill="#fff" opacity="0.6">🔍</text>
-                    <text x="60" y="190" font-size="10" fill="#fff" opacity="0.6">❤️</text>
-                    <text x="80" y="190" font-size="10" fill="#fff" opacity="0.6">👤</text>
-                </svg>
+                    <rect
+                      x="2"
+                      y="2"
+                      width="106"
+                      height="216"
+                      rx="22"
+                      fill="url(#phoneFrame)"
+                      stroke="#e3e7ee"
+                      stroke-width="2"
+                    />
+                    <rect
+                      x="12"
+                      y="22"
+                      width="86"
+                      height="176"
+                      rx="16"
+                      fill="url(#screenGrad)"
+                    />
+                    <rect
+                      x="45"
+                      y="10"
+                      width="20"
+                      height="4"
+                      rx="2"
+                      fill="#fff"
+                      opacity="0.3"
+                    />
+                    <circle
+                      cx="55"
+                      cy="205"
+                      r="10"
+                      fill="none"
+                      stroke="#bbb"
+                      stroke-width="2"
+                    />
+                    <foreignObject
+                      x="12"
+                      y="22"
+                      width="86"
+                      height="176"
+                      style="border-radius: 16px; overflow: hidden"
+                    >
+                      <div
+                        xmlns="http://www.w3.org/1999/xhtml"
+                        style="width: 100%; height: 100%; position: relative"
+                      >
+                        <div class="phone-boot-screen">
+                          <div class="phone-boot-screen">
+                            <img
+                              src="assets/flutter-logo.svg"
+                              class="boot-logo"
+                              alt="Flutter Logo"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="phone-code-content">
+                          <span style="color: #c792ea">class</span>
+                          <span style="color: #ffcb6b">Amr</span>
+                          <span style="color: #c792ea">extends</span>
+                          <span style="color: #ffcb6b">Dev</span> {<br />
+                          &nbsp;&nbsp;<span style="color: #82aaff">runApp</span
+                          >() {<br /> &nbsp;&nbsp;&nbsp;&nbsp;<span
+                            style="color: #c792ea"
+                            >return</span
+                          >
+                          <span style="color: #c3e88d">Awesome</span>();<br />
+                          &nbsp;&nbsp;}<br />
+                          }
+                        </div>
+                      </div>
+                    </foreignObject>
+                  </svg>
+                </div>
+              </div>
             </div>
-        </div>
-        <div class="hero-content">
-            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='grad1' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23667eea'/><stop offset='100%' stop-color='%23764ba2'/></linearGradient></defs><circle cx='100' cy='100' r='90' fill='url(%23grad1)'/><circle cx='70' cy='70' r='8' fill='white'/><circle cx='130' cy='70' r='8' fill='white'/><path d='M 60 130 Q 100 160 140 130' stroke='white' stroke-width='3' fill='none'/></svg>"
-                alt="Amr Abdelazeem" class="profile-image">
-            <h1>Amr Abdelazeem Saeed Mohamed</h1>
-            <p class="subtitle"></p>
-            <p class="hero-description">Passionate about building cross-platform mobile applications and exploring the
-                intersection of software and hardware development.</p>
-            <a href="#contact" class="cta-button">
-                <i class="fas fa-rocket"></i> Let's Build Something Amazing
+
+            <div class="home__data">
+              <h1 class="home__title" data-aos="fade-left" data-aos-delay="200">
+                Hi, I'm Amr
+              </h1>
+              <h3
+                class="home__subtitle"
+                data-aos="fade-left"
+                data-aos-delay="300"
+              >
+                Flutter Developer
+              </h3>
+              <p
+                class="home__description"
+                data-aos="fade-left"
+                data-aos-delay="400"
+              >
+                Computer & Systems Engineering Student at Zagazig University. I
+                bridge the gap between
+                <span class="highlight">Software Elegance</span> and
+                <span class="highlight">Hardware Logic</span>.
+              </p>
+              <a
+                href="#contact"
+                class="button button--flex"
+                data-aos="fade-up"
+                data-aos-delay="500"
+              >
+                Contact Me <i class="fas fa-paper-plane button__icon"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="home__scroll" data-aos="fade-up" data-aos-delay="600">
+            <a href="#about" class="home__scroll-button button--flex">
+              <i class="fas fa-mouse home__scroll-mouse"></i>
+              <span class="home__scroll-name">Scroll down</span>
+              <i class="fas fa-arrow-down home__scroll-arrow"></i>
             </a>
+          </div>
         </div>
-        <div class="scroll-indicator">
-            <div class="scroll-arrow"></div>
+      </section>
+
+      <div class="tech-stack" data-aos="fade-up" data-aos-delay="200">
+        <div class="tech-track">
+          <span><i class="fab fa-flutter"></i> Flutter</span>
+          <span><i class="fab fa-dart-lang"></i> Dart</span>
+          <span><i class="fas fa-fire"></i> Firebase</span>
+          <span><i class="fas fa-microchip"></i> Arduino</span>
+          <span><i class="fab fa-git-alt"></i> Git</span>
+          <span><i class="fab fa-java"></i> Java</span>
+          <span><i class="fab fa-flutter"></i> Flutter</span>
+          <span><i class="fab fa-dart-lang"></i> Dart</span>
+          <span><i class="fas fa-fire"></i> Firebase</span>
+          <span><i class="fas fa-microchip"></i> Arduino</span>
+          <span><i class="fab fa-git-alt"></i> Git</span>
+          <span><i class="fab fa-java"></i> Java</span>
         </div>
-    </section>
+      </div>
 
-    <!-- About Section -->
-    <section id="about" class="section-white">
-        <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-image-container">
-                    <div class="about-photo-move">
-                        <img src="assets\about_me\WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
-                            alt="Amr Abdelazeem" class="about-image" />
-                    </div>
-                </div>
-                <div class="about-text">
-                    <p>I'm a highly driven Computer Engineering student at Zagazig University with a deep passion for
-                        Flutter development and building cross-platform mobile applications. My journey in technology
-                        spans both software and hardware domains, giving me a unique perspective on modern development
-                        challenges.</p>
+      <section class="about section" id="about">
+        <h2 class="section__title" data-heading="Who I Am" data-aos="fade-down">
+          About Me
+        </h2>
 
-                    <p>Through my training at the Information Technology Institute (ITI) and continuous self-learning,
-                        I've developed strong expertise in Flutter, Firebase, state management, and REST API
-                        integration. I'm particularly excited about creating intuitive user interfaces and solving
-                        complex problems through elegant code solutions.</p>
+        <div class="about__container container grid">
+          <div
+            class="about__img-wrapper"
+            data-aos="flip-left"
+            data-aos-duration="1000"
+          >
+            <img
+              src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
+              alt="Amr Abdelazeem"
+              class="about__img"
+            />
+            <div class="about__img-shadow"></div>
+          </div>
 
-                    <p>When I'm not coding, you'll find me exploring new technologies, participating in university tech
-                        clubs, or working on personal projects that challenge my creativity and technical skills. I
-                        believe in the power of collaboration and am always eager to contribute to impactful real-world
-                        solutions.</p>
+          <div class="about__data">
+            <p class="about__description" data-aos="fade-left">
+              I am a passionate <strong>Software Engineer</strong> specialized
+              in <strong>Mobile App Development</strong>. My background in
+              Computer Engineering allows me to write efficient, optimized code
+              while focusing on creating beautiful, user-friendly interfaces
+              using <strong>Flutter</strong>.
+            </p>
+            <p
+              class="about__description"
+              data-aos="fade-left"
+              data-aos-delay="100"
+            >
+              Currently focusing on <strong>Clean Architecture</strong> and
+              scalable solutions. I combine my engineering logic with software
+              creativity to build apps that perform flawlessly.
+            </p>
 
-                    <div class="stats">
-                        <div class="stat-item">
-                            <span class="stat-number">7+</span>
-                            <span class="stat-label">Projects Completed</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">2+</span>
-                            <span class="stat-label">Years Experience</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">15+</span>
-                            <span class="stat-label">Technologies</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="about__info">
+              <div class="about__box" data-aos="zoom-in" data-aos-delay="200">
+                <i class="fas fa-code about__icon"></i>
+                <h3 class="about__title">Experience</h3>
+                <span class="about__subtitle">Flutter & IoT</span>
+              </div>
+              <div class="about__box" data-aos="zoom-in" data-aos-delay="350">
+                <i class="fas fa-briefcase about__icon"></i>
+                <h3 class="about__title">Completed</h3>
+                <span class="about__subtitle">7+ Projects</span>
+              </div>
+              <div class="about__box" data-aos="zoom-in" data-aos-delay="500">
+                <i class="fas fa-check-circle about__icon"></i>
+                <h3 class="about__title">Commitment</h3>
+                <span class="about__subtitle">Quality First</span>
+              </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="section-light">
-        <div class="container">
-            <h2 class="section-title">Skills & Expertise</h2>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3><i class="fab fa-google-play"></i> Mobile Development</h3>
-                    <div class="skill-item">
-                        <span>Flutter & Dart</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="90"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>Firebase Integration</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="85"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>State Management (Bloc, Cubit)</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="80"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>REST APIs & JSON</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="85"></div>
-                        </div>
-                        <span class="skill-percentage">90%%</span>
-                    </div>
-                </div>
-
-                <div class="skill-category">
-                    <h3><i class="fas fa-code"></i> Programming Languages</h3>
-                    <div class="skill-item">
-                        <span>Dart</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="90"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>Java</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="75"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>PHP</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="70"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>C/C++</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="70"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                </div>
-
-                <div class="skill-category">
-                    <h3><i class="fas fa-globe"></i> Web Development</h3>
-                    <div class="skill-item">
-                        <span>HTML5</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="85"></div>
-                        </div>
-                        <span class="skill-percentage">85%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>CSS3</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="80"></div>
-                        </div>
-                        <span class="skill-percentage">85%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>JavaScript</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="75"></div>
-                        </div>
-                        <span class="skill-percentage">85%</span>
-                    </div>
-                </div>
-
-                <div class="skill-category">
-                    <h3><i class="fas fa-microchip"></i> Hardware & Tools</h3>
-                    <div class="skill-item">
-                        <span>Arduino</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="80"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>VHDL</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="70"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span>Git & GitHub</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="85"></div>
-                        </div>
-                        <span class="skill-percentage">90%</span>
-                    </div>
-                </div>
+            <div class="about__buttons" data-aos="fade-up" data-aos-delay="600">
+              <a
+                href="assets/Amr_Abdelazeem_Resume.pdf"
+                download="Amr_Abdelazeem_Resume.pdf"
+                class="button button--flex"
+              >
+                Download CV <i class="fas fa-download button__icon"></i>
+              </a>
             </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="section-white">
-        <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fab fa-google-play"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Flutter E-Commerce App</h3>
-                        <p>
-                            A modern e-commerce mobile application built with Flutter, featuring authentication, product
-                            catalog, cart, and notifications.
-                        </p>
-                        <div class="project-tags">
-                            <span class="tag">Flutter</span>
-                            <span class="tag">Firebase</span>
-                            <span class="tag">Cubit</span>
-                            <span class="tag">GetX</span>
-                            <span class="tag">REST API</span>
-                            <span class="tag">GetIt</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="project-details.html" class="project-link"><i class="fas fa-info-circle"></i> View
-                                Details</a>
-                            <a href="https://github.com/amrsaeedcse/ecommerce-app" target="_blank"
-                                class="project-link"><i class="fab fa-github"></i> Code</a>
-                        </div>
-                    </div>
-                </div>
+      <section class="skills section" id="skills">
+        <h2 class="section__title" data-heading="My Tech" data-aos="fade-down">
+          Skills & Expertise
+        </h2>
 
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-microchip"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>MIPS-32 Multi-Cycle Processor (VHDL)</h3>
-                        <p>
-                            A modular MIPS-32 multi-cycle CPU implemented in VHDL, supporting R-type, I-type, and J-type
-                            instructions. Features reusable hardware stages for efficient instruction execution.
-                        </p>
-                        <div class="project-tags">
-                            <span class="tag">VHDL</span>
-                            <span class="tag">MIPS</span>
-                            <span class="tag">CPU Design</span>
-                            <span class="tag">Hardware</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="mips-details.html" class="project-link"><i class="fas fa-info-circle"></i> View
-                                Details</a>
-                            <a href="https://github.com/amrsaeedcse/mips-32" target="_blank" class="project-link"><i
-                                    class="fab fa-github"></i> Code</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fab fa-spotify"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Spotify-like Music Streaming App</h3>
-                        <p>
-                            A full-featured music streaming application built with Flutter, using Cubit and Bloc for
-                            robust state management, RESTful API integration, and Firebase for authentication and cloud
-                            features.
-                        </p>
-                        <div class="project-tags">
-                            <span class="tag">Flutter</span>
-                            <span class="tag">Firebase</span>
-                            <span class="tag">Cubit</span>
-                            <span class="tag">Bloc</span>
-                            <span class="tag">REST API</span>
-                            <span class="tag">Music</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="spotify-details.html" class="project-link"><i class="fas fa-info-circle"></i> View
-                                Details</a>
-                            <a href="https://github.com/amrsaeedcse/spotify" target="_blank" class="project-link"><i
-                                    class="fab fa-github"></i> Code</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-glass-martini-alt"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Drinks-App Project</h3>
-                        <p>
-                            A Flutter-based application for browsing and managing a variety of drinks. Uses Firebase for
-                            real-time data storage and authentication, and Cubit/Bloc for robust state management.
-                            <strong>Status:</strong> Still working on it.
-                        </p>
-                        <div class="project-tags">
-                            <span class="tag">Flutter</span>
-                            <span class="tag">Firebase</span>
-                            <span class="tag">Cubit</span>
-                            <span class="tag">Bloc</span>
-                            <span class="tag">App</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="drinks-details.html" class="project-link"><i class="fas fa-info-circle"></i> View
-                                Details</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-seedling"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>GreenGuardian – Smart Irrigation System</h3>
-                        <p>
-                            GreenGuardian is a smart irrigation system powered by ESP32 to monitor soil moisture and
-                            water levels while automatically controlling the water pump.<br>
-                            <strong>Status:</strong> Under development
-
-                        </p>
-                        <div class="project-tags">
-                            <span class="tag">Arduino</span>
-                            <span class="tag">c++</span>
-                            <span class="tag">Blink</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="greenguardian-details.html" class="project-link"><i class="fas fa-info-circle"></i>
-                                View
-                                Details</a>
-                            <a href="https://github.com/amrsaeedcse/greenGurdian" target="_blank"
-                                class="project-link"><i class="fab fa-github"></i> Code</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-microchip"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>IoT Smart Home System</h3>
-                        <p>
-                            Arduino-based home automation system with mobile app control, featuring sensors, actuators,
-                            and real-time monitoring capabilities.<br>
-                            <strong>Status:</strong> Under development
-                        </p>
-                        <div class="project-links">
-                            <!-- <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Data Visualization Dashboard</h3>
-                        <p>
-                            Interactive web dashboard for data analysis and visualization, featuring real-time charts
-                            and
-                            responsive design.<br>
-                            <strong>Status:</strong> Under development
-                        </p>
-                        <div class="project-links">
-                            <!-- <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Social Media Flutter App</h3>
-                        <p>
-                            Social networking app with user profiles, posts, real-time chat, and media sharing
-                            capabilities built with Flutter.<br>
-                            <strong>Status:</strong> Under development
-                        </p>
-                        <div class="project-links">
-                            <!-- <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a> -->
-                        </div>
-                    </div>
-                </div>
-
+        <div class="skills__container container grid">
+          <div
+            class="skills__content skills__open"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <div class="skills__header">
+              <i class="fas fa-mobile-alt skills__icon"></i>
+              <div>
+                <h1 class="skills__title">Mobile Development</h1>
+                <span class="skills__subtitle">Flutter & Native</span>
+              </div>
+              <i class="fas fa-angle-down skills__arrow"></i>
             </div>
-        </div>
-    </section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="section-light">
-        <div class="container">
-            <h2 class="section-title">Experience & Education</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">Summer 2024</div>
-                    <h3>Mobile App Development Trainee</h3>
-                    <h4>Information Technology Institute (ITI)</h4>
-                    <p>Comprehensive training on Flutter fundamentals, UI components, app architecture, and state
-                        management. Built structured app prototypes using Flutter and Firebase for authentication and
-                        data storage. Applied various state management approaches including Bloc, Cubit, and Provider.
-                    </p>
-                    <ul>
-                        <li>Worked with REST APIs and JSON parsing</li>
-                        <li>Implemented dynamic UI rendering</li>
-                        <li>Practiced version control using Git & GitHub</li>
-                        <li>Developed passion for Flutter through hands-on projects</li>
-                    </ul>
+            <div class="skills__list grid">
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Flutter & Dart</h3>
+                  <span class="skills__number">Advanced</span>
                 </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">2021 – Present</div>
-                    <h3>Computer Engineering Student</h3>
-                    <h4>Zagazig University</h4>
-                    <p>Pursuing Bachelor of Science in Computer Engineering with excellent GPA. Completed relevant
-                        coursework in Computer Architecture, Embedded Systems, Data Structures, and Software
-                        Engineering.</p>
-                    <ul>
-                        <li>Active member in university tech clubs and programming communities</li>
-                        <li>Participated in student-led software development activities</li>
-                        <li>Contributed to team-based projects involving mobile apps and embedded systems</li>
-                        <li>Attended workshops on Flutter, Arduino, and software engineering principles</li>
-                    </ul>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 95%"></span>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="section-white">
-        <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <a class="contact-item" href="tel:+201121153059" target="_blank" style="text-decoration:none;">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h4>Phone</h4>
-                            <p>+20-112-115-3059</p>
-                        </div>
-                    </a>
-                    <a class="contact-item" href="mailto:amrabdelazeem117@gmail.com" target="_blank"
-                        style="text-decoration:none;">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <h4>Email</h4>
-                            <p>amrabdelazeem117@gmail.com</p>
-                        </div>
-                    </a>
-                    <a class="contact-item" href="https://wa.me/201121153059" target="_blank"
-                        style="text-decoration:none;">
-                        <i class="fab fa-whatsapp"></i>
-                        <div>
-                            <h4>WhatsApp</h4>
-                            <p>Chat on WhatsApp</p>
-                        </div>
-                    </a>
-                    <a class="contact-item" href="https://www.linkedin.com/in/amrsaeed-cse" target="_blank"
-                        style="text-decoration:none;">
-                        <i class="fab fa-linkedin"></i>
-                        <div>
-                            <h4>LinkedIn</h4>
-                            <p>linkedin.com/in/amrsaeed-cse</p>
-                        </div>
-                    </a>
-                    <a class="contact-item" href="https://github.com/amrsaeedcse" target="_blank"
-                        style="text-decoration:none;">
-                        <i class="fab fa-github"></i>
-                        <div>
-                            <h4>GitHub</h4>
-                            <p>github.com/amrsaeed-cse</p>
-                        </div>
-                    </a>
-                    <a class="contact-item" href="https://www.google.com/maps/search/?api=1&query=Minya+Al+Qamh,+Egypt"
-                        target="_blank" style="text-decoration:none;">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h4>Location</h4>
-                            <p>Minya Al Qamh, Egypt</p>
-                        </div>
-                    </a>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">State Management (Bloc)</h3>
+                  <span class="skills__number">Advanced</span>
                 </div>
-
-                <form class="contact-form" id="contactForm">
-                    <div class="form-group">
-                        <label for="name">Name *</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Subject *</label>
-                        <input type="text" id="subject" name="subject" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message *</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-paper-plane"></i>
-                        Send Message
-                    </button>
-                </form>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 95%"></span>
+                </div>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Clean Architecture</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 90%"></span>
+                </div>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Native Android (Kotlin)</h3>
+                  <span class="skills__number">Intermediate</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 70%"></span>
+                </div>
+              </div>
             </div>
-        </div>
-    </section>
+          </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="social-links">
-                <a href="https://www.linkedin.com/in/amrsaeed-cse/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/amrsaeedcse" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="mailto:amrabdelazeem117@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
+          <div
+            class="skills__content skills__open"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <div class="skills__header">
+              <i class="fas fa-server skills__icon"></i>
+              <div>
+                <h1 class="skills__title">Backend & Cloud</h1>
+                <span class="skills__subtitle">Server Side Logic</span>
+              </div>
+              <i class="fas fa-angle-down skills__arrow"></i>
             </div>
-            <p>&copy; 2024 Amr Abdelazeem Saeed Mohamed. All rights reserved.</p>
-            <p>Built with passion and dedication to Flutter development.</p>
+
+            <div class="skills__list grid">
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Firebase</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 95%"></span>
+                </div>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">RESTful APIs</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 95%"></span>
+                </div>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Local DB (Hive)</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 90%"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="skills__content skills__open"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <div class="skills__header">
+              <i class="fas fa-microchip skills__icon"></i>
+              <div>
+                <h1 class="skills__title">Hardware & IoT</h1>
+                <span class="skills__subtitle">Embedded Systems</span>
+              </div>
+              <i class="fas fa-angle-down skills__arrow"></i>
+            </div>
+
+            <div class="skills__list grid">
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">C / C++</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 90%"></span>
+                </div>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Arduino & ESP32</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 95%"></span>
+                </div>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Circuit Design</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 85%"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="skills__content skills__open"
+            data-aos="fade-up"
+            data-aos-delay="400"
+          >
+            <div class="skills__header">
+              <i class="fas fa-pen-nib skills__icon"></i>
+              <div>
+                <h1 class="skills__title">UI/UX Design</h1>
+                <span class="skills__subtitle">Visuals & Prototyping</span>
+              </div>
+              <i class="fas fa-angle-down skills__arrow"></i>
+            </div>
+
+            <div class="skills__list grid">
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Figma</h3>
+                  <span class="skills__number">Intermediate</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 80%"></span>
+                </div>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Material Design 3</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 95%"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="skills__content skills__open"
+            data-aos="fade-up"
+            data-aos-delay="500"
+          >
+            <div class="skills__header">
+              <i class="fas fa-tools skills__icon"></i>
+              <div>
+                <h1 class="skills__title">Tools & Workflow</h1>
+                <span class="skills__subtitle">DevOps & Testing</span>
+              </div>
+              <i class="fas fa-angle-down skills__arrow"></i>
+            </div>
+
+            <div class="skills__list grid">
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Git & GitHub</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 95%"></span>
+                </div>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Postman</h3>
+                  <span class="skills__number">Advanced</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 95%"></span>
+                </div>
+              </div>
+              <div class="skills__data">
+                <div class="skills__titles">
+                  <h3 class="skills__name">Agile & Jira</h3>
+                  <span class="skills__number">Intermediate</span>
+                </div>
+                <div class="skills__bar">
+                  <span class="skills__percentage" style="width: 85%"></span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <section class="work section" id="projects">
+        <h2
+          class="section__title"
+          data-heading="My Portfolio"
+          data-aos="fade-down"
+        >
+          Featured Projects
+        </h2>
+
+        <div class="work__filters" data-aos="fade-up">
+          <span class="work__item active-work" data-filter="all">All</span>
+          <span class="work__item" data-filter=".app">Mobile Apps</span>
+          <span class="work__item" data-filter=".iot">IoT & Hardware</span>
+          <span class="work__item" data-filter=".web">Web / Other</span>
+        </div>
+
+        <div class="work__container container grid">
+          <div class="work__card mix app" data-aos="flip-up" data-aos-delay="0">
+            <div class="work__img-wrapper">
+              <div class="work__img-overlay"></div>
+              <i class="fas fa-shopping-bag work__icon-placeholder"></i>
+            </div>
+            <h3 class="work__title">Flutter E-Commerce</h3>
+            <p class="work__description">
+              Complete shopping app with Cubit, Auth, and Cart.
+            </p>
+            <div class="work__stack">
+              <span>Flutter</span> <span>Cubit</span> <span>Firebase</span>
+            </div>
+            <div class="work__links">
+              <a
+                href="https://github.com/amrsaeedcse/ecommerce-app"
+                target="_blank"
+                class="work__button"
+              >
+                Code <i class="fab fa-github"></i>
+              </a>
+              <a
+                href="ecommerce-details.html"
+                class="work__button work__button-ghost"
+              >
+                Details <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="work__card mix app"
+            data-aos="flip-up"
+            data-aos-delay="150"
+          >
+            <div class="work__img-wrapper">
+              <div class="work__img-overlay overlay-green"></div>
+              <i class="fab fa-spotify work__icon-placeholder"></i>
+            </div>
+            <h3 class="work__title">Spotify Clone</h3>
+            <p class="work__description">
+              Music streaming UI and logic using Bloc.
+            </p>
+            <div class="work__stack">
+              <span>Flutter</span> <span>Bloc</span> <span>Audio</span>
+            </div>
+            <div class="work__links">
+              <a
+                href="https://github.com/amrsaeedcse/spotify"
+                target="_blank"
+                class="work__button"
+              >
+                Code <i class="fab fa-github"></i>
+              </a>
+              <a
+                href="spotify-details.html"
+                class="work__button work__button-ghost"
+              >
+                Details <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="work__card mix iot"
+            data-aos="flip-up"
+            data-aos-delay="300"
+          >
+            <div class="work__img-wrapper">
+              <div class="work__img-overlay overlay-red"></div>
+              <i class="fas fa-microchip work__icon-placeholder"></i>
+            </div>
+            <h3 class="work__title">MIPS-32 CPU</h3>
+            <p class="work__description">
+              VHDL implementation of a multi-cycle processor.
+            </p>
+            <div class="work__stack">
+              <span>VHDL</span> <span>Hardware</span>
+            </div>
+            <div class="work__links">
+              <a
+                href="https://github.com/amrsaeedcse/mips-32"
+                target="_blank"
+                class="work__button"
+              >
+                Code <i class="fab fa-github"></i>
+              </a>
+              <a
+                href="mips-details.html"
+                class="work__button work__button-ghost"
+              >
+                Details <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="work__card mix iot"
+            data-aos="flip-up"
+            data-aos-delay="450"
+          >
+            <div class="work__img-wrapper">
+              <div class="work__img-overlay overlay-green"></div>
+              <i class="fas fa-leaf work__icon-placeholder"></i>
+            </div>
+            <h3 class="work__title">Green Guardian</h3>
+            <p class="work__description">
+              Smart Irrigation System using ESP32 & IoT.
+            </p>
+            <div class="work__stack">
+              <span>IoT</span> <span>C++</span> <span>ESP32</span>
+            </div>
+            <div class="work__links">
+              <a
+                href="https://github.com/amrsaeedcse/greenGurdian"
+                target="_blank"
+                class="work__button"
+              >
+                Code <i class="fab fa-github"></i>
+              </a>
+              <a
+                href="greenguardian-details.html"
+                class="work__button work__button-ghost"
+              >
+                Details <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="work__card mix web"
+            data-aos="flip-up"
+            data-aos-delay="600"
+          >
+            <div class="work__img-wrapper">
+              <div class="work__img-overlay overlay-purple"></div>
+              <i class="fas fa-code work__icon-placeholder"></i>
+            </div>
+            <h3 class="work__title">Portfolio Website</h3>
+            <p class="work__description">
+              This website you are looking at right now!
+            </p>
+            <div class="work__stack">
+              <span>HTML</span> <span>CSS</span> <span>JS</span>
+            </div>
+            <div class="work__links">
+              <span
+                class="work__button work__button-ghost"
+                style="border: none; padding-left: 0"
+              >
+                <i
+                  class="fas fa-circle"
+                  style="color: #2ecc71; font-size: 10px"
+                ></i>
+                Live Preview
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="experience section" id="experience">
+        <h2
+          class="section__title"
+          data-heading="My Journey"
+          data-aos="fade-down"
+        >
+          Experience & Education
+        </h2>
+
+        <div class="experience__container container">
+          <div class="experience__content">
+            <div class="experience__data">
+              <div class="experience__left"></div>
+              <div class="experience__divider">
+                <span class="experience__rounder"></span>
+                <span class="experience__line"></span>
+              </div>
+              <div class="experience__right" data-aos="fade-left">
+                <h3 class="experience__title">Mobile App Trainee</h3>
+                <span class="experience__subtitle"
+                  >DEPI (Digital Pioneers Initiative)</span
+                >
+                <p class="experience__description">
+                  Intensive training program in partnership with Ministry of
+                  CIT. Focused on advanced Flutter concepts, freelance skills,
+                  and project delivery.
+                </p>
+                <div class="experience__calendar">
+                  <i class="far fa-calendar-alt"></i> 2024
+                </div>
+              </div>
+            </div>
+
+            <div class="experience__data">
+              <div class="experience__left" data-aos="fade-right">
+                <h3 class="experience__title">Mobile App Trainee</h3>
+                <span class="experience__subtitle"
+                  >Information Technology Institute (ITI)</span
+                >
+                <p class="experience__description">
+                  Summer training focusing on Flutter fundamentals and Dart.
+                </p>
+                <div class="experience__calendar">
+                  <i class="far fa-calendar-alt"></i> Summer 2024
+                </div>
+              </div>
+              <div class="experience__divider">
+                <span class="experience__rounder"></span>
+                <span class="experience__line"></span>
+              </div>
+              <div class="experience__right"></div>
+            </div>
+
+            <div class="experience__data">
+              <div class="experience__left"></div>
+              <div class="experience__divider">
+                <span class="experience__rounder"></span>
+              </div>
+              <div class="experience__right" data-aos="fade-left">
+                <h3 class="experience__title">Computer Engineering Student</h3>
+                <span class="experience__subtitle">Zagazig University</span>
+                <p class="experience__description">
+                  Studying Systems, Embedded Software, and CS fundamentals.
+                </p>
+                <div class="experience__calendar">
+                  <i class="far fa-calendar-alt"></i> 2021 - Present
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact section" id="contact">
+        <h2
+          class="section__title"
+          data-heading="Get in Touch"
+          data-aos="fade-down"
+        >
+          Contact Me
+        </h2>
+
+        <div class="contact__container container grid">
+          <div class="contact__content" data-aos="fade-right">
+            <h3 class="contact__title">Talk to me</h3>
+
+            <div class="contact__info">
+              <div class="contact__card">
+                <i class="fab fa-whatsapp contact__card-icon"></i>
+                <h3 class="contact__card-title">WhatsApp</h3>
+                <span class="contact__card-data">+20 112 115 3059</span>
+                <a
+                  href="https://wa.me/201121153059"
+                  target="_blank"
+                  class="contact__button"
+                >
+                  Chat Now
+                  <i class="fas fa-arrow-right contact__button-icon"></i>
+                </a>
+              </div>
+
+              <div class="contact__card">
+                <i class="fas fa-envelope contact__card-icon"></i>
+                <h3 class="contact__card-title">Email</h3>
+                <span class="contact__card-data">amrabdelazeem117</span>
+                <a
+                  href="mailto:amrabdelazeem117@gmail.com"
+                  class="contact__button"
+                >
+                  Send Email
+                  <i class="fas fa-arrow-right contact__button-icon"></i>
+                </a>
+              </div>
+
+              <div class="contact__card">
+                <i class="fas fa-map-marker-alt contact__card-icon"></i>
+                <h3 class="contact__card-title">Location</h3>
+                <span class="contact__card-data">Minya Al Qamh, Sharqia</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact__content" data-aos="fade-left">
+            <h3 class="contact__title">Write me your project</h3>
+
+            <form action="" class="contact__form" id="contact-form">
+              <div class="contact__form-div">
+                <label class="contact__form-tag">Name</label>
+                <input
+                  type="text"
+                  placeholder="Insert your name"
+                  class="contact__form-input"
+                  id="name"
+                  required
+                />
+              </div>
+
+              <div class="contact__form-div">
+                <label class="contact__form-tag">Mail</label>
+                <input
+                  type="email"
+                  placeholder="Insert your email"
+                  class="contact__form-input"
+                  id="email"
+                  required
+                />
+              </div>
+
+              <div class="contact__form-div contact__form-area">
+                <label class="contact__form-tag">Project</label>
+                <textarea
+                  cols="30"
+                  rows="10"
+                  placeholder="Write your project idea"
+                  class="contact__form-input"
+                  id="message"
+                  required
+                ></textarea>
+              </div>
+
+              <button class="button button--flex">
+                Send Message <i class="fas fa-paper-plane button__icon"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__bg">
+        <div class="footer__container container grid">
+          <div>
+            <h1 class="footer__title">Amr</h1>
+            <span class="footer__subtitle">Flutter Developer</span>
+          </div>
+
+          <ul class="footer__links">
+            <li>
+              <a href="#projects" class="footer__link">Portfolio</a>
+            </li>
+            <li>
+              <a href="#skills" class="footer__link">Skills</a>
+            </li>
+            <li>
+              <a href="#contact" class="footer__link">Contact</a>
+            </li>
+          </ul>
+
+          <div class="footer__socials">
+            <a
+              href="https://www.linkedin.com/in/amrsaeed-cse/"
+              target="_blank"
+              class="footer__social"
+            >
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a
+              href="https://github.com/amrsaeedcse"
+              target="_blank"
+              class="footer__social"
+            >
+              <i class="fab fa-github"></i>
+            </a>
+            <a
+              href="https://wa.me/201121153059"
+              target="_blank"
+              class="footer__social"
+            >
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+
+        <p class="footer__copy">
+          &#169; 2024 Amr Abdelazeem. All rights reserved.
+        </p>
+      </div>
     </footer>
 
-    <script src="script.js"></script>
-</body>
+    <a href="#" class="scrollup" id="scroll-up">
+      <i class="fas fa-arrow-up scrollup__icon"></i>
+    </a>
 
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <script src="script.js"></script>
+
+    <script>
+      AOS.init({
+        duration: 600 /* سرعة الأنيميشن */,
+        offset: 80 /* يبدأ لما تعمل سكرول قد إيه */,
+        once: true /* الأنيميشن يشتغل مرة واحدة بس عشان الأداء */,
+      });
+    </script>
+  </body>
 </html>

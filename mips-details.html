@@ -1,96 +1,112 @@
-<!-- Create a new file: mips-details.html -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIPS-32 Processor - Project Details</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIPS-32 Multi-Cycle Processor (VHDL) - Project Details</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="styles.css" />
 
-<body>
-    <nav id="navbar">
-        <div class="container">
-            <div class="logo">Amr Abdelazeem</div>
-            <ul class="nav-links">
-                <li><a href="index.html#home">Home</a></li>
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#skills">Skills</a></li>
-                <li><a href="index.html#projects">Projects</a></li>
-                <li><a href="index.html#experience">Experience</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
+    <style>
+      .header { background-color: var(--body-color); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15); }
+      .project-details-section { padding-top: 7rem; padding-bottom: 3rem; }
+      .project-details-image { object-fit: cover; }
+    </style>
+  </head>
+
+  <body>
+    <div id="preloader"><div class="loader-content"><span class="loader-text">{ Amr }</span><div class="progress-bar"></div></div></div>
+
+    <header class="header" id="header">
+      <nav class="nav container">
+        <a href="index.html" class="nav__logo"><span class="nav__logo-symbol">&lt;</span> Amr <span class="nav__logo-symbol">/&gt;</span></a>
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li class="nav__item"><a href="index.html#home" class="nav__link">Home</a></li>
+            <li class="nav__item"><a href="index.html#projects" class="nav__link">Projects</a></li>
+            <li class="nav__item"><a href="index.html#contact" class="nav__link">Contact</a></li>
+          </ul>
+          <div class="nav__close" id="nav-close"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="nav__btns"><i class="fas fa-moon change-theme" id="theme-button"></i><div class="nav__toggle" id="nav-toggle"><i class="fas fa-bars"></i></div></div>
+      </nav>
+    </header>
+
+    <section class="project-details-section section-white">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-down">MIPS-32 Multi-Cycle Processor</h2>
+
+        <div class="project-details-wrapper">
+          <div class="project-media" data-aos="fade-right" data-aos-delay="200">
+            <img src="assets/mips-32/MIPS32_Block.png" alt="MIPS Block Diagram" class="project-details-image" style="margin-bottom: 1rem;" />
+            <img src="assets/mips-32/MIPS32_multi-cycle_diagram.png" alt="Multi-Cycle Diagram" class="project-details-image" />
+          </div>
+
+          <div class="project-info" data-aos="fade-left" data-aos-delay="400">
+            <h3>Project Overview</h3>
+            <p>
+               This project is a MIPS-32 Multi-Cycle Processor implemented in VHDL.
+               The design executes each instruction in multiple clock cycles, allowing hardware
+               resources to be reused across different stages (Fetch, Decode, Execute, Memory, Write Back).
+            </p>
+
+            <h4 style="margin-top: 1.5rem">Supported Instructions</h4>
+            <ul class="project-feature-list">
+              <li><strong>R-type:</strong> add, sub, and, or, slt</li>
+              <li><strong>I-type:</strong> addi, lw, sw, beq, bne</li>
+              <li><strong>J-type:</strong> jump (j)</li>
             </ul>
-        </div>
-    </nav>
 
-    <section class="section-white">
-        <div class="container">
-            <h2 class="section-title">MIPS-32 Multi-Cycle Processor (VHDL)</h2>
-            <div class="project-details-content"
-                style="display: flex; flex-wrap: wrap; gap: 3rem; align-items: flex-start;">
-                <div style="flex:1; min-width:320px;">
-                    <img src="assets\mips-32\MIPS32_Block.png" alt="MIPS-32 Block Diagram" class="project-details-image"
-                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);margin-bottom:2rem;">
-                    <img src="assets\mips-32\MIPS32_multi-cycle_diagram.png" alt="MIPS-32 Multi-Cycle Diagram"
-                        class="project-details-image"
-                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);">
-                </div>
-                <div style="flex:2; min-width:320px;">
-                    <h3 style="margin-bottom:1.5rem;">Project Overview</h3>
-                    <p>
-                        This project is a MIPS-32 Multi-Cycle Processor implemented in VHDL.<br>
-                        Before building the multi-cycle version, I first implemented a single-cycle processor to fully
-                        understand the datapath, control signals, and instruction execution flow.
-                    </p>
-                    <p>
-                        The multi-cycle design executes each instruction in multiple clock cycles, allowing hardware
-                        resources to be reused across different stages (Fetch, Decode, Execute, Memory, and Write Back).
-                        This approach improves efficiency compared to the single-cycle design while maintaining
-                        functional correctness.
-                    </p>
-                    <h4 style="margin-bottom:1rem;">Supported Instructions</h4>
-                    <ul class="project-tech-list" style="margin-bottom:2rem;">
-                        <li><strong>R-type:</strong> add, sub, and, or, slt</li>
-                        <li><strong>I-type:</strong> addi, lw, sw, beq, bne</li>
-                        <li><strong>J-type:</strong> j</li>
-                    </ul>
-                    <h4 style="margin-bottom:1rem;">Modular VHDL Components</h4>
-                    <ul class="project-feature-list">
-                        <li>ALU</li>
-                        <li>Register File</li>
-                        <li>Program Counter</li>
-                        <li>Instruction Memory</li>
-                        <li>Data Memory</li>
-                        <li>Control Unit</li>
-                        <li>ALU Control Unit</li>
-                    </ul>
-                    <p style="margin-top:2rem;">
-                        This project strengthened my understanding of CPU architecture, pipelining concepts, and VHDL
-                        design practices.
-                    </p>
-                    <div class="project-links" style="margin-top:2rem;">
-                        <a href="https://github.com/amrsaeedcse/mips-32/tree/main/src" target="_blank"
-                            class="project-link"><i class="fab fa-github"></i> GitHub Repository</a>
-                    </div>
-                </div>
+            <h4 style="margin-top: 1.5rem">Modular Components</h4>
+            <ul class="project-feature-list">
+              <li>ALU & ALU Control Unit</li>
+              <li>Register File & Program Counter</li>
+              <li>Instruction & Data Memory</li>
+              <li>Main Control Unit</li>
+            </ul>
+
+            <div class="project-links">
+              <a href="https://github.com/amrsaeedcse/mips-32" target="_blank" class="project-link">
+                <i class="fab fa-github"></i> GitHub Repository
+              </a>
             </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <div class="social-links">
-                <a href="https://www.linkedin.com/in/amrsaeed-cse/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/amrsaeedcse" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="mailto:amrabdelazeem117@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
-            </div>
-            <p>&copy; 2024 Amr Abdelazeem Saeed Mohamed. All rights reserved.</p>
-            <p>Built with passion and dedication to Flutter development.</p>
-        </div>
-    </footer>
-    <script src="script.js"></script>
-</body>
-
+    <footer class="footer"><div class="footer__bg"><div class="footer__container container"><p class="footer__copy" style="text-align: center">&#169; 2024 Amr Abdelazeem. All rights reserved.</p></div></div></footer>
+    
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const preloader = document.getElementById("preloader");
+        if (preloader) { preloader.style.opacity = "0"; setTimeout(() => { preloader.style.display = "none"; }, 500); }
+        AOS.init({ duration: 1000, offset: 50, once: true });
+      });
+      const themeButton = document.getElementById("theme-button");
+      const darkTheme = "dark-theme";
+      const iconTheme = "fa-sun";
+      const selectedTheme = localStorage.getItem("selected-theme");
+      const selectedIcon = localStorage.getItem("selected-icon");
+      const getCurrentTheme = () => document.body.classList.contains(darkTheme) ? "dark" : "light";
+      const getCurrentIcon = () => themeButton.classList.contains(iconTheme) ? "fa-moon" : "fa-sun";
+      if (selectedTheme) {
+        document.body.classList[selectedTheme === "dark" ? "add" : "remove"](darkTheme);
+        themeButton.classList[selectedIcon === "fa-moon" ? "add" : "remove"](iconTheme);
+      }
+      themeButton.addEventListener("click", () => {
+        document.body.classList.toggle(darkTheme);
+        themeButton.classList.toggle(iconTheme);
+        localStorage.setItem("selected-theme", getCurrentTheme());
+        localStorage.setItem("selected-icon", getCurrentIcon());
+      });
+      const navMenu = document.getElementById("nav-menu"), navToggle = document.getElementById("nav-toggle"), navClose = document.getElementById("nav-close");
+      if (navToggle) { navToggle.addEventListener("click", () => { navMenu.classList.add("show-menu"); }); }
+      if (navClose) { navClose.addEventListener("click", () => { navMenu.classList.remove("show-menu"); }); }
+    </script>
+  </body>
 </html>

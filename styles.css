@@ -1617,3 +1617,108 @@ img {
     margin-bottom: 1rem;
   }
 }
+/* ==================== ULTIMATE MOBILE FIXES (حط ده في آخر الملف) ==================== */
+
+/* 1. منع السكرول الجانبي المزعج */
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* 2. تظبيط الهيدر والبادينج للموبايل */
+@media screen and (max-width: 768px) {
+  /* مسافة من تحت عشان القائمة اللي تحت متغطيوش على الكلام */
+  body {
+    margin-bottom: var(--header-height);
+  }
+
+  .section {
+    padding: 4rem 0 2rem; /* تقليل المسافات الكبيرة */
+  }
+
+  /* 3. تظبيط سكشن الـ Home بالكامل */
+  .home__content {
+    display: flex; /* نلغي الجريد ونخليه فليكس عشان نتحكم في الترتيب */
+    flex-direction: column-reverse; /* نخلي الصورة فوق والكلام تحت (أشيك) */
+    /* لو عايز الكلام فوق والصورة تحت امسح السطر اللي فوق ده */
+    align-items: center;
+    text-align: center;
+    padding-top: 2rem !important;
+    gap: 2rem;
+  }
+
+  .home__data {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* تظبيط حجم الموبايل في التصميم */
+  .home__blob {
+    width: 250px !important; /* حجم متوسط ومناسب */
+    height: 450px !important; /* ارتفاع يتناسب مع العرض */
+    margin: 0 auto;
+  }
+
+  .smartphone-mockup svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* تظبيط زرار Contact Me في النص */
+  .button--flex {
+    display: inline-flex;
+    justify-content: center;
+  }
+
+  /* 4. تظبيط قسم About والصورة */
+  .about__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .about__info {
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap; /* عشان البوكسات تنزل تحت بعض لو الشاشة ديقة */
+  }
+
+  .about__box {
+    width: 45%; /* البوكس ياخد نص الشاشة تقريبا */
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+/* 5. تظبيط الشاشات الصغيرة جداً (أقل من 350px) */
+@media screen and (max-width: 350px) {
+  .home__blob {
+    width: 200px !important;
+    height: 380px !important;
+  }
+
+  .home__title {
+    font-size: 1.5rem; /* تصغير الخط شوية */
+  }
+
+  .about__box {
+    width: 100%; /* البوكس ياخد العرض كله */
+  }
+}
+
+/* 6. تظبيط العناوين والخطوط عشان متخرجش بره */
+h1,
+h2,
+h3 {
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+/* 7. تظبيط كروت المشاريع */
+.work__container {
+  grid-template-columns: 1fr; /* كارت واحد في الصف */
+  padding: 0 1rem;
+}

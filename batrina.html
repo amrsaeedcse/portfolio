@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Batrina - Social E-Commerce Ecosystem</title>
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <style>
+      .header {
+        background-color: var(--body-color);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+      }
+      .project-details-section {
+        padding-top: 7rem;
+        padding-bottom: 3rem;
+      }
+      .project-details-image {
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      /* تنسيق خاص للقوائم عشان الكلام كتير */
+      .tech-highlight {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: rgba(0, 0, 0, 0.03); /* لون خلفية خفيف */
+        border-radius: 8px;
+        border-left: 4px solid var(--first-color);
+      }
+      body.dark-theme .tech-highlight {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="preloader">
+      <div class="loader-content">
+        <span class="loader-text">{ Amr }</span>
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+
+    <header class="header" id="header">
+      <nav class="nav container">
+        <a href="index.html" class="nav__logo">
+          <span class="nav__logo-symbol">&lt;</span> Amr
+          <span class="nav__logo-symbol">/&gt;</span>
+        </a>
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li class="nav__item">
+              <a href="index.html#home" class="nav__link">Home</a>
+            </li>
+            <li class="nav__item">
+              <a href="index.html#projects" class="nav__link">Projects</a>
+            </li>
+            <li class="nav__item">
+              <a href="index.html#contact" class="nav__link">Contact</a>
+            </li>
+          </ul>
+          <div class="nav__close" id="nav-close">
+            <i class="fas fa-times"></i>
+          </div>
+        </div>
+        <div class="nav__btns">
+          <i class="fas fa-moon change-theme" id="theme-button"></i>
+          <div class="nav__toggle" id="nav-toggle">
+            <i class="fas fa-bars"></i>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <section class="project-details-section section-white">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-down">
+          Batrina: The Social E-Commerce
+        </h2>
+        <p
+          style="
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text-color-light);
+          "
+          data-aos="fade-up"
+        >
+          DEPI Graduation Project 🚀
+        </p>
+
+        <div class="project-details-wrapper">
+          <div class="project-media" data-aos="fade-right" data-aos-delay="200">
+            <img
+              src="assets\batrina\3- Home.png"
+              alt="Batrina App Interface"
+              class="project-details-image"
+            />
+          </div>
+
+          <div class="project-info" data-aos="fade-left" data-aos-delay="400">
+            <h3>The Philosophy</h3>
+            <p>
+              Most projects end up in a folder; we built one ready for the App
+              Store.
+              <strong>Batrina</strong> bridges the gap between "Writing Code"
+              and "Engineering a Product." We wanted a system that feels alive,
+              social, and silky smooth.
+            </p>
+
+            <h4 style="margin-top: 1.5rem">✨ Unique Experience</h4>
+            <ul class="project-feature-list">
+              <li>
+                <strong>Social Shopping:</strong> A full in-app chat system.
+                Share products with friends or consult previous buyers without
+                leaving the app.
+              </li>
+              <li>
+                <strong>Global UI/UX:</strong> Supports 10+ languages with
+                pixel-perfect <strong>RTL Layout</strong> for Arabic and
+                OLED-black Dark Mode.
+              </li>
+              <li>
+                <strong>Deep Linking:</strong> Share a product via WhatsApp;
+                clicking the link opens the app directly to that specific item.
+              </li>
+            </ul>
+
+            <div class="tech-highlight">
+              <h4 style="margin-top: 0; color: var(--title-color)">
+                🔧 Engineering & Architecture
+              </h4>
+              <ul class="project-feature-list" style="margin-bottom: 0">
+                <li>
+                  <strong>Dual-Mode Architecture:</strong> One codebase, two
+                  roles. The app transforms into a full
+                  <strong>Admin Dashboard</strong> with one tap to manage
+                  products and track orders.
+                </li>
+                <li>
+                  <strong>Atomic Transactions:</strong> Solved race conditions
+                  (e.g., two users buying the last item simultaneously) using
+                  database locking. Zero overselling.
+                </li>
+                <li>
+                  <strong>Matrix Inventory:</strong> A real-time engine handling
+                  complex (Color × Size) logic updates instantly.
+                </li>
+              </ul>
+            </div>
+
+            <div class="project-links">
+              <a
+                href="https://github.com/OmarAfifi-CSE/depi-flutter-graduation-project"
+                target="_blank"
+                class="project-link"
+              >
+                <i class="fab fa-github"></i> Source Code
+              </a>
+
+              <a
+                href="https://www.linkedin.com/feed/update/urn:li:activity:7421235049628524544/"
+                target="_blank"
+                class="project-link"
+                style="background-color: #0077b5"
+              >
+                <i class="fab fa-linkedin"></i> View Post
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer__bg">
+        <div class="footer__container container">
+          <p class="footer__copy" style="text-align: center">
+            &#169; 2026 Amr Abdelazeem. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      /* --- 1. PRELOADER & ANIMATION --- */
+      window.addEventListener("load", () => {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          setTimeout(() => {
+            preloader.style.display = "none";
+          }, 500);
+        }
+        AOS.init({ duration: 1000, offset: 50, once: true });
+      });
+
+      /* --- 2. DARK/LIGHT THEME TOGGLE --- */
+      const themeButton = document.getElementById("theme-button");
+      const darkTheme = "dark-theme";
+      const iconTheme = "fa-sun";
+      const selectedTheme = localStorage.getItem("selected-theme");
+      const selectedIcon = localStorage.getItem("selected-icon");
+      const getCurrentTheme = () =>
+        document.body.classList.contains(darkTheme) ? "dark" : "light";
+      const getCurrentIcon = () =>
+        themeButton.classList.contains(iconTheme) ? "fa-moon" : "fa-sun";
+
+      if (selectedTheme) {
+        document.body.classList[selectedTheme === "dark" ? "add" : "remove"](
+          darkTheme,
+        );
+        themeButton.classList[selectedIcon === "fa-moon" ? "add" : "remove"](
+          iconTheme,
+        );
+      }
+
+      themeButton.addEventListener("click", () => {
+        document.body.classList.toggle(darkTheme);
+        themeButton.classList.toggle(iconTheme);
+        localStorage.setItem("selected-theme", getCurrentTheme());
+        localStorage.setItem("selected-icon", getCurrentIcon());
+      });
+
+      /* --- 3. MOBILE MENU TOGGLE --- */
+      const navMenu = document.getElementById("nav-menu"),
+        navToggle = document.getElementById("nav-toggle"),
+        navClose = document.getElementById("nav-close");
+
+      if (navToggle) {
+        navToggle.addEventListener("click", () => {
+          navMenu.classList.add("show-menu");
+        });
+      }
+      if (navClose) {
+        navClose.addEventListener("click", () => {
+          navMenu.classList.remove("show-menu");
+        });
+      }
+    </script>
+  </body>
+</html>

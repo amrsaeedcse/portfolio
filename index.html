@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -43,6 +43,27 @@
     <link rel="stylesheet" href="styles.css" />
 
     <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <style>
+      .home__img-wrapper {
+        overflow: hidden !important;
+        position: relative !important;
+      }
+
+      spline-viewer {
+        width: 110% !important; /* عرض أكبر سنة */
+        height: 110% !important; /* طول أكبر سنة */
+        margin-left: -5% !important; /* سنترة العرض */
+        margin-top: -5% !important; /* سنترة الطول */
+
+        visibility: visible !important;
+      }
+
+      spline-viewer::part(logo) {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+    </style>
   </head>
 
   <body>
@@ -129,122 +150,19 @@
               </a>
             </div>
 
-            <div
+            <!-- <div
               class="home__img-wrapper"
               data-aos="zoom-in"
               data-aos-duration="1200"
             >
-              <div class="home__blob">
-                <div class="smartphone-mockup floating-animation">
-                  <svg
-                    width="220"
-                    height="440"
-                    viewBox="0 0 110 220"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="iphone-svg"
-                  >
-                    <defs>
-                      <linearGradient
-                        id="phoneFrame"
-                        x1="0"
-                        y1="0"
-                        x2="110"
-                        y2="220"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop stop-color="#2c3e50" />
-                        <stop offset="1" stop-color="#3498db" />
-                      </linearGradient>
-                      <linearGradient
-                        id="screenGrad"
-                        x1="0"
-                        y1="0"
-                        x2="110"
-                        y2="220"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop stop-color="#667eea" />
-                        <stop offset="1" stop-color="#764ba2" />
-                      </linearGradient>
-                    </defs>
-                    <rect
-                      x="2"
-                      y="2"
-                      width="106"
-                      height="216"
-                      rx="22"
-                      fill="url(#phoneFrame)"
-                      stroke="#e3e7ee"
-                      stroke-width="2"
-                    />
-                    <rect
-                      x="12"
-                      y="22"
-                      width="86"
-                      height="176"
-                      rx="16"
-                      fill="url(#screenGrad)"
-                    />
-                    <rect
-                      x="45"
-                      y="10"
-                      width="20"
-                      height="4"
-                      rx="2"
-                      fill="#fff"
-                      opacity="0.3"
-                    />
-                    <circle
-                      cx="55"
-                      cy="205"
-                      r="10"
-                      fill="none"
-                      stroke="#bbb"
-                      stroke-width="2"
-                    />
-                    <foreignObject
-                      x="12"
-                      y="22"
-                      width="86"
-                      height="176"
-                      style="border-radius: 16px; overflow: hidden"
-                    >
-                      <div
-                        xmlns="http://www.w3.org/1999/xhtml"
-                        style="width: 100%; height: 100%; position: relative"
-                      >
-                        <div class="phone-boot-screen">
-                          <div class="phone-boot-screen">
-                            <img
-                              src="assets/flutter-logo.svg"
-                              class="boot-logo"
-                              alt="Flutter Logo"
-                            />
-                          </div>
-                        </div>
-
-                        <div class="phone-code-content">
-                          <span style="color: #c792ea">class</span>
-                          <span style="color: #ffcb6b">Amr</span>
-                          <span style="color: #c792ea">extends</span>
-                          <span style="color: #ffcb6b">Dev</span> {<br />
-                          &nbsp;&nbsp;<span style="color: #82aaff">runApp</span
-                          >() {<br /> &nbsp;&nbsp;&nbsp;&nbsp;<span
-                            style="color: #c792ea"
-                            >return</span
-                          >
-                          <span style="color: #c3e88d">Awesome</span>();<br />
-                          &nbsp;&nbsp;}<br />
-                          }
-                        </div>
-                      </div>
-                    </foreignObject>
-                  </svg>
-                </div>
-              </div>
-            </div>
-
+              <script
+                type="module"
+                src="https://unpkg.com/@splinetool/viewer@1.12.42/build/spline-viewer.js"
+              ></script>
+              <spline-viewer
+                url="https://prod.spline.design/oJuGY1gjj7hP6bFj/scene.splinecode"
+              ></spline-viewer>
+            </div> -->
             <div class="home__data">
               <h1 class="home__title" data-aos="fade-left" data-aos-delay="200">
                 Hi, I'm Amr
@@ -275,14 +193,84 @@
                 Contact Me <i class="fas fa-paper-plane button__icon"></i>
               </a>
             </div>
-          </div>
+            <div class="scene">
+              <div class="phone-wrapper" id="phone">
+                <div class="phone-device">
+                  <div class="phone-frame">
+                    <div class="phone-screen">
+                      <!-- شاشة البوت -->
+                      <div class="boot-screen active" id="bootScreen">
+                        <div class="flutter-logo-container">
+                          <svg
+                            class="flutter-logo"
+                            viewBox="0 0 220 220"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <polygon
+                              class="logo-part-1"
+                              points="110,0 220,110 165,165 55,55"
+                              fill="#42A5F5"
+                            />
+                            <polygon
+                              class="logo-part-2"
+                              points="110,110 165,165 110,220 55,165"
+                              fill="#0D47A1"
+                            />
+                            <polygon
+                              class="logo-part-3"
+                              points="110,110 165,55 110,0"
+                              fill="#42A5F5"
+                              opacity="0.85"
+                            />
+                          </svg>
+                          <div class="loading-text">Flutter Developer</div>
+                          <div class="loading-bar">
+                            <div class="loading-progress"></div>
+                          </div>
+                        </div>
+                      </div>
 
-          <div class="home__scroll" data-aos="fade-up" data-aos-delay="600">
-            <a href="#about" class="home__scroll-button button--flex">
-              <i class="fas fa-mouse home__scroll-mouse"></i>
-              <span class="home__scroll-name">Scroll down</span>
-              <i class="fas fa-arrow-down home__scroll-arrow"></i>
-            </a>
+                      <!-- شاشة الكود -->
+                      <!-- شاشة الكود (بعد البوت) -->
+                      <div class="code-screen" id="codeScreen">
+                        <div class="flutter-counter-app">
+                          <!-- App Bar -->
+                          <div class="flutter-appbar">
+                            <span class="appbar-title">Flutter Counter</span>
+                          </div>
+
+                          <!-- Body -->
+                          <div class="flutter-body">
+                            <p class="counter-text">
+                              You have pushed the button this many times:
+                            </p>
+                            <h1 class="counter-number" id="counterNumber">0</h1>
+                          </div>
+
+                          <!-- FAB (Floating Action Button) -->
+                          <div class="flutter-fab" id="counterFab">
+                            <i class="fas fa-plus"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="phone-notch">
+                      <div class="speaker"></div>
+                      <div class="camera"></div>
+                    </div>
+
+                    <div class="power-button"></div>
+                    <div class="volume-buttons">
+                      <div class="volume-up"></div>
+                      <div class="volume-down"></div>
+                    </div>
+                  </div>
+                  <div class="phone-shadow"></div>
+                </div>
+                <div class="light-effect"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -291,23 +279,33 @@
         <div class="tech-track">
           <span><i class="fab fa-flutter"></i> Flutter</span>
           <span><i class="fab fa-dart-lang"></i> Dart</span>
+          <span><i class="fab fa-html5"></i> HTML/CSS</span>
+          <span><i class="fab fa-js"></i> JavaScript</span>
           <span><i class="fas fa-fire"></i> Firebase</span>
-          <span><i class="fas fa-microchip"></i> Arduino</span>
+          <span><i class="fas fa-microchip"></i> IoT</span>
           <span><i class="fab fa-git-alt"></i> Git</span>
-          <span><i class="fab fa-java"></i> Java</span>
+
           <span><i class="fab fa-flutter"></i> Flutter</span>
           <span><i class="fab fa-dart-lang"></i> Dart</span>
+          <span><i class="fab fa-html5"></i> HTML/CSS</span>
+          <span><i class="fab fa-js"></i> JavaScript</span>
           <span><i class="fas fa-fire"></i> Firebase</span>
-          <span><i class="fas fa-microchip"></i> Arduino</span>
+          <span><i class="fas fa-microchip"></i> IoT</span>
           <span><i class="fab fa-git-alt"></i> Git</span>
-          <span><i class="fab fa-java"></i> Java</span>
+
+          <span><i class="fab fa-flutter"></i> Flutter</span>
+          <span><i class="fab fa-dart-lang"></i> Dart</span>
+          <span><i class="fas fa-network-wired"></i> REST APIs</span>
+          <span><i class="fab fa-html5"></i> HTML/CSS</span>
+          <span><i class="fab fa-js"></i> JavaScript</span>
+          <span><i class="fas fa-fire"></i> Firebase</span>
+          <span><i class="fas fa-microchip"></i> IoT</span>
+          <span><i class="fab fa-git-alt"></i> Git</span>
         </div>
       </div>
 
       <section class="about section" id="about">
-        <h2 class="section__title" data-heading="Who I Am" data-aos="fade-down">
-          About Me
-        </h2>
+        <h2 class="section__title" data-heading="Who I Am">About Me</h2>
 
         <div class="about__container container grid">
           <div
@@ -325,37 +323,42 @@
 
           <div class="about__data">
             <p class="about__description" data-aos="fade-left">
-              I am a passionate <strong>Software Engineer</strong> specialized
-              in <strong>Mobile App Development</strong>. My background in
-              Computer Engineering allows me to write efficient, optimized code
-              while focusing on creating beautiful, user-friendly interfaces
-              using <strong>Flutter</strong>.
+              I am a <strong>Computer Systems Engineer</strong> bridging the gap
+              between <span class="highlight">Software</span> and
+              <span class="highlight">Hardware</span>. While I specialize in
+              building high-performance <strong>Mobile Apps</strong> using
+              Flutter, my engineering background allows me to tackle
+              <strong>Web Development</strong>, <strong>Backend Logic</strong>,
+              and <strong>IoT Systems</strong> with ease.
             </p>
+
             <p
               class="about__description"
               data-aos="fade-left"
               data-aos-delay="100"
             >
-              Currently focusing on <strong>Clean Architecture</strong> and
-              scalable solutions. I combine my engineering logic with software
-              creativity to build apps that perform flawlessly.
+              I don't just write code; I design scalable solutions using
+              <strong>Clean Architecture</strong> and solid engineering
+              principles.
             </p>
 
             <div class="about__info">
               <div class="about__box" data-aos="zoom-in" data-aos-delay="200">
-                <i class="fas fa-code about__icon"></i>
+                <i class="fas fa-laptop-code about__icon"></i>
                 <h3 class="about__title">Experience</h3>
-                <span class="about__subtitle">Flutter & IoT</span>
+                <span class="about__subtitle">Software & Hardware</span>
               </div>
+
               <div class="about__box" data-aos="zoom-in" data-aos-delay="350">
                 <i class="fas fa-briefcase about__icon"></i>
                 <h3 class="about__title">Completed</h3>
-                <span class="about__subtitle">7+ Projects</span>
+                <span class="about__subtitle">10+ Projects</span>
               </div>
+
               <div class="about__box" data-aos="zoom-in" data-aos-delay="500">
-                <i class="fas fa-check-circle about__icon"></i>
-                <h3 class="about__title">Commitment</h3>
-                <span class="about__subtitle">Quality First</span>
+                <i class="fas fa-university about__icon"></i>
+                <h3 class="about__title">Background</h3>
+                <span class="about__subtitle">Systems Engineering</span>
               </div>
             </div>
 
@@ -373,234 +376,48 @@
       </section>
 
       <section class="skills section" id="skills">
-        <h2 class="section__title" data-heading="My Tech" data-aos="fade-down">
-          Skills & Expertise
-        </h2>
+        <h2 class="section__title" data-heading="My Stack">Technical Skills</h2>
 
         <div class="skills__container container grid">
-          <div
-            class="skills__content skills__open"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
-            <div class="skills__header">
-              <i class="fas fa-mobile-alt skills__icon"></i>
-              <div>
-                <h1 class="skills__title">Mobile Development</h1>
-                <span class="skills__subtitle">Flutter & Native</span>
-              </div>
-              <i class="fas fa-angle-down skills__arrow"></i>
-            </div>
-
-            <div class="skills__list grid">
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Flutter & Dart</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 95%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">State Management (Bloc)</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 95%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Clean Architecture</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 90%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Native Android (Kotlin)</h3>
-                  <span class="skills__number">Intermediate</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 70%"></span>
-                </div>
-              </div>
-            </div>
+          <div class="skills__card" data-aos="fade-up">
+            <i
+              class="fas fa-mobile-alt skills__card-icon"
+              style="color: #45d1fd"
+            ></i>
+            <h3 class="skills__card-title">Mobile App Dev</h3>
+            <p class="skills__description">
+              Flutter, Dart, Bloc, Clean Architecture, Native Integration
+            </p>
           </div>
 
-          <div
-            class="skills__content skills__open"
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
-            <div class="skills__header">
-              <i class="fas fa-server skills__icon"></i>
-              <div>
-                <h1 class="skills__title">Backend & Cloud</h1>
-                <span class="skills__subtitle">Server Side Logic</span>
-              </div>
-              <i class="fas fa-angle-down skills__arrow"></i>
-            </div>
-
-            <div class="skills__list grid">
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Firebase</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 95%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">RESTful APIs</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 95%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Local DB (Hive)</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 90%"></span>
-                </div>
-              </div>
-            </div>
+          <div class="skills__card" data-aos="fade-up" data-aos-delay="100">
+            <i class="fas fa-code skills__card-icon" style="color: #e34f26"></i>
+            <h3 class="skills__card-title">Web Dev</h3>
+            <p class="skills__description">
+              HTML5, CSS3, JavaScript, Responsive Design
+            </p>
           </div>
 
-          <div
-            class="skills__content skills__open"
-            data-aos="fade-up"
-            data-aos-delay="300"
-          >
-            <div class="skills__header">
-              <i class="fas fa-microchip skills__icon"></i>
-              <div>
-                <h1 class="skills__title">Hardware & IoT</h1>
-                <span class="skills__subtitle">Embedded Systems</span>
-              </div>
-              <i class="fas fa-angle-down skills__arrow"></i>
-            </div>
-
-            <div class="skills__list grid">
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">C / C++</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 90%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Arduino & ESP32</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 95%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Circuit Design</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 85%"></span>
-                </div>
-              </div>
-            </div>
+          <div class="skills__card" data-aos="fade-up" data-aos-delay="200">
+            <i
+              class="fas fa-microchip skills__card-icon"
+              style="color: #ffb300"
+            ></i>
+            <h3 class="skills__card-title">Embedded / IoT</h3>
+            <p class="skills__description">
+              C/C++, Arduino, ESP32, Sensors & Actuators
+            </p>
           </div>
 
-          <div
-            class="skills__content skills__open"
-            data-aos="fade-up"
-            data-aos-delay="400"
-          >
-            <div class="skills__header">
-              <i class="fas fa-pen-nib skills__icon"></i>
-              <div>
-                <h1 class="skills__title">UI/UX Design</h1>
-                <span class="skills__subtitle">Visuals & Prototyping</span>
-              </div>
-              <i class="fas fa-angle-down skills__arrow"></i>
-            </div>
-
-            <div class="skills__list grid">
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Figma</h3>
-                  <span class="skills__number">Intermediate</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 80%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Material Design 3</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 95%"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="skills__content skills__open"
-            data-aos="fade-up"
-            data-aos-delay="500"
-          >
-            <div class="skills__header">
-              <i class="fas fa-tools skills__icon"></i>
-              <div>
-                <h1 class="skills__title">Tools & Workflow</h1>
-                <span class="skills__subtitle">DevOps & Testing</span>
-              </div>
-              <i class="fas fa-angle-down skills__arrow"></i>
-            </div>
-
-            <div class="skills__list grid">
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Git & GitHub</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 95%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Postman</h3>
-                  <span class="skills__number">Advanced</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 95%"></span>
-                </div>
-              </div>
-              <div class="skills__data">
-                <div class="skills__titles">
-                  <h3 class="skills__name">Agile & Jira</h3>
-                  <span class="skills__number">Intermediate</span>
-                </div>
-                <div class="skills__bar">
-                  <span class="skills__percentage" style="width: 85%"></span>
-                </div>
-              </div>
-            </div>
+          <div class="skills__card" data-aos="fade-up" data-aos-delay="300">
+            <i
+              class="fas fa-layer-group skills__card-icon"
+              style="color: #6c5ce7"
+            ></i>
+            <h3 class="skills__card-title">Tools & Cloud</h3>
+            <p class="skills__description">
+              Git, GitHub, Firebase, Postman, Figma
+            </p>
           </div>
         </div>
       </section>
@@ -622,161 +439,160 @@
         </div>
 
         <div class="work__container container grid">
-          <div class="work__card mix app" data-aos="flip-up" data-aos-delay="0">
-            <div class="work__img-wrapper">
-              <div class="work__img-overlay"></div>
-              <i class="fas fa-shopping-bag work__icon-placeholder"></i>
+          <div class="work__card mix app">
+            <img
+              src="assets\batrina\Gemini_Generated_Image_d6zbovd6zbovd6zb.jpg"
+              alt="Batrina"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Flutter E-Commerce</h3>
+              <span class="work__subtitle">Cubit & Firebase</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/OmarAfifi-CSE/depi-flutter-graduation-project"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="batrina.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
             </div>
-            <h3 class="work__title">Flutter E-Commerce</h3>
-            <p class="work__description">
-              Complete shopping app with Cubit, Auth, and Cart.
-            </p>
-            <div class="work__stack">
-              <span>Flutter</span> <span>Cubit</span> <span>Firebase</span>
+          </div>
+          <div class="work__card mix app">
+            <img
+              src="assets\ai_todo\Gemini_Generated_Image_u2yiku2yiku2yiku.jpg"
+              alt="Ai_Todo"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Flutter E-Commerce</h3>
+              <span class="work__subtitle">Cubit & Firebase</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/ai_todo_app"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="ai_todo_details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
             </div>
-            <div class="work__links">
-              <a
-                href="https://github.com/amrsaeedcse/ecommerce-app"
-                target="_blank"
-                class="work__button"
-              >
-                Code <i class="fab fa-github"></i>
-              </a>
-              <a
-                href="ecommerce-details.html"
-                class="work__button work__button-ghost"
-              >
-                Details <i class="fas fa-arrow-right"></i>
-              </a>
+          </div>
+          <div class="work__card mix app">
+            <img
+              src="assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.jpg"
+              alt="E-Commerce"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Flutter E-Commerce</h3>
+              <span class="work__subtitle">Cubit & Firebase</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/ecommerce-app"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="ecommerce-details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
             </div>
           </div>
 
-          <div
-            class="work__card mix app"
-            data-aos="flip-up"
-            data-aos-delay="150"
-          >
-            <div class="work__img-wrapper">
-              <div class="work__img-overlay overlay-green"></div>
-              <i class="fab fa-spotify work__icon-placeholder"></i>
-            </div>
-            <h3 class="work__title">Spotify Clone</h3>
-            <p class="work__description">
-              Music streaming UI and logic using Bloc.
-            </p>
-            <div class="work__stack">
-              <span>Flutter</span> <span>Bloc</span> <span>Audio</span>
-            </div>
-            <div class="work__links">
-              <a
-                href="https://github.com/amrsaeedcse/spotify"
-                target="_blank"
-                class="work__button"
-              >
-                Code <i class="fab fa-github"></i>
-              </a>
-              <a
-                href="spotify-details.html"
-                class="work__button work__button-ghost"
-              >
-                Details <i class="fas fa-arrow-right"></i>
-              </a>
+          <div class="work__card mix app">
+            <img
+              src="assets\spoify-app\Gemini_Generated_Image_27hq3827hq3827hq.jpg"
+              alt="Spotify Clone"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Spotify Clone</h3>
+              <span class="work__subtitle">Bloc & Audio</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/spotify"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="spotify-details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
             </div>
           </div>
 
-          <div
-            class="work__card mix iot"
-            data-aos="flip-up"
-            data-aos-delay="300"
-          >
-            <div class="work__img-wrapper">
-              <div class="work__img-overlay overlay-red"></div>
-              <i class="fas fa-microchip work__icon-placeholder"></i>
-            </div>
-            <h3 class="work__title">MIPS-32 CPU</h3>
-            <p class="work__description">
-              VHDL implementation of a multi-cycle processor.
-            </p>
-            <div class="work__stack">
-              <span>VHDL</span> <span>Hardware</span>
-            </div>
-            <div class="work__links">
-              <a
-                href="https://github.com/amrsaeedcse/mips-32"
-                target="_blank"
-                class="work__button"
-              >
-                Code <i class="fab fa-github"></i>
-              </a>
-              <a
-                href="mips-details.html"
-                class="work__button work__button-ghost"
-              >
-                Details <i class="fas fa-arrow-right"></i>
-              </a>
+          <div class="work__card mix iot">
+            <img
+              src="assets\mips-32\Gemini_Generated_Image_8zy2cq8zy2cq8zy2.jpg"
+              alt="MIPS CPU"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">MIPS-32 CPU</h3>
+              <span class="work__subtitle">VHDL & Hardware</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/mips-32"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="mips-details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
             </div>
           </div>
 
-          <div
-            class="work__card mix iot"
-            data-aos="flip-up"
-            data-aos-delay="450"
-          >
-            <div class="work__img-wrapper">
-              <div class="work__img-overlay overlay-green"></div>
-              <i class="fas fa-leaf work__icon-placeholder"></i>
-            </div>
-            <h3 class="work__title">Green Guardian</h3>
-            <p class="work__description">
-              Smart Irrigation System using ESP32 & IoT.
-            </p>
-            <div class="work__stack">
-              <span>IoT</span> <span>C++</span> <span>ESP32</span>
-            </div>
-            <div class="work__links">
-              <a
-                href="https://github.com/amrsaeedcse/greenGurdian"
-                target="_blank"
-                class="work__button"
-              >
-                Code <i class="fab fa-github"></i>
-              </a>
-              <a
-                href="greenguardian-details.html"
-                class="work__button work__button-ghost"
-              >
-                Details <i class="fas fa-arrow-right"></i>
-              </a>
+          <div class="work__card mix iot">
+            <img
+              src="assets\GreenGuardian\Gemini_Generated_Image_n7u450n7u450n7u4.jpg"
+              alt="Green Guardian"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Green Guardian</h3>
+              <span class="work__subtitle">IoT & ESP32</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/greenGurdian"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="greenguardian-details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
             </div>
           </div>
 
-          <div
-            class="work__card mix web"
-            data-aos="flip-up"
-            data-aos-delay="600"
-          >
-            <div class="work__img-wrapper">
-              <div class="work__img-overlay overlay-purple"></div>
-              <i class="fas fa-code work__icon-placeholder"></i>
-            </div>
-            <h3 class="work__title">Portfolio Website</h3>
-            <p class="work__description">
-              This website you are looking at right now!
-            </p>
-            <div class="work__stack">
-              <span>HTML</span> <span>CSS</span> <span>JS</span>
-            </div>
-            <div class="work__links">
-              <span
-                class="work__button work__button-ghost"
-                style="border: none; padding-left: 0"
-              >
-                <i
-                  class="fas fa-circle"
-                  style="color: #2ecc71; font-size: 10px"
-                ></i>
-                Live Preview
-              </span>
+          <div class="work__card mix web">
+            <img
+              src="assets\Gemini_Generated_Image_gtgoh9gtgoh9gtgo.jpg"
+              alt="Portfolio"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Portfolio Website</h3>
+              <span class="work__subtitle">HTML, CSS, JS</span>
+              <div class="work__links">
+                <span class="work__button">Live Preview</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1009,13 +825,5 @@
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
     <script src="script.js"></script>
-
-    <script>
-      AOS.init({
-        duration: 600 /* سرعة الأنيميشن */,
-        offset: 80 /* يبدأ لما تعمل سكرول قد إيه */,
-        once: true /* الأنيميشن يشتغل مرة واحدة بس عشان الأداء */,
-      });
-    </script>
   </body>
 </html>

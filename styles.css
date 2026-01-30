@@ -478,264 +478,128 @@ img {
   justify-content: center;
 }
 
-/*==================== SKILLS ====================*/
+/* ==================== MODERN SKILLS CARDS (تصميم كروت المهارات) ==================== */
 .skills__container {
-  row-gap: 0;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(250px, 1fr)
+  ); /* استجابة تلقائية */
+  gap: 2rem;
 }
 
-.skills__header {
-  display: flex;
-  align-items: center;
-  margin-bottom: var(--mb-2-5);
-  cursor: pointer;
-}
-
-.skills__icon,
-.skills__arrow {
-  font-size: 2rem;
-  color: var(--first-color);
-}
-
-.skills__icon {
-  margin-right: var(--mb-0-75);
-}
-
-.skills__title {
-  font-size: var(--h3-font-size);
-}
-
-.skills__subtitle {
-  font-size: var(--small-font-size);
-  color: var(--text-color-light);
-}
-
-.skills__arrow {
-  margin-left: auto;
-  transition: 0.4s;
-}
-
-.skills__list {
-  row-gap: 1.5rem;
-  padding-left: 2.7rem;
-}
-
-.skills__titles {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: var(--mb-0-5);
-}
-
-.skills__name {
-  font-size: var(--normal-font-size);
-  font-weight: var(--font-medium);
-}
-
-.skills__bar,
-.skills__percentage {
-  height: 5px;
-  border-radius: 0.25rem;
-}
-
-.skills__bar {
-  background-color: var(--first-color-lighter);
-}
-
-.skills__percentage {
-  display: block;
-  background-color: var(--first-color);
-}
-
-/* Accordion Logic */
-.skills__close .skills__list {
-  height: 0;
+.skills__card {
+  background-color: var(--container-color);
+  padding: 2.5rem 1.5rem;
+  border-radius: 1.5rem;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.03); /* حدود شفافة جداً */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* حركة نطاطة ناعمة */
+  position: relative;
   overflow: hidden;
 }
 
-.skills__open .skills__list {
-  height: auto;
-  margin-bottom: var(--mb-2-5);
+/* حركة لما تقف عليه */
+.skills__card:hover {
+  transform: translateY(-10px); /* يرفع لفوق */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  border-color: var(--first-color-lighter);
 }
 
-.skills__open .skills__arrow {
-  transform: rotate(-180deg);
+.skills__card-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
 }
 
-/* Specific Skill Widths */
-.skills__flutter {
-  width: 90%;
-}
-.skills__bloc {
-  width: 90%;
-}
-.skills__firebase {
-  width: 85%;
-}
-.skills__arduino {
-  width: 90%;
-}
-.skills__cpp {
-  width: 90%;
-}
-.skills__vhdl {
-  width: 90%;
-}
-.skills__git {
-  width: 90%;
-}
-.skills__html {
-  width: 85%;
+.skills__card-title {
+  font-size: var(--h3-font-size);
+  margin-bottom: 0.75rem;
 }
 
-/*==================== WORK / PROJECTS ====================*/
+.skills__description {
+  font-size: var(--small-font-size);
+  color: var(--text-color-light);
+  line-height: 1.6;
+}
+
+/* ==================== PROFESSIONAL PROJECTS (WORK OVERLAY) ==================== */
 .work__container {
-  gap: 1.5rem;
-}
-
-.work__filters {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  column-gap: 0.75rem;
-  margin-bottom: var(--mb-2);
-}
-
-.work__item {
-  cursor: pointer;
-  color: var(--title-color);
-  padding: 0.25rem 0.75rem;
-  font-weight: var(--font-medium);
-  border-radius: 0.5rem;
-  text-transform: capitalize;
-}
-
-.work__item:hover {
-  background-color: var(--first-color);
-  color: #fff;
-}
-
-.active-work {
-  background-color: var(--first-color);
-  color: #fff;
+  gap: 2rem;
 }
 
 .work__card {
   background-color: var(--container-color);
-  padding: 1rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: 0.3s;
-}
-
-.work__card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  transform: translateY(-5px);
-}
-
-.work__img-wrapper {
-  position: relative;
-  width: 100%;
-  height: 180px;
-  border-radius: 1rem;
+  border-radius: 1.5rem;
   overflow: hidden;
-  margin-bottom: var(--mb-1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--first-color-lighter);
+  position: relative; /* ضروري عشان الـ Absolute يشتغل */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  height: 250px; /* ارتفاع ثابت للكارت */
 }
 
-.work__img-overlay {
+.work__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* الصورة تملأ المكان */
+  transition: 1s;
+}
+
+/* لما تقف على الكارت الصورة تكبر */
+.work__card:hover .work__img {
+  transform: scale(1.1);
+}
+
+/* الطبقة اللي فيها الكلام (مخفية تحت) */
+.work__data {
   position: absolute;
-  top: 0;
+  bottom: -100%; /* مخفية تحت الكارت */
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.8;
+  /* خلفية متدرجة شفافة تدي شكل احترافي */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s;
+  backdrop-filter: blur(2px); /* تغبيش للصورة ورا الكلام */
 }
 
-/* Gradients for placeholders */
-.overlay-green {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-}
-.overlay-red {
-  background: linear-gradient(135deg, #f87171, #ef4444);
-}
-.overlay-purple {
-  background: linear-gradient(135deg, #c084fc, #a855f7);
-}
-.overlay-blue {
-  background: linear-gradient(135deg, #60a5fa, #3b82f6);
-}
-.overlay-pink {
-  background: linear-gradient(135deg, #f472b6, #ec4899);
-}
-
-.work__icon-placeholder {
-  font-size: 4rem;
-  color: #fff;
-  z-index: 10;
+/* لما تقف على الكارت الكلام يطلع */
+.work__card:hover .work__data {
+  bottom: 0;
 }
 
 .work__title {
-  font-size: var(--h3-font-size);
-  margin-bottom: var(--mb-0-5);
+  font-size: var(--h2-font-size);
+  color: #fff;
+  margin-bottom: 0.25rem;
 }
 
-.work__description {
+.work__subtitle {
   font-size: var(--small-font-size);
-  margin-bottom: var(--mb-0-75);
-  color: var(--text-color);
-}
-
-.work__stack {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: var(--mb-1);
-}
-
-.work__stack span {
-  font-size: var(--smaller-font-size);
-  padding: 0.25rem 0.5rem;
-  background-color: var(--first-color-lighter);
-  color: var(--first-color);
-  border-radius: 0.25rem;
-  font-family: var(--code-font);
-}
-
-.work__links {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  color: var(--first-color-lighter);
+  margin-bottom: 1rem;
 }
 
 .work__button {
-  font-size: var(--small-font-size);
   padding: 0.5rem 1rem;
-  display: flex;
+  background-color: #fff;
+  color: var(--first-color);
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+  display: inline-flex;
   align-items: center;
   column-gap: 0.25rem;
-  border-radius: 0.5rem;
-  background-color: var(--first-color);
-  color: #fff;
   transition: 0.3s;
 }
 
 .work__button:hover {
-  background-color: var(--first-color-alt);
-}
-
-.work__button-ghost {
-  background-color: transparent;
-  color: var(--first-color);
-  border: 1px solid var(--first-color);
-}
-
-.work__button-ghost:hover {
   background-color: var(--first-color);
   color: #fff;
 }
-
 /*==================== EXPERIENCE (FIXED LAYOUT) ====================*/
 .experience__container {
   display: flex;
@@ -804,27 +668,6 @@ img {
   font-size: var(--smaller-font-size);
   margin-bottom: 0.5rem;
   color: var(--text-color);
-}
-
-/* Fix for Mobile (Vertical Timeline on left) */
-@media screen and (max-width: 576px) {
-  .experience__data {
-    grid-template-columns: max-content 1fr;
-    column-gap: 1rem;
-  }
-
-  .experience__left {
-    display: none; /* Hide left side on mobile */
-  }
-
-  .experience__right {
-    text-align: left;
-    padding-bottom: 3rem;
-  }
-
-  .experience__divider {
-    padding-left: 0;
-  }
 }
 
 /*==================== FIXES FOR PROJECT FILTER ====================*/
@@ -1027,46 +870,51 @@ img {
   color: #fff;
 }
 
-/*==================== TECH STACK MARQUEE ====================*/
+/* ==================== INFINITE TECH MARQUEE (New) ==================== */
 .tech-stack {
-  padding: 2rem 0;
+  padding: 1.5rem 0;
   background-color: var(--container-color);
-  border-top: 1px solid var(--first-color-lighter);
-  border-bottom: 1px solid var(--first-color-lighter);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   overflow: hidden;
   white-space: nowrap;
   position: relative;
-  margin-bottom: var(--mb-3);
+  /* مسافة من تحت عشان ميركبش على سكشن الـ About */
+  margin-bottom: 3rem;
 }
 
 .tech-track {
-  display: inline-block;
-  animation: marquee 20s linear infinite;
+  display: flex; /* رص العناصر جنب بعض */
+  width: max-content; /* العرض ياخد راحته حسب المحتوى */
+  /* الحركة: 25 ثانية، خطية (عشان السرعة متتغيرش)، ولانهائية */
+  animation: marquee 25s linear infinite;
 }
 
 .tech-track span {
-  display: inline-block;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-family: var(--code-font);
-  color: var(--text-color-light);
-  margin: 0 2rem;
-  font-weight: var(--font-medium);
+  color: var(--text-color);
+  margin: 0 1.5rem; /* مسافات متساوية بين العناصر */
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .tech-track span i {
   color: var(--first-color);
-  margin-right: 0.5rem;
+  font-size: 1.4rem;
 }
 
+/* الأنيميشن الجديد: بيتحرك لـ التلت بس (عشان احنا كررنا الكلام 3 مرات في الـ HTML) */
 @keyframes marquee {
   0% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(-33.33%);
   }
 }
-
 /*==================== SCROLL UP ====================*/
 .scrollup {
   position: fixed;
@@ -1123,7 +971,9 @@ img {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  transition: opacity 0.5s ease-out, visibility 0.5s;
+  transition:
+    opacity 0.5s ease-out,
+    visibility 0.5s;
 }
 
 .loader-content {
@@ -1432,13 +1282,44 @@ img {
   }
 }
 /*==================== FIXES FOR PROJECT FILTER ====================*/
-.work__card {
-  display: block; /* Ensure visible by default */
+/* ==================== PRO PROJECT FILTERS ==================== */
+.work__filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 0.75rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap; /* عشان لو الشاشة صغرت ينزلوا تحت بعض */
+  gap: 1rem;
 }
 
-.mix {
-  /* Required for animation libraries or JS filtering */
-  transition: all 0.4s ease;
+.work__item {
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  border-radius: 3rem; /* دوران كامل (شكل كبسولة) */
+  background-color: var(--container-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03); /* ضل خفيف جداً */
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+/* شكل الزرار لما تقف عليه */
+.work__item:hover {
+  transform: translateY(-3px);
+  color: var(--first-color);
+}
+
+/* شكل الزرار النشط (اللي شغال دلوقتي) */
+.active-work {
+  background-color: var(--first-color);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(106, 17, 203, 0.25); /* ضل بلون الثيم */
+}
+
+.work__container {
+  gap: 2rem;
 }
 /*==================== PROJECT DETAILS PAGE ====================*/
 .project-details-wrapper {
@@ -1601,124 +1482,968 @@ img {
 }
 
 /* 3. تظبيط خاص للموبايل (عشان الهيدر تحت مش فوق) */
-@media screen and (max-width: 767px) {
-  #home.section {
-    padding-top: 1rem !important; /* مسافة صغيرة جداً من سقف الشاشة */
-  }
+/* ==================== THE FINAL MOBILE FIX (Spacing & Layout) ==================== */
 
-  .home__content {
-    padding-top: 1rem !important; /* تقليل المسافة بين العناصر */
-    gap: 1.5rem; /* تقريب العناصر من بعضها */
-  }
-
-  /* تقليل حجم الـ Blob (خلفية الموبايل) شوية عشان تطلع لفوق */
-  .home__blob {
-    height: 300px !important;
-    margin-bottom: 1rem;
-  }
-}
-/* ==================== ULTIMATE MOBILE FIXES (حط ده في آخر الملف) ==================== */
-
-/* 1. منع السكرول الجانبي المزعج */
 html,
 body {
   overflow-x: hidden;
   width: 100%;
 }
 
-/* 2. تظبيط الهيدر والبادينج للموبايل */
+/* 1. تظبيط الموك اب */
+.smartphone-mockup {
+  position: relative;
+  width: 220px;
+  height: 440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+foreignObject {
+  x: 12px !important;
+  y: 22px !important;
+  width: 86px !important;
+  height: 176px !important;
+}
+
+.iphone-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ==================== FINAL & DEFINITIVE MOBILE FIX ==================== */
+
+/* 1. أساسيات لمنع المشاكل */
+html,
+body {
+  overflow-x: hidden; /* يمنع الحركة يمين وشمال */
+  width: 100%;
+}
+
+/* 2. تثبيت الموك اب (عشان الشاشة متتحركش من الفريم) */
+.smartphone-mockup {
+  position: relative;
+  width: 220px;
+  height: 440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* تثبيت الشاشة اللبني جوه الموبايل بالمللي */
+foreignObject {
+  x: 12px !important;
+  y: 22px !important;
+  width: 86px !important;
+  height: 176px !important;
+}
+
+.iphone-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 3. تنسيقات الموبايل الشاملة (تنسيق كل السكاشن) */
 @media screen and (max-width: 768px) {
-  /* مسافة من تحت عشان القائمة اللي تحت متغطيوش على الكلام */
-  body {
-    margin-bottom: var(--header-height);
-  }
-
+  /* === تظبيط المسافات العامة لكل السكاشن === */
   .section {
-    padding: 4rem 0 2rem; /* تقليل المسافات الكبيرة */
+    padding: 5rem 0 3rem !important; /* مساحة واسعة فوق وتحت كل عنوان */
   }
 
-  /* 3. تظبيط سكشن الـ Home بالكامل */
+  /* === سكشن الـ HOME (أهم واحد) === */
   .home__content {
-    display: flex; /* نلغي الجريد ونخليه فليكس عشان نتحكم في الترتيب */
-    flex-direction: column-reverse; /* نخلي الصورة فوق والكلام تحت (أشيك) */
-    /* لو عايز الكلام فوق والصورة تحت امسح السطر اللي فوق ده */
-    align-items: center;
-    text-align: center;
-    padding-top: 2rem !important;
-    gap: 2rem;
+    display: flex !important;
+    flex-direction: column-reverse !important; /* الموبايل فوق والكلام تحت */
+    align-items: center !important;
+    text-align: center !important;
+    padding-top: 1rem !important;
+    gap: 2rem !important;
+
+    /* ده الحل السحري: زقة كبيرة جداً من تحت عشان يبعد عن الشريط */
+    margin-bottom: 6rem !important;
+    padding-bottom: 2rem !important;
   }
 
   .home__data {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 
-  /* تظبيط حجم الموبايل في التصميم */
   .home__blob {
-    width: 250px !important; /* حجم متوسط ومناسب */
-    height: 450px !important; /* ارتفاع يتناسب مع العرض */
-    margin: 0 auto;
+    width: 250px !important;
+    height: 460px !important;
+    margin-bottom: 1rem !important;
   }
 
-  .smartphone-mockup svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  /* تظبيط زرار Contact Me في النص */
   .button--flex {
     display: inline-flex;
     justify-content: center;
   }
 
-  /* 4. تظبيط قسم About والصورة */
+  /* === شريط الـ TECH STACK === */
+  .tech-stack {
+    /* يبعد عن الهيرو بمسافة، ويبعد عن الـ About بمسافة */
+    margin-top: 2rem !important;
+    margin-bottom: 4rem !important;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* === سكشن الـ ABOUT (عشان الكروت تيجي تحت بعض) === */
   .about__container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    gap: 3rem !important;
   }
 
   .about__info {
+    gap: 1rem !important;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap; /* عشان البوكسات تنزل تحت بعض لو الشاشة ديقة */
   }
 
   .about__box {
-    width: 45%; /* البوكس ياخد نص الشاشة تقريبا */
-    padding: 0.75rem 0.5rem;
+    width: 45% !important; /* كارتين جنب بعض، أو خليه 100% لو عايزهم تحت بعض */
+    padding: 1rem !important;
+  }
+
+  /* === سكشن الـ SKILLS === */
+  .skills__container {
+    gap: 1.5rem !important;
+    padding: 0 1rem !important;
+  }
+
+  /* === سكشن الـ PROJECTS === */
+  .work__container {
+    grid-template-columns: 1fr !important; /* كارت واحد في الصف */
+    padding: 0 1rem !important;
+    gap: 2rem !important;
+  }
+
+  /* === سكشن الـ EXPERIENCE (التايم لاين) === */
+  .experience__data {
+    display: grid !important;
+    grid-template-columns: 35px 1fr !important; /* عمود للخط وعمود للكلام */
+    column-gap: 1rem !important;
+  }
+  .experience__left {
+    display: none !important;
+  }
+  .experience__divider {
+    grid-column: 1 !important;
+    padding: 0 !important;
+    transform: translateX(5px); /* سنترة الخط */
+  }
+  .experience__right {
+    grid-column: 2 !important;
+    text-align: left !important;
+    padding-bottom: 3rem !important;
   }
 }
 
-/* 5. تظبيط الشاشات الصغيرة جداً (أقل من 350px) */
-@media screen and (max-width: 350px) {
-  .home__blob {
-    width: 200px !important;
-    height: 380px !important;
+/* لون شاشة الكود */
+.phone-code-content {
+  background-color: #e3f2fd !important;
+  border: 1px solid #bbdefb !important;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05) !important;
+}
+/* ==================== SPLINE 3D FIX (ADD THIS AT THE END) ==================== */
+/* ==================== INTERACTIVE PHONE MOCKUP ==================== */
+/* ==================== HOME LAYOUT FIX ==================== */
+@media screen and (min-width: 768px) {
+  .home__content {
+    grid-template-columns: max-content 1fr 1fr;
+    column-gap: 2rem;
   }
 
+  .home__social {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .home__data {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .home__img-wrapper {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+.scene {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.phone-wrapper {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out;
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.3));
+}
+
+.phone-device {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.phone-frame {
+  width: 280px;
+  height: 560px;
+  background: linear-gradient(145deg, #1a1a2e, #0f0f1e);
+  border-radius: 40px;
+  padding: 10px;
+  position: relative;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.1),
+    inset 0 0 40px rgba(0, 0, 0, 0.3),
+    0 15px 30px rgba(0, 0, 0, 0.4);
+  transform-style: preserve-3d;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  border-radius: 32px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.boot-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.5s,
+    visibility 0.5s;
+}
+
+.boot-screen.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.flutter-logo-container {
+  text-align: center;
+}
+
+.flutter-logo {
+  width: 100px;
+  height: 100px;
+  animation: logoFloat 2s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(5deg);
+  }
+}
+
+.logo-part-1,
+.logo-part-2,
+.logo-part-3 {
+  animation: logoPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.loading-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 25px;
+  letter-spacing: 1.5px;
+  animation: textPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+.loading-bar {
+  width: 180px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  margin: 18px auto 0;
+  overflow: hidden;
+}
+
+.loading-progress {
+  height: 100%;
+  background: white;
+  border-radius: 2px;
+  animation: loadingProgress 2.5s ease-in-out forwards;
+}
+
+@keyframes loadingProgress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.code-screen {
+  width: 100%;
+  height: 100%;
+  background: #1e1e1e;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.5s,
+    visibility 0.5s;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.code-screen.active {
+  opacity: 1;
+  visibility: visible;
+}
+/* ==================== FLUTTER COUNTER APP ==================== */
+.flutter-counter-app {
+  width: 100%;
+  height: 100%;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  font-family: "Roboto", sans-serif;
+}
+
+.flutter-appbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.appbar-title {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.flutter-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: #fafafa;
+}
+
+.counter-text {
+  color: #666;
+  font-size: 11px;
+  text-align: center;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.counter-number {
+  color: #333;
+  font-size: 48px;
+  font-weight: 300;
+  margin: 0;
+  animation: counterPop 0.3s ease-out;
+}
+
+@keyframes counterPop {
+  0% {
+    transform: scale(1.3);
+    color: #667eea;
+  }
+  100% {
+    transform: scale(1);
+    color: #333;
+  }
+}
+
+/* Floating Action Button */
+.flutter-fab {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flutter-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.flutter-fab:active {
+  transform: scale(0.95);
+}
+
+/* Ripple Effect */
+.flutter-fab::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  transition: all 0.6s;
+}
+
+.flutter-fab.clicked::before {
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Dark Mode Support */
+body.dark-theme .flutter-counter-app {
+  background: #1e1e1e;
+}
+
+body.dark-theme .flutter-body {
+  background: #1e1e1e;
+}
+
+body.dark-theme .counter-text {
+  color: #b3b3b3;
+}
+
+body.dark-theme .counter-number {
+  color: #ffffff;
+}
+
+.code-editor {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  font-family: "Fira Code", monospace;
+  font-size: 9px;
+}
+
+.editor-header {
+  background: #252526;
+  padding: 6px;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.editor-tabs {
+  display: flex;
+}
+
+.tab {
+  background: #1e1e1e;
+  color: #ccc;
+  padding: 5px 10px;
+  border-radius: 3px 3px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+}
+
+.tab.active {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+.tab-icon {
+  font-size: 12px;
+}
+
+.editor-content {
+  padding: 12px 0;
+  display: flex;
+  position: relative;
+}
+
+.line-numbers {
+  padding: 0 10px;
+  color: #858585;
+  text-align: right;
+  user-select: none;
+  min-width: 35px;
+}
+
+.line-numbers div {
+  line-height: 18px;
+}
+
+.code-lines {
+  flex: 1;
+  color: #d4d4d4;
+  padding-right: 12px;
+}
+
+.code-lines div {
+  line-height: 18px;
+}
+
+.keyword {
+  color: #569cd6;
+  font-weight: 600;
+}
+
+.string {
+  color: #ce9178;
+}
+
+.class-name {
+  color: #4ec9b0;
+}
+
+.function {
+  color: #dcdcaa;
+}
+
+.annotation {
+  color: #9cdcfe;
+}
+
+.cursor-blink {
+  position: absolute;
+  width: 2px;
+  height: 14px;
+  background: #fff;
+  left: 180px;
+  top: 115px;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.phone-notch {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 20;
+}
+
+.speaker {
+  width: 50px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2.5px;
+}
+
+.camera {
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(
+    circle,
+    #1a1a2e 40%,
+    rgba(255, 255, 255, 0.2) 70%
+  );
+  border-radius: 50%;
+  box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.power-button {
+  position: absolute;
+  right: -3px;
+  top: 100px;
+  width: 3px;
+  height: 60px;
+  background: linear-gradient(90deg, #0a0a15, #1a1a2e);
+  border-radius: 2px 0 0 2px;
+  box-shadow: inset 1px 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.volume-buttons {
+  position: absolute;
+  left: -3px;
+  top: 85px;
+}
+
+.volume-up,
+.volume-down {
+  width: 3px;
+  height: 40px;
+  background: linear-gradient(90deg, #1a1a2e, #0a0a15);
+  border-radius: 0 2px 2px 0;
+  margin-bottom: 8px;
+  box-shadow: inset -1px 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.phone-shadow {
+  position: absolute;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%) translateZ(-40px);
+  width: 250px;
+  height: 80px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4), transparent);
+  border-radius: 50%;
+  filter: blur(30px);
+}
+
+.light-effect {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: calc(100% + 30px);
+  height: calc(100% + 30px);
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.08),
+    transparent 60%
+  );
+  pointer-events: none;
+  border-radius: 50px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.phone-wrapper:hover .light-effect {
+  opacity: 1;
+}
+
+.developer-info {
+  text-align: center;
+  max-width: 350px;
+  display: none; /* مخفي في البداية، هيظهر على Desktop */
+}
+
+.dev-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(
+    135deg,
+    var(--first-color),
+    var(--first-color-alt)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dev-subtitle {
+  font-size: 16px;
+  opacity: 0.8;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.tech-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.badge {
+  background: var(--container-color);
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  border: 1px solid var(--first-color-lighter);
+  transition: all 0.3s;
+  color: var(--text-color);
+}
+
+.badge:hover {
+  background: var(--first-color-lighter);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Desktop فقط */
+@media screen and (min-width: 768px) {
+  .phone-frame {
+    width: 320px;
+    height: 640px;
+  }
+
+  .flutter-logo {
+    width: 120px;
+    height: 120px;
+  }
+
+  .developer-info {
+    display: block;
+  }
+
+  .dev-title {
+    font-size: 42px;
+  }
+}
+/* ==================== MOBILE HERO: TEXT INSIDE PHONE ==================== */
+/* ==================== FINAL MOBILE HERO FIX ==================== */
+/* ==================== FINAL MOBILE LAYOUT FIXES ==================== */
+@media screen and (max-width: 768px) {
+  /* --- 1. HERO SECTION (TEXT & ICONS INSIDE PHONE) --- */
+  .home__content {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    /* السر هنا: بنعمل منطقة واحدة ونرمي فيها كل حاجة فوق بعض */
+    grid-template-areas: "stack" !important;
+    align-items: center;
+    justify-items: center;
+    padding-top: 1rem !important;
+    gap: 0 !important;
+    margin-bottom: 2rem !important;
+  }
+
+  /* أ) الموبايل (في الخلفية) */
+  .scene {
+    grid-area: stack;
+    z-index: 1; /* طبقة 1 */
+    transform: scale(0.95);
+    margin: 0 !important;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ب) الكلام (في النص) */
+  .home__data {
+    grid-area: stack;
+    z-index: 10; /* طبقة 10 */
+    text-align: center;
+    width: 260px;
+    opacity: 0;
+    /* يظهر بعد 1.7 ثانية */
+    animation: fadeInContent 0.8s ease-out forwards;
+    animation-delay: 1.7s;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 480px;
+    margin-top: -30px; /* نرفعه سنة عشان نسيب مكان للأيقونات */
+  }
+
+  /* ج) الأيقونات (تحت الكلام جوه الشاشة) */
+  .home__social {
+    grid-area: stack !important; /* نفس المنطقة */
+    z-index: 15; /* طبقة 15 (فوق الكل) */
+
+    display: flex !important;
+    gap: 1.5rem;
+    align-self: center;
+
+    /* بنزقها لتحت عشان تيجي في ديل الموبايل */
+    margin-top: 320px !important;
+    position: static !important;
+    transform: none !important;
+
+    opacity: 0;
+    /* تظهر مع الكلام */
+    animation: fadeInContent 0.8s ease-out forwards;
+    animation-delay: 1.9s;
+  }
+
+  @keyframes fadeInContent {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* تنسيقات الخطوط والألوان */
   .home__title {
-    font-size: 1.5rem; /* تصغير الخط شوية */
+    font-size: 1.6rem !important;
+    color: #fff !important;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   }
 
-  .about__box {
-    width: 100%; /* البوكس ياخد العرض كله */
+  .home__subtitle {
+    font-size: 1rem !important;
+    color: #ddd !important;
+    margin-bottom: 1rem;
   }
-}
 
-/* 6. تظبيط العناوين والخطوط عشان متخرجش بره */
-h1,
-h2,
-h3 {
-  word-wrap: break-word;
-  max-width: 100%;
-}
+  .home__description {
+    font-size: 0.8rem !important;
+    color: #ccc !important;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    padding: 0 10px;
+  }
 
-/* 7. تظبيط كروت المشاريع */
-.work__container {
-  grid-template-columns: 1fr; /* كارت واحد في الصف */
-  padding: 0 1rem;
+  .home__social-icon {
+    color: white !important; /* أيقونات بيضاء */
+    font-size: 1.5rem;
+  }
+
+  /* خلفية الشاشة سوداء */
+  .phone-screen {
+    background: #0f0f1e !important;
+  }
+
+  /* إخفاء التطبيقات الداخلية */
+  .code-screen,
+  .flutter-counter-app {
+    display: none !important;
+  }
+
+  /* إظهار البوت */
+  .boot-screen {
+    display: flex !important;
+    z-index: 20;
+  }
+
+  /* 1. الحاوية */
+  .experience__container {
+    padding: 0 1rem;
+  }
+
+  /* 2. الصف: نستخدم Flexbox عشان نعيد ترتيب العناصر */
+  .experience__data {
+    display: flex !important;
+    flex-direction: row !important; /* رصهم جنب بعض */
+    align-items: flex-start !important; /* محاذاة من فوق */
+    gap: 15px !important; /* مسافة بين النقطة والكلام */
+    margin: 0 !important;
+    margin-bottom: 2rem !important;
+  }
+
+  /* 3. عمود النقطة (السر هنا: بنديله order قليل عشان يجي في الأول) */
+  .experience__divider {
+    order: 1 !important; /* يظهر أول واحد */
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    min-width: 15px !important;
+    padding-top: 6px !important; /* تظبيط النقطة مع السطر */
+    transform: none !important;
+  }
+
+  /* 4. النقطة نفسها */
+  .experience__rounder {
+    display: block !important;
+    position: relative !important;
+    width: 13px !important;
+    height: 13px !important;
+    background-color: var(--first-color);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.1);
+    margin: 0 !important;
+  }
+
+  /* 5. إخفاء الخط */
+  .experience__line {
+    display: none !important;
+  }
+
+  /* 6. الكلام (بنديله order أعلى عشان يجي بعد النقطة) */
+  .experience__left,
+  .experience__right {
+    order: 2 !important; /* يظهر تاني واحد */
+    text-align: left !important;
+    padding: 0 !important;
+    width: 100% !important;
+    display: block !important; /* إظهار إجباري للكلام */
+  }
+
+  /* 7. إخفاء الخانات الفاضية بس (عشان ميعملش مسافة فاضية) */
+  .experience__left:empty,
+  .experience__right:empty {
+    display: none !important;
+  }
+
+  /* 8. إزالة المسافات الزيادة من العناوين */
+  .experience__title {
+    margin-top: 0 !important;
+  }
+
+  /* 1. الكونتينر: يخلي كل حاجة جواه في النص */
+  .about__container {
+    grid-template-columns: 1fr !important; /* عمود واحد */
+    justify-items: center !important; /* سنترة أفقية للعناصر (الصورة) */
+    text-align: center !important; /* سنترة للنص */
+  }
+
+  /* 2. برواز الصورة: يأكد السنترة وياخد مسافة من تحت */
+  .about__img-wrapper {
+    display: flex !important;
+    justify-content: center !important;
+    margin: 0 auto 2rem auto !important; /* يمين وشمال auto عشان السنترة */
+  }
+
+  /* 3. المعلومات (Experience, Completed, etc.) */
+  .about__info {
+    justify-content: center !important; /* سنترة الصناديق الصغيرة */
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+  }
 }

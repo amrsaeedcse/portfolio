@@ -1,28 +1,66 @@
 /*==================== INITIALIZATION ====================*/
-// ينتظر تحميل الصفحة بالكامل قبل تشغيل الدوال
 document.addEventListener("DOMContentLoaded", () => {
+  // 1. تشغيل الأساسيات الوظيفية فوراً (عشان الموقع يكون جاهز تحت اللودر)
   initializeNavigation();
-  initializeScrollAnimations();
   initializeSkillsAccordion();
   initializePortfolioFilter();
-  initializeTypingEffect();
-  initializeParticles();
   initializeContactForm();
   initializeThemeToggle();
-  initializePreloader();
   initializeScrollToTop();
+  initializePhoneMockup();
+  initializeFlutterCounter();
 
-  // Developer Signature
+  // 2. الموتور الجديد: هو اللي هيتحكم امتى الأنيميشن يبدأ
+  setupSiteLoading();
+
+  // توقيع المطور
   console.log(
     "%c👋 Hello Developer!",
-    "color: #667eea; font-size: 20px; font-weight: bold;"
+    "color: #667eea; font-size: 20px; font-weight: bold;",
   );
   console.log(
     "%cBuilt with passion by Amr Abdelazeem 🚀",
-    "color: #764ba2; font-size: 14px;"
+    "color: #764ba2; font-size: 14px;",
   );
 });
 
+/*==================== LOADING CONTROL SYSTEM (New Engine) ====================*/
+function setupSiteLoading() {
+  const preloader = document.getElementById("preloader");
+  let isSiteStarted = false;
+
+  function startSiteVisuals() {
+    if (isSiteStarted) return;
+    isSiteStarted = true;
+
+    if (preloader) {
+      triggerVisuals();
+
+      preloader.style.opacity = "0";
+
+      setTimeout(() => {
+        preloader.style.display = "none";
+      }, 500);
+    } else {
+      triggerVisuals();
+    }
+  }
+
+  function triggerVisuals() {
+    AOS.init({
+      duration: 800,
+      offset: 50,
+      once: true,
+      easing: "ease-out-cubic",
+    });
+    initializeTypingEffect();
+    initializeParticles();
+    initializeScrollAnimations();
+  }
+
+  window.addEventListener("load", startSiteVisuals);
+  setTimeout(startSiteVisuals, 3000);
+}
 /*==================== NAVIGATION ====================*/
 function initializeNavigation() {
   const navMenu = document.getElementById("nav-menu"),
@@ -49,7 +87,7 @@ function initializeNavigation() {
   navLinks.forEach((n) =>
     n.addEventListener("click", () => {
       navMenu.classList.remove("show-menu");
-    })
+    }),
   );
 
   // تغيير خلفية الهيدر عند السكرول
@@ -70,7 +108,7 @@ function initializeNavigation() {
 
       // تأكد أن العنصر موجود قبل محاولة إضافة كلاس
       const navLink = document.querySelector(
-        ".nav__menu a[href*=" + sectionId + "]"
+        ".nav__menu a[href*=" + sectionId + "]",
       );
       if (navLink) {
         if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
@@ -183,7 +221,7 @@ function initializeScrollAnimations() {
 
   // العناصر المراد تحريكها
   const elementsToAnimate = document.querySelectorAll(
-    ".section__title, .about__img, .about__data, .work__card, .contact__content, .experience__data"
+    ".section__title, .about__img, .about__data, .work__card, .contact__content, .experience__data",
   );
 
   elementsToAnimate.forEach((el) => {
@@ -293,10 +331,10 @@ function initializeThemeToggle() {
 
   if (selectedTheme) {
     document.body.classList[selectedTheme === "dark" ? "add" : "remove"](
-      darkTheme
+      darkTheme,
     );
     themeButton.classList[selectedIcon === "fa-moon" ? "add" : "remove"](
-      iconTheme
+      iconTheme,
     );
   }
 
@@ -362,5 +400,141 @@ function initializeScrollToTop() {
       if (window.scrollY >= 560) scrollUp.classList.add("show-scroll");
       else scrollUp.classList.remove("show-scroll");
     });
+  }
+}
+/*=============== MIXITUP FILTER PORTFOLIO ===============*/
+let mixerPortfolio = mixitup(".work__container", {
+  selectors: {
+    target: ".work__card",
+  },
+  animation: {
+    duration: 300,
+  },
+});
+
+/* Link active work (تغيير لون الفلتر النشط) */
+const linkWork = document.querySelectorAll(".work__item");
+
+function activeWork() {
+  linkWork.forEach((l) => l.classList.remove("active-work"));
+  this.classList.add("active-work");
+}
+
+linkWork.forEach((l) => l.addEventListener("click", activeWork));
+
+/*==================== INTERACTIVE PHONE MOCKUP ====================*/
+/*==================== INTERACTIVE PHONE MOCKUP (FIXED) ====================*/
+/*==================== INTERACTIVE PHONE MOCKUP (MOBILE OPTIMIZED) ====================*/
+function initializePhoneMockup() {
+  const phone = document.getElementById("phone");
+  const bootScreen = document.getElementById("bootScreen");
+  const codeScreen = document.getElementById("codeScreen");
+  const lightEffect = document.querySelector(".light-effect");
+
+  if (phone && bootScreen && codeScreen) {
+    let mouseX = 0,
+      mouseY = 0,
+      currentX = 0,
+      currentY = 0;
+
+    // تحديد هل ده موبايل ولا لابتوب؟
+    const isMobile = window.innerWidth <= 768;
+
+    // لو موبايل خلي السرعة 1.5 ثانية، لو لابتوب خليها 3 ثواني
+    const bootTime = isMobile ? 1000 : 3000;
+
+    setTimeout(() => {
+      // 1. اخفي شاشة التحميل
+      bootScreen.classList.remove("active");
+
+      // 2. لو لابتوب اظهر الكود، لو موبايل متعملش حاجة (عشان الـ CSS هيظهر الكلام بتاعك)
+      if (!isMobile) {
+        setTimeout(() => {
+          codeScreen.classList.add("active");
+        }, 500);
+      }
+    }, bootTime);
+
+    // حركة الموبايل مع الماوس (للشاشات الكبيرة فقط)
+    document.addEventListener("mousemove", (e) => {
+      // 🛑 لو موبايل، وقف الدالة دي فوراً
+      if (window.innerWidth <= 768) return;
+
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      if (lightEffect) {
+        const rect = phone.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        lightEffect.style.setProperty("--mouse-x", `${x}%`);
+        lightEffect.style.setProperty("--mouse-y", `${y}%`);
+      }
+    });
+
+    function animate() {
+      // 🛑 لو موبايل، خلي الموبايل ثابت في وضعه الطبيعي
+      if (window.innerWidth <= 768) {
+        phone.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateZ(0)`;
+        return; // ماتكملش حسابات
+      }
+
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const deltaX = (mouseX - centerX) / centerX;
+      const deltaY = (mouseY - centerY) / centerY;
+
+      currentX += (deltaX - currentX) * 0.1;
+      currentY += (deltaY - currentY) * 0.1;
+
+      const rotateY = currentX * 12;
+      const rotateX = -currentY * 12;
+
+      phone.style.transform = `
+            perspective(1500px)
+            rotateX(${rotateX}deg)
+            rotateY(${rotateY}deg)
+            translateZ(0)
+        `;
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+}
+/*==================== FLUTTER COUNTER FUNCTIONALITY ====================*/
+function initializeFlutterCounter() {
+  const counterFab = document.getElementById("counterFab");
+  const counterNumber = document.getElementById("counterNumber");
+
+  // التأكد إن العناصر موجودة فعلاً في الصفحة
+  if (counterFab && counterNumber) {
+    let count = 0;
+
+    counterFab.addEventListener("click", function (e) {
+      // 1. منع الدوسة توصل للموبايل (الحل السحري)
+      e.stopPropagation();
+
+      // 2. تزويد العداد
+      count++;
+      counterNumber.textContent = count;
+
+      // 3. حركة الزرار (Click Effect)
+      this.classList.add("clicked");
+
+      // 4. أنيميشن الرقم (Reflow Trick)
+      counterNumber.style.animation = "none";
+      counterNumber.offsetHeight; /* trigger reflow */
+      counterNumber.style.animation = "counterPop 0.3s ease-out";
+
+      // 5. تنظيف الكلاس
+      setTimeout(() => {
+        this.classList.remove("clicked");
+      }, 600);
+    });
+  } else {
+    // لو ظهرت الرسالة دي في الكونسول، يبقى فيه مشكلة في الـ HTML IDs
+    console.error("Flutter Counter Elements NOT Found! Check HTML IDs.");
   }
 }

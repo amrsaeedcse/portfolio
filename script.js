@@ -56,6 +56,7 @@ function setupSiteLoading() {
     initializeTypingEffect();
     initializeParticles();
     initializeScrollAnimations();
+    startPhoneBoot();
   }
 
   window.addEventListener("load", startSiteVisuals);
@@ -425,44 +426,21 @@ linkWork.forEach((l) => l.addEventListener("click", activeWork));
 /*==================== INTERACTIVE PHONE MOCKUP ====================*/
 /*==================== INTERACTIVE PHONE MOCKUP (FIXED) ====================*/
 /*==================== INTERACTIVE PHONE MOCKUP (MOBILE OPTIMIZED) ====================*/
+/*==================== INTERACTIVE PHONE MOCKUP (Movement Only) ====================*/
 function initializePhoneMockup() {
   const phone = document.getElementById("phone");
-  const bootScreen = document.getElementById("bootScreen");
-  const codeScreen = document.getElementById("codeScreen");
   const lightEffect = document.querySelector(".light-effect");
 
-  if (phone && bootScreen && codeScreen) {
+  if (phone) {
     let mouseX = 0,
       mouseY = 0,
       currentX = 0,
       currentY = 0;
 
-    // تحديد هل ده موبايل ولا لابتوب؟
-    const isMobile = window.innerWidth <= 768;
-
-    // لو موبايل خلي السرعة 1.5 ثانية، لو لابتوب خليها 3 ثواني
-    const bootTime = isMobile ? 1000 : 3000;
-
-    setTimeout(() => {
-      // 1. اخفي شاشة التحميل
-      bootScreen.classList.remove("active");
-
-      // 2. لو لابتوب اظهر الكود، لو موبايل متعملش حاجة (عشان الـ CSS هيظهر الكلام بتاعك)
-      if (!isMobile) {
-        setTimeout(() => {
-          codeScreen.classList.add("active");
-        }, 500);
-      }
-    }, bootTime);
-
-    // حركة الموبايل مع الماوس (للشاشات الكبيرة فقط)
     document.addEventListener("mousemove", (e) => {
-      // 🛑 لو موبايل، وقف الدالة دي فوراً
       if (window.innerWidth <= 768) return;
-
       mouseX = e.clientX;
       mouseY = e.clientY;
-
       if (lightEffect) {
         const rect = phone.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -473,34 +451,44 @@ function initializePhoneMockup() {
     });
 
     function animate() {
-      // 🛑 لو موبايل، خلي الموبايل ثابت في وضعه الطبيعي
       if (window.innerWidth <= 768) {
         phone.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateZ(0)`;
-        return; // ماتكملش حسابات
+        return;
       }
-
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
       const deltaX = (mouseX - centerX) / centerX;
       const deltaY = (mouseY - centerY) / centerY;
-
       currentX += (deltaX - currentX) * 0.1;
       currentY += (deltaY - currentY) * 0.1;
-
       const rotateY = currentX * 12;
       const rotateX = -currentY * 12;
-
-      phone.style.transform = `
-            perspective(1500px)
-            rotateX(${rotateX}deg)
-            rotateY(${rotateY}deg)
-            translateZ(0)
-        `;
-
+      phone.style.transform = `perspective(1500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0)`;
       requestAnimationFrame(animate);
     }
-
     animate();
+  }
+}
+/*==================== PHONE BOOT SEQUENCE ====================*/
+function startPhoneBoot() {
+  const bootScreen = document.getElementById("bootScreen");
+  const codeScreen = document.getElementById("codeScreen");
+
+  // لو موبايل خلي التحميل ثانية، لو لابتوب خليه 3 ثواني
+  const isMobile = window.innerWidth <= 768;
+  const bootTime = isMobile ? 1000 : 3000;
+
+  if (bootScreen && codeScreen) {
+    // ابدأ عداد التحميل دلوقتي حالا (لما اللودر اختفى)
+    setTimeout(() => {
+      bootScreen.classList.remove("active");
+
+      if (!isMobile) {
+        setTimeout(() => {
+          codeScreen.classList.add("active");
+        }, 500);
+      }
+    }, bootTime);
   }
 }
 /*==================== FLUTTER COUNTER FUNCTIONALITY ====================*/

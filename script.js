@@ -474,7 +474,7 @@ function startPhoneBoot() {
   const homeSection = document.querySelector(".home");
   // تحديد الوقت
   const isMobile = window.innerWidth <= 768;
-  const bootTime = isMobile ? 1200 : 3000; // وقت ظهور شعار فلاتر
+  const bootTime = isMobile ? 1200 : 1500; // وقت ظهور شعار فلاتر
 
   if (bootScreen && codeScreen) {
     // 1. 🔥 أهم خطوة: تشغيل الشاشة والأنيميشن الآن 🔥

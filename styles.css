@@ -1813,7 +1813,12 @@ foreignObject {
   border-radius: 2px;
 }
 .boot-screen.active .loading-progress {
-  animation: loadingProgress 3s ease-out forwards;
+  animation: loadingProgress 1.5s ease-out forwards;
+}
+@media screen and (max-width: 768px) {
+  .boot-screen.active .loading-progress {
+    animation: loadingProgress 1.2s ease-out forwards !important;
+  }
 }
 
 @keyframes loadingProgress {

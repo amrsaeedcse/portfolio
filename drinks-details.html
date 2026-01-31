@@ -1,80 +1,242 @@
-<!-- Create a new file: drinks-details.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drinks App - Project Details</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drinks-App Project - Project Details</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="styles.css" />
 
-<body>
-    <nav id="navbar">
-        <div class="container">
-            <div class="logo">Amr Abdelazeem</div>
-            <ul class="nav-links">
-                <li><a href="index.html#home">Home</a></li>
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#skills">Skills</a></li>
-                <li><a href="index.html#projects">Projects</a></li>
-                <li><a href="index.html#experience">Experience</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
+    <style>
+      .header {
+        background-color: var(--body-color);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+      }
+      .project-details-section {
+        padding-top: 7rem;
+        padding-bottom: 3rem;
+      }
+      .project-details-video {
+        width: 100%;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        object-fit: cover;
+      }
+      /* ستايل لكلمة Still Working */
+      .status-badge {
+        font-size: 0.9rem;
+        color: #e67e22; /* لون برتقالي */
+        background: rgba(230, 126, 34, 0.1);
+        padding: 4px 10px;
+        border-radius: 4px;
+        margin-left: 10px;
+        vertical-align: middle;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="preloader">
+      <div class="loader-content">
+        <span class="loader-text">{ Amr }</span>
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+
+    <header class="header" id="header">
+      <nav class="nav container">
+        <a href="index.html" class="nav__logo"
+          ><span class="nav__logo-symbol">&lt;</span> Amr
+          <span class="nav__logo-symbol">/&gt;</span></a
+        >
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li class="nav__item">
+              <a href="index.html#home" class="nav__link">Home</a>
+            </li>
+            <li class="nav__item">
+              <a href="index.html#projects" class="nav__link">Projects</a>
+            </li>
+            <li class="nav__item">
+              <a href="index.html#contact" class="nav__link">Contact</a>
+            </li>
+          </ul>
+          <div class="nav__close" id="nav-close">
+            <i class="fas fa-times"></i>
+          </div>
+        </div>
+        <div class="nav__btns">
+          <i class="fas fa-moon change-theme" id="theme-button"></i>
+          <div class="nav__toggle" id="nav-toggle">
+            <i class="fas fa-bars"></i>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <section class="project-details-section section-white">
+      <div class="container">
+        <a
+          href="index.html#projects"
+          class="button button--small button--link"
+          style="
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--title-color);
+            font-weight: 500;
+          "
+        >
+          <i class="fas fa-arrow-left"></i> Back to Projects
+        </a>
+
+        <h2
+          class="section-title"
+          data-aos="fade-down"
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+          "
+        >
+          Drinks App
+          <span class="status-badge"
+            ><i class="fas fa-tools"></i> Still Working on it</span
+          >
+        </h2>
+
+        <div class="project-details-wrapper">
+          <div class="project-media" data-aos="fade-right" data-aos-delay="200">
+            <video
+              controls
+              autoplay
+              muted
+              loop
+              class="project-details-video"
+              poster="assets/drink-app/poster.jpg"
+            >
+              <source
+                src="assets/drink-app/Screen Recording 2025-08-13 080841.mp4"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <div class="project-info" data-aos="fade-left" data-aos-delay="400">
+            <h3>Project Overview</h3>
+            <p>
+              This is one of my foundational projects where I started exploring
+              the Flutter framework. It's a simple, lightweight application
+              designed to browse different types of drinks.
+            </p>
+            <p style="margin-top: 10px">
+              The main focus of this project was to master the basics of
+              <strong>UI building</strong>, <strong>Widget composition</strong>,
+              and screen navigation without complex backend dependencies.
+            </p>
+
+            <h4 style="margin-top: 1.5rem">Key Concepts Learned</h4>
+            <ul class="project-feature-list">
+              <li>
+                <strong>Flutter Basics:</strong> Building layouts using Rows,
+                Columns, and Containers.
+              </li>
+              <li>
+                <strong>Navigation:</strong> Moving between screens and passing
+                data.
+              </li>
+              <li>
+                <strong>UI Design:</strong> Creating a clean and responsive
+                interface.
+              </li>
+              <li>
+                <strong>Asset Management:</strong> Handling images and local
+                fonts.
+              </li>
             </ul>
+          </div>
         </div>
-    </nav>
-
-    <section class="section-white">
-        <div class="container">
-            <h2 class="section-title">Drinks-App Project</h2>
-            <div class="project-details-content"
-                style="display: flex; flex-wrap: wrap; gap: 3rem; align-items: flex-start;">
-                <div style="flex:1; min-width:320px;">
-                    <video controls
-                        style="width:100%;max-width:400px;border-radius:20px;box-shadow:0 10px 30px rgba(102,126,234,0.13);">
-                        <source src="assets/drink-app/Screen Recording 2025-08-13 080841.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <div style="flex:2; min-width:320px;">
-                    <h3 style="margin-bottom:1.5rem;">Drinks-App Project <span
-                            style="color:#ff9800;font-size:1rem;">(Still working on it)</span></h3>
-                    <p>
-                        This project is a Flutter-based application for browsing and managing a variety of drinks. It
-                        utilizes Firebase as the backend for data storage and user authentication, providing real-time
-                        data synchronization and secure access.
-                    </p>
-                    <ul class="project-feature-list" style="margin-bottom:2rem;">
-                        <li><strong>Firebase Integration:</strong> Stores drink data, handles user sign-in/registration,
-                            and syncs data between app and cloud.</li>
-                        <li><strong>State Management:</strong> Uses Cubit for simple states and Bloc for complex,
-                            multi-step logic, ensuring clean and scalable code.</li>
-                        <li><strong>Flutter UI:</strong> Responsive and visually appealing interface for both Android
-                            and iOS devices.</li>
-                        <li><strong>Status:</strong> Final stages of development, focusing on performance, interactive
-                            features, and user experience.</li>
-                    </ul>
-                    <p>
-                        <strong>Demo Video:</strong> Watch a short demo of the app in action.
-                    </p>
-                </div>
-            </div>
-        </div>
+      </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <div class="social-links">
-                <a href="https://www.linkedin.com/in/amrsaeed-cse/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/amrsaeedcse" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="mailto:amrabdelazeem117@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
-            </div>
-            <p>&copy; 2024 Amr Abdelazeem Saeed Mohamed. All rights reserved.</p>
-            <p>Built with passion and dedication to Flutter development.</p>
+    <footer class="footer">
+      <div class="footer__bg">
+        <div class="footer__container container">
+          <p class="footer__copy" style="text-align: center">
+            &#169; 2024 Amr Abdelazeem. All rights reserved.
+          </p>
         </div>
+      </div>
     </footer>
-    <script src="script.js"></script>
-</body>
 
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          setTimeout(() => {
+            preloader.style.display = "none";
+          }, 500);
+        }
+        AOS.init({ duration: 1000, offset: 50, once: true });
+      });
+
+      // Theme Logic
+      const themeButton = document.getElementById("theme-button");
+      const darkTheme = "dark-theme";
+      const iconTheme = "fa-sun";
+      const selectedTheme = localStorage.getItem("selected-theme");
+      const selectedIcon = localStorage.getItem("selected-icon");
+      const getCurrentTheme = () =>
+        document.body.classList.contains(darkTheme) ? "dark" : "light";
+      const getCurrentIcon = () =>
+        themeButton.classList.contains(iconTheme) ? "fa-moon" : "fa-sun";
+
+      if (selectedTheme) {
+        document.body.classList[selectedTheme === "dark" ? "add" : "remove"](
+          darkTheme,
+        );
+        themeButton.classList[selectedIcon === "fa-moon" ? "add" : "remove"](
+          iconTheme,
+        );
+      }
+
+      themeButton.addEventListener("click", () => {
+        document.body.classList.toggle(darkTheme);
+        themeButton.classList.toggle(iconTheme);
+        localStorage.setItem("selected-theme", getCurrentTheme());
+        localStorage.setItem("selected-icon", getCurrentIcon());
+      });
+
+      // Mobile Menu Logic
+      const navMenu = document.getElementById("nav-menu"),
+        navToggle = document.getElementById("nav-toggle"),
+        navClose = document.getElementById("nav-close");
+
+      if (navToggle) {
+        navToggle.addEventListener("click", () => {
+          navMenu.classList.add("show-menu");
+        });
+      }
+      if (navClose) {
+        navClose.addEventListener("click", () => {
+          navMenu.classList.remove("show-menu");
+        });
+      }
+    </script>
+  </body>
 </html>

@@ -1811,7 +1811,9 @@ foreignObject {
   height: 100%;
   background: white;
   border-radius: 2px;
-  animation: loadingProgress 2.5s ease-in-out forwards;
+}
+.boot-screen.active .loading-progress {
+  animation: loadingProgress 3s ease-out forwards;
 }
 
 @keyframes loadingProgress {
@@ -2248,12 +2250,12 @@ body.dark-theme .counter-number {
 /* ==================== MOBILE HERO: TEXT INSIDE PHONE ==================== */
 /* ==================== FINAL MOBILE HERO FIX ==================== */
 /* ==================== FINAL MOBILE LAYOUT FIXES ==================== */
+/* ==================== FINAL MOBILE HERO FIX (LINKED WITH JS) ==================== */
 @media screen and (max-width: 768px) {
-  /* --- 1. HERO SECTION (TEXT & ICONS INSIDE PHONE) --- */
+  /* --- 1. HERO SECTION: RACKING ELEMENTS --- */
   .home__content {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    /* السر هنا: بنعمل منطقة واحدة ونرمي فيها كل حاجة فوق بعض */
     grid-template-areas: "stack" !important;
     align-items: center;
     justify-items: center;
@@ -2265,7 +2267,7 @@ body.dark-theme .counter-number {
   /* أ) الموبايل (في الخلفية) */
   .scene {
     grid-area: stack;
-    z-index: 1; /* طبقة 1 */
+    z-index: 1;
     transform: scale(0.95);
     margin: 0 !important;
     width: 100%;
@@ -2276,49 +2278,56 @@ body.dark-theme .counter-number {
   /* ب) الكلام (في النص) */
   .home__data {
     grid-area: stack;
-    z-index: 10; /* طبقة 10 */
+    z-index: 10;
     text-align: center;
     width: 260px;
+
+    /* 🔥 التعديل هنا: مخفي في البداية بدون وقت محدد 🔥 */
     opacity: 0;
-    /* يظهر بعد 1.7 ثانية */
-    animation: fadeInContent 0.8s ease-out forwards;
-    animation-delay: 1.7s;
+    transform: translateY(20px);
+    transition:
+      opacity 1s ease,
+      transform 1s ease;
+    pointer-events: none; /* عشان محدش يدوس عليه وهو مخفي */
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 480px;
-    margin-top: -30px; /* نرفعه سنة عشان نسيب مكان للأيقونات */
+    margin-top: -30px;
   }
 
-  /* ج) الأيقونات (تحت الكلام جوه الشاشة) */
+  /* ج) الأيقونات */
   .home__social {
-    grid-area: stack !important; /* نفس المنطقة */
-    z-index: 15; /* طبقة 15 (فوق الكل) */
-
+    grid-area: stack !important;
+    z-index: 15;
     display: flex !important;
     gap: 1.5rem;
     align-self: center;
-
-    /* بنزقها لتحت عشان تيجي في ديل الموبايل */
     margin-top: 320px !important;
     position: static !important;
     transform: none !important;
 
+    /* 🔥 التعديل هنا: مخفي برضه 🔥 */
     opacity: 0;
-    /* تظهر مع الكلام */
-    animation: fadeInContent 0.8s ease-out forwards;
-    animation-delay: 1.9s;
+    transition: opacity 1s ease 0.5s; /* 0.5s تأخير بسيط بعد الكلام */
+    pointer-events: none;
   }
 
-  @keyframes fadeInContent {
-    to {
-      opacity: 1;
-    }
+  /* 🔥 د) كلاس الظهور (الجافاسكريبت بيضيفه بعد 3 ثواني) 🔥 */
+  .home.content-visible .home__data {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
   }
 
-  /* تنسيقات الخطوط والألوان */
+  .home.content-visible .home__social {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* باقي التنسيقات زي ما هي (ممتازة) */
   .home__title {
     font-size: 1.6rem !important;
     color: #fff !important;
@@ -2341,11 +2350,11 @@ body.dark-theme .counter-number {
   }
 
   .home__social-icon {
-    color: white !important; /* أيقونات بيضاء */
+    color: white !important;
     font-size: 1.5rem;
   }
 
-  /* خلفية الشاشة سوداء */
+  /* خلفية الشاشة */
   .phone-screen {
     background: #0f0f1e !important;
   }
@@ -2362,33 +2371,26 @@ body.dark-theme .counter-number {
     z-index: 20;
   }
 
-  /* 1. الحاوية */
+  /* ==================== EXPERIENCE & ABOUT FIXES (زي ما هي) ==================== */
   .experience__container {
     padding: 0 1rem;
   }
-
-  /* 2. الصف: نستخدم Flexbox عشان نعيد ترتيب العناصر */
   .experience__data {
     display: flex !important;
-    flex-direction: row !important; /* رصهم جنب بعض */
-    align-items: flex-start !important; /* محاذاة من فوق */
-    gap: 15px !important; /* مسافة بين النقطة والكلام */
-    margin: 0 !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 15px !important;
     margin-bottom: 2rem !important;
   }
-
-  /* 3. عمود النقطة (السر هنا: بنديله order قليل عشان يجي في الأول) */
   .experience__divider {
-    order: 1 !important; /* يظهر أول واحد */
+    order: 1 !important;
     display: flex !important;
     flex-direction: column;
     align-items: center;
     min-width: 15px !important;
-    padding-top: 6px !important; /* تظبيط النقطة مع السطر */
+    padding-top: 6px !important;
     transform: none !important;
   }
-
-  /* 4. النقطة نفسها */
   .experience__rounder {
     display: block !important;
     position: relative !important;
@@ -2399,50 +2401,37 @@ body.dark-theme .counter-number {
     box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.1);
     margin: 0 !important;
   }
-
-  /* 5. إخفاء الخط */
   .experience__line {
     display: none !important;
   }
-
-  /* 6. الكلام (بنديله order أعلى عشان يجي بعد النقطة) */
   .experience__left,
   .experience__right {
-    order: 2 !important; /* يظهر تاني واحد */
+    order: 2 !important;
     text-align: left !important;
     padding: 0 !important;
     width: 100% !important;
-    display: block !important; /* إظهار إجباري للكلام */
+    display: block !important;
   }
-
-  /* 7. إخفاء الخانات الفاضية بس (عشان ميعملش مسافة فاضية) */
   .experience__left:empty,
   .experience__right:empty {
     display: none !important;
   }
-
-  /* 8. إزالة المسافات الزيادة من العناوين */
   .experience__title {
     margin-top: 0 !important;
   }
 
-  /* 1. الكونتينر: يخلي كل حاجة جواه في النص */
   .about__container {
-    grid-template-columns: 1fr !important; /* عمود واحد */
-    justify-items: center !important; /* سنترة أفقية للعناصر (الصورة) */
-    text-align: center !important; /* سنترة للنص */
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    text-align: center !important;
   }
-
-  /* 2. برواز الصورة: يأكد السنترة وياخد مسافة من تحت */
   .about__img-wrapper {
     display: flex !important;
     justify-content: center !important;
-    margin: 0 auto 2rem auto !important; /* يمين وشمال auto عشان السنترة */
+    margin: 0 auto 2rem auto !important;
   }
-
-  /* 3. المعلومات (Experience, Completed, etc.) */
   .about__info {
-    justify-content: center !important; /* سنترة الصناديق الصغيرة */
+    justify-content: center !important;
     flex-wrap: wrap !important;
     gap: 1rem !important;
   }

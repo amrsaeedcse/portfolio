@@ -34,13 +34,16 @@ function setupSiteLoading() {
     isSiteStarted = true;
 
     if (preloader) {
-      triggerVisuals();
-
+      // 1. ابدأ اخفي اللودر
       preloader.style.opacity = "0";
 
+      // 2. استنى 500ms لحد ما يختفي خالص
       setTimeout(() => {
         preloader.style.display = "none";
-      }, 500);
+
+        // 🔥 3. دلوقتي بس شغل الأنيميشن والموبايل 🔥
+        triggerVisuals();
+      }, 100); // نفس مدة الانتقال في CSS
     } else {
       triggerVisuals();
     }
@@ -56,10 +59,14 @@ function setupSiteLoading() {
     initializeTypingEffect();
     initializeParticles();
     initializeScrollAnimations();
+
+    // تشغيل إقلاع الموبايل
     startPhoneBoot();
   }
 
-  window.addEventListener("load", startSiteVisuals);
+  window.addEventListener("load", () => {
+    setTimeout(startSiteVisuals, 0);
+  });
   setTimeout(startSiteVisuals, 3000);
 }
 /*==================== NAVIGATION ====================*/
@@ -289,29 +296,29 @@ function initializeParticles() {
     const particle = document.createElement("div");
     particle.className = "particle";
     particle.style.cssText = `
-            position: absolute;
-            width: ${Math.random() * 5 + 2}px;
-            height: ${Math.random() * 5 + 2}px;
-            background: rgba(102, 126, 234, 0.2); /* لون شفاف */
-            border-radius: 50%;
-            left: ${Math.random() * 100}%;
-            top: ${Math.random() * 100}%;
-            animation: float-particle ${
-              Math.random() * 15 + 10
-            }s infinite linear;
-        `;
+              position: absolute;
+              width: ${Math.random() * 5 + 2}px;
+              height: ${Math.random() * 5 + 2}px;
+              background: rgba(102, 126, 234, 0.2); /* لون شفاف */
+              border-radius: 50%;
+              left: ${Math.random() * 100}%;
+              top: ${Math.random() * 100}%;
+              animation: float-particle ${
+                Math.random() * 15 + 10
+              }s infinite linear;
+          `;
     particlesContainer.appendChild(particle);
   }
 
   // إضافة Keyframes للأنيميشن
   const style = document.createElement("style");
   style.innerHTML = `
-        @keyframes float-particle {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            50% { opacity: 0.6; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-        }
-    `;
+          @keyframes float-particle {
+              0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+              50% { opacity: 0.6; }
+              100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+          }
+      `;
   document.head.appendChild(style);
 }
 
@@ -381,17 +388,6 @@ function initializeContactForm() {
 }
 
 /*==================== PRELOADER ====================*/
-function initializePreloader() {
-  const preloader = document.getElementById("preloader");
-  if (preloader) {
-    window.addEventListener("load", () => {
-      preloader.style.opacity = "0";
-      setTimeout(() => {
-        preloader.style.display = "none";
-      }, 500);
-    });
-  }
-}
 
 /*==================== SCROLL TO TOP ====================*/
 function initializeScrollToTop() {
@@ -470,23 +466,35 @@ function initializePhoneMockup() {
   }
 }
 /*==================== PHONE BOOT SEQUENCE ====================*/
+/*==================== PHONE BOOT SEQUENCE (Fixed) ====================*/
 function startPhoneBoot() {
   const bootScreen = document.getElementById("bootScreen");
   const codeScreen = document.getElementById("codeScreen");
 
-  // لو موبايل خلي التحميل ثانية، لو لابتوب خليه 3 ثواني
+  const homeSection = document.querySelector(".home");
+  // تحديد الوقت
   const isMobile = window.innerWidth <= 768;
-  const bootTime = isMobile ? 1000 : 3000;
+  const bootTime = isMobile ? 1200 : 3000; // وقت ظهور شعار فلاتر
 
   if (bootScreen && codeScreen) {
-    // ابدأ عداد التحميل دلوقتي حالا (لما اللودر اختفى)
+    // 1. 🔥 أهم خطوة: تشغيل الشاشة والأنيميشن الآن 🔥
+    // ده اللي هيخلي الشاشة السوداء تنور ويبدأ اللوجو يتحرك
+    bootScreen.classList.add("active");
+
+    // 2. بعد ما الوقت يخلص، اخفي البوت واظهر الكود
     setTimeout(() => {
       bootScreen.classList.remove("active");
 
       if (!isMobile) {
         setTimeout(() => {
           codeScreen.classList.add("active");
-        }, 500);
+        }, 250);
+      } else {
+        setTimeout(() => {
+          if (homeSection) {
+            homeSection.classList.add("content-visible");
+          }
+        }, 250);
       }
     }, bootTime);
   }

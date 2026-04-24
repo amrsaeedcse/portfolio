@@ -28,10 +28,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+
 
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -43,30 +41,18 @@
     <link rel="stylesheet" href="styles.css" />
 
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    <style>
-      .home__img-wrapper {
-        overflow: hidden !important;
-        position: relative !important;
-      }
+    <!-- Three.js & GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-      spline-viewer {
-        width: 110% !important; /* عرض أكبر سنة */
-        height: 110% !important; /* طول أكبر سنة */
-        margin-left: -5% !important; /* سنترة العرض */
-        margin-top: -5% !important; /* سنترة الطول */
-
-        visibility: visible !important;
-      }
-
-      spline-viewer::part(logo) {
-        display: none !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-      }
-    </style>
   </head>
 
   <body>
+    <!-- 3D Background Canvas -->
+    <canvas id="hero-canvas"></canvas>
+    <div id="canvas-fallback"></div>
+
     <div id="preloader">
       <div class="loader-content">
         <span class="loader-text">{ Amr }</span>
@@ -193,82 +179,27 @@
                 Contact Me <i class="fas fa-paper-plane button__icon"></i>
               </a>
             </div>
-            <div class="scene">
-              <div class="phone-wrapper" id="phone">
-                <div class="phone-device">
-                  <div class="phone-frame">
-                    <div class="phone-screen">
-                      <!-- شاشة البوت -->
-                      <div class="boot-screen" id="bootScreen">
-                        <div class="flutter-logo-container">
-                          <svg
-                            class="flutter-logo"
-                            viewBox="0 0 220 220"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <polygon
-                              class="logo-part-1"
-                              points="110,0 220,110 165,165 55,55"
-                              fill="#42A5F5"
-                            />
-                            <polygon
-                              class="logo-part-2"
-                              points="110,110 165,165 110,220 55,165"
-                              fill="#0D47A1"
-                            />
-                            <polygon
-                              class="logo-part-3"
-                              points="110,110 165,55 110,0"
-                              fill="#42A5F5"
-                              opacity="0.85"
-                            />
-                          </svg>
-                          <div class="loading-text">Flutter Developer</div>
-                          <div class="loading-bar">
-                            <div class="loading-progress"></div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- شاشة الكود -->
-                      <!-- شاشة الكود (بعد البوت) -->
-                      <div class="code-screen" id="codeScreen">
-                        <div class="flutter-counter-app">
-                          <!-- App Bar -->
-                          <div class="flutter-appbar">
-                            <span class="appbar-title">Flutter Counter</span>
-                          </div>
-
-                          <!-- Body -->
-                          <div class="flutter-body">
-                            <p class="counter-text">
-                              You have pushed the button this many times:
-                            </p>
-                            <h1 class="counter-number" id="counterNumber">0</h1>
-                          </div>
-
-                          <!-- FAB (Floating Action Button) -->
-                          <div class="flutter-fab" id="counterFab">
-                            <i class="fas fa-plus"></i>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="phone-notch">
-                      <div class="speaker"></div>
-                      <div class="camera"></div>
-                    </div>
-
-                    <div class="power-button"></div>
-                    <div class="volume-buttons">
-                      <div class="volume-up"></div>
-                      <div class="volume-down"></div>
-                    </div>
+            <!-- IoT Control Panel Overlay -->
+            <div class="iot-control-panel" data-aos="fade-left" data-aos-delay="600">
+              <div class="iot-header">
+                <i class="fas fa-microchip"></i>
+                <span>Smart Home Hub</span>
+              </div>
+              <div class="iot-body">
+                <div class="iot-device">
+                  <div class="device-info">
+                    <span class="device-name">Desk Lamp</span>
+                    <span class="device-status" id="lamp-status-text">Status: OFF</span>
                   </div>
-                  <div class="phone-shadow"></div>
+                  <button id="iot-led-toggle" class="iot-toggle">
+                    <div class="toggle-switch"></div>
+                  </button>
                 </div>
-                <div class="light-effect"></div>
+                <div class="iot-divider"></div>
+                <div class="iot-stats">
+                  <span><i class="fas fa-temperature-half"></i> 24°C</span>
+                  <span><i class="fas fa-bolt"></i> 12W</span>
+                </div>
               </div>
             </div>
           </div>
@@ -849,6 +780,10 @@
     </a>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <!-- Custom Cursor Elements -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-ring"></div>
 
     <script src="script.js"></script>
   </body>

@@ -1,30 +1,17 @@
 /*==================== INITIALIZATION ====================*/
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. تشغيل الأساسيات الوظيفية فوراً (عشان الموقع يكون جاهز تحت اللودر)
   initializeNavigation();
   initializeSkillsAccordion();
   initializePortfolioFilter();
   initializeContactForm();
-  initializeThemeToggle();
   initializeScrollToTop();
-  initializePhoneMockup();
-  initializeFlutterCounter();
-
-  // 2. الموتور الجديد: هو اللي هيتحكم امتى الأنيميشن يبدأ
+  
+  // New features
+  initializeCustomCursor();
   setupSiteLoading();
-
-  // توقيع المطور
-  console.log(
-    "%c👋 Hello Developer!",
-    "color: #667eea; font-size: 20px; font-weight: bold;",
-  );
-  console.log(
-    "%cBuilt with passion by Amr Abdelazeem 🚀",
-    "color: #764ba2; font-size: 14px;",
-  );
 });
 
-/*==================== LOADING CONTROL SYSTEM (New Engine) ====================*/
+/*==================== LOADING CONTROL SYSTEM ====================*/
 function setupSiteLoading() {
   const preloader = document.getElementById("preloader");
   let isSiteStarted = false;
@@ -34,41 +21,323 @@ function setupSiteLoading() {
     isSiteStarted = true;
 
     if (preloader) {
-      // 1. ابدأ اخفي اللودر
       preloader.style.opacity = "0";
-
-      // 2. استنى 500ms لحد ما يختفي خالص
       setTimeout(() => {
         preloader.style.display = "none";
-
-        // 🔥 3. دلوقتي بس شغل الأنيميشن والموبايل 🔥
         triggerVisuals();
-      }, 100); // نفس مدة الانتقال في CSS
+      }, 500);
     } else {
       triggerVisuals();
     }
   }
 
   function triggerVisuals() {
-    AOS.init({
-      duration: 800,
-      offset: 50,
-      once: true,
-      easing: "ease-out-cubic",
-    });
+    AOS.init({ duration: 800, offset: 50, once: true, easing: "ease-out-cubic" });
+    initializeThreeScene();
     initializeTypingEffect();
-    initializeParticles();
-    initializeScrollAnimations();
-
-    // تشغيل إقلاع الموبايل
-    startPhoneBoot();
   }
 
-  window.addEventListener("load", () => {
-    setTimeout(startSiteVisuals, 0);
-  });
+  window.addEventListener("load", () => { setTimeout(startSiteVisuals, 0); });
   setTimeout(startSiteVisuals, 3000);
 }
+
+/*==================== CUSTOM CURSOR ====================*/
+function initializeCustomCursor() {
+  const cursor = document.getElementById("custom-cursor");
+  const ring = document.getElementById("cursor-ring");
+  
+  if (!cursor || !ring || window.innerWidth <= 768) return;
+
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let ringX = mouseX;
+  let ringY = mouseY;
+
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    // Move dot immediately
+    cursor.style.left = mouseX + "px";
+    cursor.style.top = mouseY + "px";
+  });
+
+  // Animate ring with slight delay (lerp)
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.15;
+    ringY += (mouseY - ringY) * 0.15;
+    ring.style.left = ringX + "px";
+    ring.style.top = ringY + "px";
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Hover effects on clickable elements
+  const hoverTargets = document.querySelectorAll("a, button, .work__card, .skills__card");
+  hoverTargets.forEach(target => {
+    target.addEventListener("mouseenter", () => document.body.classList.add("hover-target"));
+    target.addEventListener("mouseleave", () => document.body.classList.remove("hover-target"));
+  });
+}
+
+/*==================== THREE.JS IOT SCENE ====================*/
+function initializeThreeScene() {
+  const canvas = document.getElementById("hero-canvas");
+  const fallback = document.getElementById("canvas-fallback");
+  
+  // Check WebGL
+  try {
+    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    if (!gl) throw new Error("WebGL not supported");
+  } catch (e) {
+    console.warn("WebGL not supported, using fallback.");
+    if (canvas) canvas.style.display = "none";
+    if (fallback) fallback.style.display = "block";
+    return;
+  }
+  
+  if (fallback) fallback.style.display = "none";
+
+  // 1. Setup Scene
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x0a0a0f, 0.05);
+
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 1.5, 8);
+
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+  // Limit DPR on mobile for performance
+  const dpr = window.innerWidth <= 768 ? 1 : Math.min(window.devicePixelRatio, 2);
+  renderer.setPixelRatio(dpr);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  // 2. Setup Lighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+  scene.add(ambientLight);
+
+  const dirLight = new THREE.DirectionalLight(0x00e5ff, 0.5);
+  dirLight.position.set(5, 5, 5);
+  scene.add(dirLight);
+
+  const backLight = new THREE.DirectionalLight(0xff9500, 0.3);
+  backLight.position.set(-5, 5, -5);
+  scene.add(backLight);
+
+  // 3. Build IoT Setup Group
+  const iotGroup = new THREE.Group();
+  scene.add(iotGroup);
+
+  // --- 3A. Smart Phone Model ---
+  const phoneGroup = new THREE.Group();
+  
+  // Phone Body
+  const phoneGeo = new THREE.BoxGeometry(1.4, 2.8, 0.15);
+  const phoneMat = new THREE.MeshStandardMaterial({ 
+    color: 0x111111, 
+    roughness: 0.2, 
+    metalness: 0.8 
+  });
+  const phoneBody = new THREE.Mesh(phoneGeo, phoneMat);
+  phoneGroup.add(phoneBody);
+
+  // Phone Screen
+  const screenGeo = new THREE.PlaneGeometry(1.25, 2.65);
+  const screenMat = new THREE.MeshStandardMaterial({ 
+    color: 0x000000,
+    emissive: 0x00e5ff,
+    emissiveIntensity: 0.1,
+    roughness: 0.1,
+    metalness: 0.1
+  });
+  const phoneScreen = new THREE.Mesh(screenGeo, screenMat);
+  phoneScreen.position.z = 0.076;
+  phoneGroup.add(phoneScreen);
+
+  phoneGroup.position.set(-1.5, 0, 0);
+  phoneGroup.rotation.y = Math.PI / 6;
+  iotGroup.add(phoneGroup);
+
+  // --- 3B. IoT Lamp Model ---
+  const lampGroup = new THREE.Group();
+
+  // Lamp Base
+  const baseGeo = new THREE.CylinderGeometry(0.6, 0.6, 0.1, 32);
+  const metalMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.4, metalness: 0.9 });
+  const lampBase = new THREE.Mesh(baseGeo, metalMat);
+  lampBase.position.y = -1.35;
+  lampGroup.add(lampBase);
+
+  // Lamp Stand
+  const standGeo = new THREE.CylinderGeometry(0.05, 0.05, 2, 16);
+  const lampStand = new THREE.Mesh(standGeo, metalMat);
+  lampStand.position.y = -0.4;
+  lampStand.rotation.z = -0.2;
+  lampGroup.add(lampStand);
+
+  // Lamp Head
+  const headGeo = new THREE.ConeGeometry(0.5, 0.8, 32);
+  const headMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.6, metalness: 0.5 });
+  const lampHead = new THREE.Mesh(headGeo, headMat);
+  lampHead.position.set(0.3, 0.6, 0);
+  lampHead.rotation.z = -1.2;
+  lampGroup.add(lampHead);
+
+  // Lamp Bulb (Emissive)
+  const bulbGeo = new THREE.SphereGeometry(0.2, 16, 16);
+  const bulbMat = new THREE.MeshStandardMaterial({ 
+    color: 0xffffff,
+    emissive: 0xff9500,
+    emissiveIntensity: 0 // Starts OFF
+  });
+  const lampBulb = new THREE.Mesh(bulbGeo, bulbMat);
+  lampBulb.position.set(0.5, 0.4, 0);
+  lampGroup.add(lampBulb);
+
+  // Actual PointLight
+  const lampLight = new THREE.PointLight(0xff9500, 0, 10);
+  lampLight.position.set(0.6, 0.3, 0);
+  lampGroup.add(lampLight);
+
+  lampGroup.position.set(1.5, 0, -1);
+  lampGroup.rotation.y = -Math.PI / 4;
+  iotGroup.add(lampGroup);
+
+  // --- Particles (Data Flow) ---
+  const particlesGeo = new THREE.BufferGeometry();
+  const particlesCount = window.innerWidth <= 768 ? 300 : 800;
+  const posArray = new Float32Array(particlesCount * 3);
+  
+  for(let i = 0; i < particlesCount * 3; i++) {
+    posArray[i] = (Math.random() - 0.5) * 15;
+  }
+  particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+  const particlesMat = new THREE.PointsMaterial({
+    size: 0.02,
+    color: 0x00e5ff,
+    transparent: true,
+    opacity: 0.6,
+    blending: THREE.AdditiveBlending
+  });
+  const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
+  scene.add(particlesMesh);
+
+  // 4. HTML IoT Interaction
+  const toggleBtn = document.getElementById("iot-led-toggle");
+  const statusText = document.getElementById("lamp-status-text");
+  let isLampOn = false;
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      isLampOn = !isLampOn;
+      toggleBtn.classList.toggle("active");
+      
+      if (isLampOn) {
+        statusText.textContent = "Status: ON";
+        statusText.classList.add("active");
+        
+        // GSAP animate light ON
+        gsap.to(lampLight, { intensity: 2, duration: 0.5, ease: "power2.out" });
+        gsap.to(bulbMat, { emissiveIntensity: 2, duration: 0.5, ease: "power2.out" });
+        gsap.to(screenMat, { emissiveIntensity: 0.5, duration: 0.5 }); // Phone screen reacts
+      } else {
+        statusText.textContent = "Status: OFF";
+        statusText.classList.remove("active");
+        
+        // GSAP animate light OFF
+        gsap.to(lampLight, { intensity: 0, duration: 0.5, ease: "power2.out" });
+        gsap.to(bulbMat, { emissiveIntensity: 0, duration: 0.5, ease: "power2.out" });
+        gsap.to(screenMat, { emissiveIntensity: 0.1, duration: 0.5 });
+      }
+    });
+  }
+
+  // 5. GSAP ScrollTrigger Animations
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Animate the entire group based on scroll
+  gsap.to(iotGroup.rotation, {
+    y: Math.PI * 2,
+    x: 0.5,
+    ease: "none",
+    scrollTrigger: {
+      trigger: "body",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: 1
+    }
+  });
+
+  gsap.to(iotGroup.position, {
+    z: -5,
+    y: 2,
+    ease: "none",
+    scrollTrigger: {
+      trigger: "#about",
+      start: "top bottom",
+      end: "top top",
+      scrub: 1
+    }
+  });
+
+  // 6. Render Loop
+  const clock = new THREE.Clock();
+  
+  // Mouse movement effect
+  let mouseX = 0;
+  let mouseY = 0;
+  let targetX = 0;
+  let targetY = 0;
+  
+  if (window.innerWidth > 768) {
+    document.addEventListener('mousemove', (event) => {
+      mouseX = (event.clientX - window.innerWidth / 2);
+      mouseY = (event.clientY - window.innerHeight / 2);
+    });
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const elapsedTime = clock.getElapsedTime();
+
+    // Idle floating animation
+    phoneGroup.position.y = Math.sin(elapsedTime * 1.5) * 0.1;
+    lampGroup.position.y = Math.sin(elapsedTime * 1.2 + Math.PI) * 0.1;
+
+    // Particles slow rotation
+    particlesMesh.rotation.y = elapsedTime * 0.05;
+
+    // Mouse parallax
+    targetX = mouseX * 0.001;
+    targetY = mouseY * 0.001;
+    iotGroup.rotation.y += 0.05 * (targetX - iotGroup.rotation.y);
+    iotGroup.rotation.x += 0.05 * (targetY - iotGroup.rotation.x);
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // 7. Resize Handler
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+}
+
+/*==================== TYPING EFFECT ====================*/
+function initializeTypingEffect() {
+  const subtitle = document.querySelector(".home__subtitle");
+  if (!subtitle) return;
+
+  const textLoad = () => {
+    setTimeout(() => { subtitle.textContent = "Flutter Developer"; }, 0);
+    setTimeout(() => { subtitle.textContent = "IoT Engineer"; }, 4000);
+    setTimeout(() => { subtitle.textContent = "Problem Solver"; }, 8000);
+  };
+  textLoad();
+  setInterval(textLoad, 12000);
+}
+
 /*==================== NAVIGATION ====================*/
 function initializeNavigation() {
   const navMenu = document.getElementById("nav-menu"),
@@ -77,47 +346,38 @@ function initializeNavigation() {
     navLinks = document.querySelectorAll(".nav__link"),
     header = document.getElementById("header");
 
-  // فتح القائمة (للشاشات الصغيرة)
   if (navToggle) {
     navToggle.addEventListener("click", () => {
       navMenu.classList.add("show-menu");
     });
   }
 
-  // إغلاق القائمة
   if (navClose) {
     navClose.addEventListener("click", () => {
       navMenu.classList.remove("show-menu");
     });
   }
 
-  // إغلاق القائمة عند الضغط على أي رابط
   navLinks.forEach((n) =>
     n.addEventListener("click", () => {
       navMenu.classList.remove("show-menu");
-    }),
+    })
   );
 
-  // تغيير خلفية الهيدر عند السكرول
   window.addEventListener("scroll", () => {
     if (window.scrollY >= 80) header.classList.add("scroll-header");
     else header.classList.remove("scroll-header");
   });
 
-  // تلوين الرابط النشط بناءً على القسم الحالي
   const sections = document.querySelectorAll("section[id]");
   window.addEventListener("scroll", () => {
     const scrollY = window.pageYOffset;
-
     sections.forEach((current) => {
       const sectionHeight = current.offsetHeight;
       const sectionTop = current.offsetTop - 50;
       const sectionId = current.getAttribute("id");
-
-      // تأكد أن العنصر موجود قبل محاولة إضافة كلاس
-      const navLink = document.querySelector(
-        ".nav__menu a[href*=" + sectionId + "]",
-      );
+      const navLink = document.querySelector(".nav__menu a[href*=" + sectionId + "]");
+      
       if (navLink) {
         if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
           navLink.classList.add("active-link");
@@ -130,230 +390,39 @@ function initializeNavigation() {
 }
 
 /*==================== SKILLS ACCORDION ====================*/
-/*==================== SKILLS ACCORDION (FIXED) ====================*/
-/*==================== SKILLS ACCORDION (FINAL FIX) ====================*/
 function initializeSkillsAccordion() {
-  const skillsHeader = document.querySelectorAll(".skills__header");
-
-  function toggleSkills() {
-    // بنجيب الأب (اللي هو الصندوق كامل)
-    const item = this.parentNode;
-
-    // لو هو مقفول -> افتحه
-    if (item.classList.contains("skills__close")) {
-      item.classList.remove("skills__close");
-      item.classList.add("skills__open");
-    }
-    // لو هو مفتوح -> اقفله
-    else {
-      item.classList.remove("skills__open");
-      item.classList.add("skills__close");
-    }
-  }
-
-  skillsHeader.forEach((el) => {
-    el.addEventListener("click", toggleSkills);
-  });
+  // Legacy function kept for compatibility if needed
 }
 
-/*==================== PORTFOLIO FILTER (UPDATED & FIXED) ====================*/
+/*==================== PORTFOLIO FILTER ====================*/
 function initializePortfolioFilter() {
   const filters = document.querySelectorAll(".work__item");
   const cards = document.querySelectorAll(".work__card");
 
   filters.forEach((filter) => {
     filter.addEventListener("click", function () {
-      // إزالة الكلاس النشط من جميع الفلاتر وإضافته للزر المضغوط
       filters.forEach((f) => f.classList.remove("active-work"));
       this.classList.add("active-work");
 
       const category = this.getAttribute("data-filter");
 
       cards.forEach((card) => {
-        // إعادة تعيين الأنيميشن
-        card.style.transition = "none";
-
-        if (
-          category === "all" ||
-          card.classList.contains(category.substring(1))
-        ) {
-          // إظهار العنصر
+        if (category === "all" || card.classList.contains(category.substring(1))) {
           card.style.display = "block";
           setTimeout(() => {
-            card.style.transition = "all 0.4s ease";
             card.style.opacity = "1";
             card.style.transform = "scale(1)";
-          }, 50); // تأخير بسيط جداً للسماح للمتصفح برسم العنصر
+          }, 50);
         } else {
-          // إخفاء العنصر
-          card.style.transition = "all 0.4s ease";
           card.style.opacity = "0";
           card.style.transform = "scale(0.8)";
           setTimeout(() => {
             card.style.display = "none";
-          }, 400); // الانتظار حتى انتهاء الأنيميشن
+          }, 400);
         }
       });
     });
   });
-}
-
-/*==================== SCROLL ANIMATIONS (Intersection Observer) ====================*/
-function initializeScrollAnimations() {
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("animate-active");
-
-        // تحريك عداد الأرقام (Stats)
-        if (
-          entry.target.classList.contains("about__info") ||
-          entry.target.closest(".about__info")
-        ) {
-          // يمكن إضافة دالة animateCounters هنا إذا أردت
-        }
-
-        // تحريك شرائط المهارات (Progress Bars)
-        if (entry.target.classList.contains("skills__open")) {
-          const bars = entry.target.querySelectorAll(".skills__percentage");
-          // CSS Transitions ستتولى المهمة بمجرد ظهور العنصر
-        }
-      }
-    });
-  }, observerOptions);
-
-  // العناصر المراد تحريكها
-  const elementsToAnimate = document.querySelectorAll(
-    ".section__title, .about__img, .about__data, .work__card, .contact__content, .experience__data",
-  );
-
-  elementsToAnimate.forEach((el) => {
-    // تهيئة الستايل المبدئي (مخفي)
-    el.style.opacity = "0";
-    el.style.transform = "translateY(30px)";
-    el.style.transition = "opacity 0.8s ease, transform 0.8s ease";
-    observer.observe(el);
-  });
-
-  // إضافة كلاس عند الظهور
-  window.addEventListener("scroll", () => {
-    elementsToAnimate.forEach((el) => {
-      if (el.getBoundingClientRect().top < window.innerHeight - 50) {
-        el.style.opacity = "1";
-        el.style.transform = "translateY(0)";
-      }
-    });
-  });
-}
-
-/*==================== TYPING EFFECT ====================*/
-function initializeTypingEffect() {
-  const subtitle = document.querySelector(".home__subtitle");
-  if (!subtitle) return;
-
-  const textLoad = () => {
-    setTimeout(() => {
-      subtitle.textContent = "Flutter Developer";
-    }, 0);
-    setTimeout(() => {
-      subtitle.textContent = "IoT Engineer";
-    }, 4000);
-    setTimeout(() => {
-      subtitle.textContent = "Problem Solver";
-    }, 8000);
-  };
-
-  // التشغيل المبدئي
-  textLoad();
-  // التكرار كل 12 ثانية
-  setInterval(textLoad, 12000);
-}
-
-/*==================== PARTICLES BACKGROUND ====================*/
-function initializeParticles() {
-  const hero = document.querySelector(".home");
-  if (!hero) return;
-
-  // إنشاء حاوية للجسيمات لتجنب مشاكل التخطيط
-  const particlesContainer = document.createElement("div");
-  particlesContainer.style.position = "absolute";
-  particlesContainer.style.top = "0";
-  particlesContainer.style.left = "0";
-  particlesContainer.style.width = "100%";
-  particlesContainer.style.height = "100%";
-  particlesContainer.style.overflow = "hidden";
-  particlesContainer.style.pointerEvents = "none"; // عشان ما تمنعش الضغط على الأزرار
-  particlesContainer.style.zIndex = "0";
-
-  hero.insertBefore(particlesContainer, hero.firstChild);
-
-  for (let i = 0; i < 15; i++) {
-    const particle = document.createElement("div");
-    particle.className = "particle";
-    particle.style.cssText = `
-              position: absolute;
-              width: ${Math.random() * 5 + 2}px;
-              height: ${Math.random() * 5 + 2}px;
-              background: rgba(102, 126, 234, 0.2); /* لون شفاف */
-              border-radius: 50%;
-              left: ${Math.random() * 100}%;
-              top: ${Math.random() * 100}%;
-              animation: float-particle ${
-                Math.random() * 15 + 10
-              }s infinite linear;
-          `;
-    particlesContainer.appendChild(particle);
-  }
-
-  // إضافة Keyframes للأنيميشن
-  const style = document.createElement("style");
-  style.innerHTML = `
-          @keyframes float-particle {
-              0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-              50% { opacity: 0.6; }
-              100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-          }
-      `;
-  document.head.appendChild(style);
-}
-
-/*==================== DARK/LIGHT THEME ====================*/
-function initializeThemeToggle() {
-  const themeButton = document.getElementById("theme-button");
-  const darkTheme = "dark-theme";
-  const iconTheme = "fa-sun";
-
-  // استرجاع الثيم المحفوظ
-  const selectedTheme = localStorage.getItem("selected-theme");
-  const selectedIcon = localStorage.getItem("selected-icon");
-
-  const getCurrentTheme = () =>
-    document.body.classList.contains(darkTheme) ? "dark" : "light";
-  const getCurrentIcon = () =>
-    themeButton.classList.contains(iconTheme) ? "fa-moon" : "fa-sun";
-
-  if (selectedTheme) {
-    document.body.classList[selectedTheme === "dark" ? "add" : "remove"](
-      darkTheme,
-    );
-    themeButton.classList[selectedIcon === "fa-moon" ? "add" : "remove"](
-      iconTheme,
-    );
-  }
-
-  if (themeButton) {
-    themeButton.addEventListener("click", () => {
-      document.body.classList.toggle(darkTheme);
-      themeButton.classList.toggle(iconTheme);
-      localStorage.setItem("selected-theme", getCurrentTheme());
-      localStorage.setItem("selected-icon", getCurrentIcon());
-    });
-  }
 }
 
 /*==================== CONTACT FORM ====================*/
@@ -365,29 +434,23 @@ function initializeContactForm() {
       const btn = contactForm.querySelector("button");
       const originalText = btn.innerHTML;
 
-      // تغيير شكل الزر أثناء الإرسال
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
       btn.style.opacity = "0.7";
 
-      // محاكاة الإرسال
       setTimeout(() => {
-        btn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
-        btn.style.backgroundColor = "#2ecc71"; // لون أخضر للنجاح
+        btn.innerHTML = '<i class="fas fa-check"></i> Sent!';
+        btn.style.color = "#00e5ff";
         btn.style.opacity = "1";
+        contactForm.reset();
 
-        contactForm.reset(); // مسح البيانات
-
-        // إرجاع الزر لحالته الأصلية
         setTimeout(() => {
           btn.innerHTML = originalText;
-          btn.style.backgroundColor = "";
+          btn.style.color = "";
         }, 3000);
       }, 2000);
     });
   }
 }
-
-/*==================== PRELOADER ====================*/
 
 /*==================== SCROLL TO TOP ====================*/
 function initializeScrollToTop() {
@@ -397,140 +460,5 @@ function initializeScrollToTop() {
       if (window.scrollY >= 560) scrollUp.classList.add("show-scroll");
       else scrollUp.classList.remove("show-scroll");
     });
-  }
-}
-/*=============== MIXITUP FILTER PORTFOLIO ===============*/
-let mixerPortfolio = mixitup(".work__container", {
-  selectors: {
-    target: ".work__card",
-  },
-  animation: {
-    duration: 300,
-  },
-});
-
-/* Link active work (تغيير لون الفلتر النشط) */
-const linkWork = document.querySelectorAll(".work__item");
-
-function activeWork() {
-  linkWork.forEach((l) => l.classList.remove("active-work"));
-  this.classList.add("active-work");
-}
-
-linkWork.forEach((l) => l.addEventListener("click", activeWork));
-
-/*==================== INTERACTIVE PHONE MOCKUP ====================*/
-/*==================== INTERACTIVE PHONE MOCKUP (FIXED) ====================*/
-/*==================== INTERACTIVE PHONE MOCKUP (MOBILE OPTIMIZED) ====================*/
-/*==================== INTERACTIVE PHONE MOCKUP (Movement Only) ====================*/
-function initializePhoneMockup() {
-  const phone = document.getElementById("phone");
-  const lightEffect = document.querySelector(".light-effect");
-
-  if (phone) {
-    let mouseX = 0,
-      mouseY = 0,
-      currentX = 0,
-      currentY = 0;
-
-    document.addEventListener("mousemove", (e) => {
-      if (window.innerWidth <= 768) return;
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (lightEffect) {
-        const rect = phone.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        lightEffect.style.setProperty("--mouse-x", `${x}%`);
-        lightEffect.style.setProperty("--mouse-y", `${y}%`);
-      }
-    });
-
-    function animate() {
-      if (window.innerWidth <= 768) {
-        phone.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateZ(0)`;
-        return;
-      }
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const deltaX = (mouseX - centerX) / centerX;
-      const deltaY = (mouseY - centerY) / centerY;
-      currentX += (deltaX - currentX) * 0.1;
-      currentY += (deltaY - currentY) * 0.1;
-      const rotateY = currentX * 12;
-      const rotateX = -currentY * 12;
-      phone.style.transform = `perspective(1500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0)`;
-      requestAnimationFrame(animate);
-    }
-    animate();
-  }
-}
-/*==================== PHONE BOOT SEQUENCE ====================*/
-/*==================== PHONE BOOT SEQUENCE (Fixed) ====================*/
-function startPhoneBoot() {
-  const bootScreen = document.getElementById("bootScreen");
-  const codeScreen = document.getElementById("codeScreen");
-
-  const homeSection = document.querySelector(".home");
-  // تحديد الوقت
-  const isMobile = window.innerWidth <= 768;
-  const bootTime = isMobile ? 1200 : 1500; // وقت ظهور شعار فلاتر
-
-  if (bootScreen && codeScreen) {
-    // 1. 🔥 أهم خطوة: تشغيل الشاشة والأنيميشن الآن 🔥
-    // ده اللي هيخلي الشاشة السوداء تنور ويبدأ اللوجو يتحرك
-    bootScreen.classList.add("active");
-
-    // 2. بعد ما الوقت يخلص، اخفي البوت واظهر الكود
-    setTimeout(() => {
-      bootScreen.classList.remove("active");
-
-      if (!isMobile) {
-        setTimeout(() => {
-          codeScreen.classList.add("active");
-        }, 250);
-      } else {
-        setTimeout(() => {
-          if (homeSection) {
-            homeSection.classList.add("content-visible");
-          }
-        }, 250);
-      }
-    }, bootTime);
-  }
-}
-/*==================== FLUTTER COUNTER FUNCTIONALITY ====================*/
-function initializeFlutterCounter() {
-  const counterFab = document.getElementById("counterFab");
-  const counterNumber = document.getElementById("counterNumber");
-
-  // التأكد إن العناصر موجودة فعلاً في الصفحة
-  if (counterFab && counterNumber) {
-    let count = 0;
-
-    counterFab.addEventListener("click", function (e) {
-      // 1. منع الدوسة توصل للموبايل (الحل السحري)
-      e.stopPropagation();
-
-      // 2. تزويد العداد
-      count++;
-      counterNumber.textContent = count;
-
-      // 3. حركة الزرار (Click Effect)
-      this.classList.add("clicked");
-
-      // 4. أنيميشن الرقم (Reflow Trick)
-      counterNumber.style.animation = "none";
-      counterNumber.offsetHeight; /* trigger reflow */
-      counterNumber.style.animation = "counterPop 0.3s ease-out";
-
-      // 5. تنظيف الكلاس
-      setTimeout(() => {
-        this.classList.remove("clicked");
-      }, 600);
-    });
-  } else {
-    // لو ظهرت الرسالة دي في الكونسول، يبقى فيه مشكلة في الـ HTML IDs
-    console.error("Flutter Counter Elements NOT Found! Check HTML IDs.");
   }
 }

@@ -68,14 +68,15 @@ export const PROJECTS_DATA = [
   },
 ];
 
-// framer-motion SKILL: spring physics for natural sheet slide-up
+// framer-motion SKILL: tween (not spring) for exit = predictable fast duration
 const overlayVariants = {
-  hidden: { y: '100%', opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 280, damping: 30 } },
-  exit:   { y: '100%', opacity: 0, transition: { duration: 0.35, ease: [0.76, 0, 0.24, 1] } },
+  hidden:  { y: '100%', opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 30 } },
+  exit:    { y: '100%', opacity: 0, transition: { duration: 0.25, ease: [0.76, 0, 0.24, 1] } },
 };
 
-export default function ProjectDetail({ project, onClose }) {
+// Point 4: React.memo prevents re-render when parent App state changes (Canvas stays fast)
+const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
   const { title, subtitle, tag, color, img, year, status, description, tech, features, github, screenshots } = project;
 
   return (
@@ -209,4 +210,6 @@ export default function ProjectDetail({ project, onClose }) {
       </div>
     </motion.div>
   );
-}
+});
+
+export default ProjectDetail;

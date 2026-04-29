@@ -13,18 +13,32 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Phone choreography — subtle, always facing front
+// ── 9-stop architecture ──────────────────────────────────────────────────────
+// Stops: Hero | About | Skills | Proj1 | Proj2 | Proj3 | Proj4 | Experience | Contact
+// Index:  0       1       2       3       4       5       6        7             8
+const STOPS = 8; // 0-based max (9 values: 0..8)
+const SNAP_POINTS = Array.from({ length: STOPS + 1 }, (_, i) => i / STOPS);
+const TOTAL_SCROLL = 2400;
+
+// Per-stop phone choreography
 const PHONE_STATES = [
-  { y: 0,    rotY: 0,     scale: 1.0 },
-  { y: 0.2,  rotY: 0.1,  scale: 0.96 },
-  { y: -0.15,rotY: -0.08, scale: 1.0 },
-  { y: 0.25, rotY: 0.08,  scale: 0.94 },
-  { y: -0.2, rotY: -0.06, scale: 1.0 },
-  { y: 0,    rotY: 0,     scale: 1.04 },
+  { x: 2.2,  y: 0,     rotY: 0,      scale: 1.05 }, // 0 Hero
+  { x: 2.8,  y: 0.15,  rotY: 0.1,   scale: 0.9  }, // 1 About
+  { x: 3.1,  y: -0.1,  rotY: -0.08, scale: 0.82 }, // 2 Skills
+  { x: 4.0,  y: 0,     rotY: 0.05,  scale: 0.62 }, // 3 Proj1 — phone small, cards are star
+  { x: 4.0,  y: -0.1,  rotY: -0.05, scale: 0.62 }, // 4 Proj2
+  { x: 4.0,  y: 0.1,   rotY: 0.05,  scale: 0.62 }, // 5 Proj3
+  { x: 4.0,  y: 0,     rotY: -0.05, scale: 0.62 }, // 6 Proj4
+  { x: 2.5,  y: 0,     rotY: 0,      scale: 0.9  }, // 7 Experience
+  { x: 2.2,  y: 0,     rotY: 0,      scale: 1.0  }, // 8 Contact
 ];
 
-// ONE scroll = ONE section. 6 sections × short distance each.
-const TOTAL_SCROLL = 1800; // 6 sections × 360px each (very short, snaps fast)
+// Map scroll stop → panel index (panels: 0=Hero 1=About 2=Skills 3=Projects 4=Exp 5=Contact)
+function stopToPanel(stop) {
+  if (stop <= 2) return stop;
+  if (stop <= 6) return 3; // projects carousel
+  return stop - 3;         // 7→4 Experience, 8→5 Contact
+}
 
 export default function App() {
   const [loaded, setLoaded]               = useState(false);
@@ -34,108 +48,73 @@ export default function App() {
   const panelRefs   = useRef([]);
   const dotRefs     = useRef([]);
   const tlRef       = useRef(null);
-  const currentSec  = useRef(0);
-  const isAnim      = useRef(false);
+  const currentStop = useRef(0);
 
   const handleLoaderDone = useCallback(() => setLoaded(true), []);
 
-  // Navigate to section index — called by nav buttons + scroll handler
-  const goToSection = useCallback((idx) => {
-    if (idx < 0 || idx > 5) return;
-    if (isAnim.current) return;
-
-    isAnim.current = true;
-    currentSec.current = idx;
-    scrollState.progress = idx / 5;
-    scrollState.lampIntensity = 0.05 + (idx / 5) * 0.95;
-
-    const tl = tlRef.current;
-    if (!tl) { isAnim.current = false; return; }
-
-    // Animate timeline progress with gsap.to (works on free GSAP)
-    const target = idx === 0 ? 0 : idx / 5;
-    gsap.to(tl, {
-      progress: target,
-      duration: 0.65,
-      ease: 'power2.inOut',
-      onComplete: () => { isAnim.current = false; },
-    });
-
-    // Sync UI immediately
-    const panels = panelRefs.current.filter(Boolean);
-    panels.forEach((p, i) => { p.style.pointerEvents = i === idx ? 'auto' : 'none'; });
-    dotRefs.current.forEach((d, i) => {
-      if (!d) return;
-      d.style.transform = i === idx ? 'scale(1.8)' : 'scale(1)';
-      d.style.opacity   = i === idx ? '1' : '0.3';
-    });
+  // Nav helper — maps logical section (0-5) to scroll stop
+  const SECTION_TO_STOP = [0, 1, 2, 3, 7, 8]; // About→1, Work→3, Contact→8
+  const scrollToSection = useCallback((sectionIdx) => {
+    const stop = SECTION_TO_STOP[sectionIdx] ?? sectionIdx;
+    const target = stop / STOPS;
+    window.scrollTo({ top: target * TOTAL_SCROLL, behavior: 'smooth' });
   }, []);
-
-  const scrollToSection = useCallback((idx) => goToSection(idx), [goToSection]);
 
   useEffect(() => {
     if (!loaded) return;
-
-    // Double RAF — ensure DOM is fully painted
     const raf = requestAnimationFrame(() => requestAnimationFrame(buildTimeline));
 
     function buildTimeline() {
       const panels = panelRefs.current.filter(Boolean);
       if (!pinnedRef.current || panels.length === 0) return;
 
-      // ── MASTER TIMELINE (paused — driven by snap ScrollTrigger) ─────────────
-      const tl = gsap.timeline({
-        paused: true,
-        defaults: { ease: 'power2.inOut' },
-      });
+      // ── MASTER TIMELINE ────────────────────────────────────────────────────
+      const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
       tlRef.current = tl;
 
-      // Add s0 at position 0 for snap to include start
-      tl.addLabel('s0', 0);
+      // Labels at equal 1/8 intervals
+      const LABELS = ['s0','s1','s2','s3','s3b','s3c','s3d','s4','s5'];
+      LABELS.forEach((lbl, i) => tl.addLabel(lbl, i / STOPS));
 
-      for (let i = 1; i < 6; i++) {
-        const label = `s${i}`;
-        const prev = panels[i - 1];
-        const curr = panels[i];
-        const ps = PHONE_STATES[i];
+      // ── PANEL CROSSFADES (only at actual section boundaries) ───────────────
+      const crossfades = [
+        ['s1', 0, 1],  // Hero → About
+        ['s2', 1, 2],  // About → Skills
+        ['s3', 2, 3],  // Skills → Projects
+        ['s4', 3, 4],  // Projects → Experience
+        ['s5', 4, 5],  // Experience → Contact
+      ];
+      crossfades.forEach(([label, fromIdx, toIdx]) => {
+        tl.to(panels[fromIdx], { autoAlpha: 0, y: -36, duration: 1/STOPS*0.45 }, label);
+        tl.to(panels[toIdx],   { autoAlpha: 1, y: 0,   duration: 1/STOPS*0.45 }, `${label}+=0.02`);
+      });
 
-        tl.addLabel(label, i / 5);   // each section at equal 0.2 intervals
+      // ── PROJECT CAROUSEL (xPercent of #project-track) ─────────────────────
+      // Each card is 100vw = 25% of the 400vw track width → xPercent steps of 25
+      tl.set('#project-track', { xPercent: 0 }, 's3');
+      tl.to('#project-track', { xPercent: -25, duration: 1/STOPS*0.5, ease: 'power3.inOut' }, 's3b');
+      tl.to('#project-track', { xPercent: -50, duration: 1/STOPS*0.5, ease: 'power3.inOut' }, 's3c');
+      tl.to('#project-track', { xPercent: -75, duration: 1/STOPS*0.5, ease: 'power3.inOut' }, 's3d');
+      // Reset carousel when leaving projects
+      tl.set('#project-track', { xPercent: 0 }, 's4');
 
-        tl.to(prev, { autoAlpha: 0, y: -40, duration: 0.4 }, label);
-        tl.to(curr, { autoAlpha: 1, y: 0,   duration: 0.4 }, '<0.08');
+      // ── PHONE CHOREOGRAPHY (per stop) ─────────────────────────────────────
+      LABELS.forEach((label, stop) => {
+        if (!phoneRef.current) return;
+        const ps = PHONE_STATES[stop];
+        tl.to(phoneRef.current.position, { x: ps.x, y: ps.y, duration: 1/STOPS*0.6 }, label);
+        tl.to(phoneRef.current.rotation, { y: ps.rotY, duration: 1/STOPS*0.6 }, label);
+        tl.to(phoneRef.current.scale, { x: ps.scale, y: ps.scale, z: ps.scale, duration: 1/STOPS*0.5 }, `${label}+=0.05`);
+      });
 
-        if (phoneRef.current) {
-          tl.to(phoneRef.current.position, { x: 5, duration: 0.2 }, label);
-          tl.to(phoneRef.current.position, { x: 2.5, y: ps.y, duration: 0.4 }, `${label}+=0.22`);
-          tl.to(phoneRef.current.rotation, { y: ps.rotY, duration: 0.5 }, '<');
-          tl.to(phoneRef.current.scale, { x: ps.scale, y: ps.scale, z: ps.scale, duration: 0.4 }, '<0.1');
-        }
+      // ── SECTION ENTRANCE ANIMATIONS ───────────────────────────────────────
+      // GSAP SKILL: immediateRender:false prevents from-state override on create
+      tl.to('#hero-content', { x: -80, autoAlpha: 0, duration: 1/STOPS*0.3, ease: 'power2.in' }, 's1');
+      tl.fromTo('#about-photo', { x: -70, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 1/STOPS*0.5, ease: 'power3.out', immediateRender: false }, 's1+=0.05');
+      tl.fromTo('#about-text-content', { x: 70, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 1/STOPS*0.5, ease: 'power3.out', immediateRender: false }, '<');
+      tl.fromTo('.skill-card', { scale: 0.82, autoAlpha: 0, y: 16 }, { scale: 1, autoAlpha: 1, y: 0, stagger: { each: 0.08 }, duration: 1/STOPS*0.5, ease: 'back.out(1.4)', immediateRender: false }, 's2+=0.04');
 
-        // Section entrance animations
-        if (i === 1) {
-          tl.to('#hero-content', { x: -80, autoAlpha: 0, duration: 0.3, ease: 'power2.in' }, label);
-          tl.fromTo('#about-photo',
-            { x: -70, autoAlpha: 0 },
-            { x: 0, autoAlpha: 1, duration: 0.45, ease: 'power3.out', immediateRender: false }, `${label}+=0.18`);
-          tl.fromTo('#about-text-content',
-            { x: 70, autoAlpha: 0 },
-            { x: 0, autoAlpha: 1, duration: 0.45, ease: 'power3.out', immediateRender: false }, '<');
-        }
-        if (i === 2) {
-          tl.fromTo('.skill-card',
-            { scale: 0.82, autoAlpha: 0, y: 18 },
-            { scale: 1, autoAlpha: 1, y: 0, duration: 0.4, ease: 'back.out(1.4)',
-              stagger: { each: 0.1 }, immediateRender: false }, `${label}+=0.15`);
-        }
-        if (i === 3) {
-          tl.fromTo('.project-card',
-            { y: 40, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 0.4, ease: 'power3.out',
-              stagger: { each: 0.12 }, immediateRender: false }, `${label}+=0.15`);
-        }
-      }
-
-      // ── SCROLL TRIGGER — snap makes one scroll = one section ─────────────────
+      // ── SCROLL TRIGGER — snap to exact stop positions ─────────────────────
       ScrollTrigger.create({
         trigger: pinnedRef.current,
         start: 'top top',
@@ -143,64 +122,63 @@ export default function App() {
         pin: true,
         anticipatePin: 1,
         snap: {
-          snapTo: [0, 0.2, 0.4, 0.6, 0.8, 1.0], // 6 exact stops
+          snapTo: SNAP_POINTS,
           duration: { min: 0.3, max: 0.55 },
           ease: 'power2.inOut',
-          delay: 0.05,
+          delay: 0.04,
         },
         onUpdate(self) {
           scrollState.progress = self.progress;
-          const idx = Math.min(5, Math.round(self.progress * 5));
+          const stop = Math.min(STOPS, Math.round(self.progress * STOPS));
+          const panelIdx = stopToPanel(stop);
           tl.progress(self.progress);
 
-          // Sync pointer-events every frame (both directions)
-          const panels = panelRefs.current.filter(Boolean);
-          panels.forEach((p, i) => { p.style.pointerEvents = i === idx ? 'auto' : 'none'; });
+          // Sync pointer-events
+          panels.forEach((p, i) => { p.style.pointerEvents = i === panelIdx ? 'auto' : 'none'; });
+
+          // Sync dots
           dotRefs.current.forEach((d, i) => {
             if (!d) return;
-            d.style.transform = i === idx ? 'scale(1.8)' : 'scale(1)';
-            d.style.opacity   = i === idx ? '1' : '0.3';
+            d.style.transform = i === stop ? 'scale(1.8)' : 'scale(1)';
+            d.style.opacity   = i === stop ? '1' : '0.3';
           });
-          currentSec.current = idx;
+          currentStop.current = stop;
         },
       });
+
+      // ── ENTRANCE ANIMATION — phone swoops in after loader ─────────────────
+      // Point 3: Set phone off-screen right initially, then swoop in
+      if (phoneRef.current) {
+        gsap.set(phoneRef.current.position, { x: 7 });
+        gsap.set(phoneRef.current.scale,    { x: 0.5, y: 0.5, z: 0.5 });
+        gsap.timeline({ delay: 0.15 })
+          .to(phoneRef.current.position, { x: PHONE_STATES[0].x, duration: 1.0, ease: 'power3.out' })
+          .to(phoneRef.current.scale,    { x: PHONE_STATES[0].scale, y: PHONE_STATES[0].scale, z: PHONE_STATES[0].scale, duration: 0.9, ease: 'back.out(1.2)' }, 0.1);
+      }
     }
 
     return () => {
       cancelAnimationFrame(raf);
       ScrollTrigger.getAll().forEach(st => st.kill());
-      if (tlRef.current) tlRef.current.kill();
     };
   }, [loaded]);
-
-  const panelComponents = [HeroPanel, AboutPanel, SkillsPanel, ProjectsPanel, ExperiencePanel, ContactPanel];
 
   return (
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
 
-      {/* Cinematic loader */}
       <AnimatePresence>
         {!loaded && <Loader key="loader" onComplete={handleLoaderDone} />}
       </AnimatePresence>
 
-      {/* Project detail overlay */}
+      {/* Point 4: Canvas is ALWAYS mounted at top level — never unmounts on project open */}
       <AnimatePresence>
         {activeProject && (
-          <ProjectDetail
-            project={activeProject}
-            onClose={() => setActiveProject(null)}
-          />
+          <ProjectDetail project={activeProject} onClose={() => setActiveProject(null)} />
         )}
       </AnimatePresence>
 
-      {/* Fixed 3D canvas — full screen, behind HTML */}
       <div className="fixed inset-0" style={{ zIndex: 0 }}>
         <Scene phoneRef={phoneRef} />
-      </div>
-
-      {/* Subtle atmosphere glows */}
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 1 }}>
-        <div style={{ position:'absolute', bottom:'-10%', right:'-5%', width:'35vw', height:'40vh', borderRadius:'50%', background:'radial-gradient(#00FFD108, transparent 70%)', filter:'blur(80px)' }} />
       </div>
 
       {/* ── NAV ─────────────────────────────────────────────────────────────── */}
@@ -216,16 +194,15 @@ export default function App() {
           {[['About',1],['Work',3],['Contact',5]].map(([item, idx]) => (
             <button key={item} onClick={() => scrollToSection(idx)}
               style={{ fontFamily:'DM Sans', fontSize:'0.75rem', letterSpacing:'0.15em', textTransform:'uppercase',
-                color:'oklch(52% 0.02 264)', background:'none', border:'none', cursor:'pointer', padding:0,
-                transition:'color 0.2s' }}
+                color:'oklch(52% 0.02 264)', background:'none', border:'none', cursor:'pointer', padding:0 }}
               onMouseEnter={e=>e.target.style.color='#00FFD1'}
               onMouseLeave={e=>e.target.style.color='oklch(52% 0.02 264)'}>{item}</button>
           ))}
         </div>
         <a href="/assets/Amr_Abdelazeem_Resume.pdf" download
           style={{ fontFamily:'DM Sans', fontSize:'0.72rem', letterSpacing:'0.1em', textTransform:'uppercase',
-            padding:'0.5rem 1.2rem', border:'1px solid #ffffff22', color:'oklch(52% 0.02 264)', borderRadius:'9999px',
-            textDecoration:'none', transition:'all 0.2s' }}
+            padding:'0.5rem 1.2rem', border:'1px solid #ffffff22', color:'oklch(52% 0.02 264)',
+            borderRadius:'9999px', textDecoration:'none' }}
           onMouseEnter={e=>{e.target.style.borderColor='#00FFD1';e.target.style.color='#00FFD1'}}
           onMouseLeave={e=>{e.target.style.borderColor='#ffffff22';e.target.style.color='oklch(52% 0.02 264)'}}>
           Resume ↓
@@ -236,41 +213,42 @@ export default function App() {
       <div className="fixed left-5 top-1/2 hidden md:block"
         style={{ zIndex:50, writingMode:'vertical-rl', transform:'translateY(-50%) rotate(180deg)',
           fontFamily:'DM Sans', fontSize:'0.6rem', letterSpacing:'0.2em', textTransform:'uppercase',
-          color:'oklch(22% 0.02 264)' }}>
-        AMRSAEEDCSE · 2025
-      </div>
+          color:'oklch(22% 0.02 264)' }}>AMRSAEEDCSE · 2025</div>
 
-      {/* Progress dots */}
-      <div className="fixed right-5 top-1/2 flex flex-col gap-3"
+      {/* Progress dots — 9 stops */}
+      <div className="fixed right-5 top-1/2 flex flex-col gap-2"
         style={{ zIndex:50, transform:'translateY(-50%)' }}>
-        {Array.from({ length: 6 }).map((_, i) => (
+        {SNAP_POINTS.map((_, i) => (
           <div key={i} ref={el => dotRefs.current[i] = el}
-            onClick={() => scrollToSection(i)}
-            style={{ width:7, height:7, borderRadius:'50%', background:'#f4f4f5',
-              opacity: i===0?1:0.3, transform: i===0?'scale(1.8)':'scale(1)',
-              transition:'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', cursor:'pointer' }} />
+            onClick={() => window.scrollTo({ top: (i / STOPS) * TOTAL_SCROLL, behavior:'smooth' })}
+            style={{
+              width: i === 0 ? 7 : [3,6].includes(i) ? 5 : 6,
+              height: i === 0 ? 7 : [3,6].includes(i) ? 5 : 6,
+              borderRadius:'50%', background:'#f4f4f5',
+              opacity: i===0?1:0.25, transform: i===0?'scale(1.8)':'scale(1)',
+              transition:'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', cursor:'pointer',
+            }} />
         ))}
       </div>
 
-      {/* Scroll hint (shown at section 0 only) */}
-      <div className="fixed bottom-7 left-1/2 flex flex-col items-center gap-2"
-        style={{ zIndex:50, transform:'translateX(-50%)', opacity:0.35, pointerEvents:'none' }}>
+      {/* Scroll hint */}
+      <div className="fixed bottom-7 left-1/2 flex flex-col items-center gap-2 pointer-events-none"
+        style={{ zIndex:50, transform:'translateX(-50%)', opacity:0.35 }}>
         <span style={{ fontFamily:'DM Sans', fontSize:'0.6rem', letterSpacing:'0.25em',
           color:'oklch(52% 0.02 264)', textTransform:'uppercase' }}>Scroll</span>
         <div style={{ width:1, height:28, background:'linear-gradient(to bottom, #00FFD1, transparent)' }} />
       </div>
 
-      {/* ── PINNED SECTION CONTAINER ─────────────────────────────────────────── */}
+      {/* ── PINNED CONTAINER ─────────────────────────────────────────────────── */}
       <div ref={pinnedRef}
         style={{ position:'relative', width:'100vw', height:'100vh', overflow:'hidden', zIndex:10 }}>
-        {panelComponents.map((Panel, i) => (
-          <Panel
-            key={i}
-            panelRef={el => panelRefs.current[i] = el}
-            scrollToSection={scrollToSection}
-            onProjectClick={i === 3 ? setActiveProject : undefined}
-          />
-        ))}
+        {/* 6 section panels */}
+        <HeroPanel       panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} />
+        <AboutPanel      panelRef={el => panelRefs.current[1] = el} />
+        <SkillsPanel     panelRef={el => panelRefs.current[2] = el} />
+        <ProjectsPanel   panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} />
+        <ExperiencePanel panelRef={el => panelRefs.current[4] = el} />
+        <ContactPanel    panelRef={el => panelRefs.current[5] = el} />
       </div>
 
       {/* Footer */}
@@ -283,8 +261,7 @@ export default function App() {
         <div style={{ display:'flex', gap:'2rem' }}>
           {[['LinkedIn','https://linkedin.com/in/amrsaeed-cse'],['GitHub','https://github.com/amrsaeedcse'],['WhatsApp','https://wa.me/201121153059']].map(([l,h])=>(
             <a key={l} href={h} target="_blank" rel="noreferrer"
-              style={{ fontFamily:'DM Sans', fontSize:'0.72rem', color:'oklch(35% 0.02 264)', textDecoration:'none',
-                transition:'color 0.2s' }}
+              style={{ fontFamily:'DM Sans', fontSize:'0.72rem', color:'oklch(35% 0.02 264)', textDecoration:'none' }}
               onMouseEnter={e=>e.target.style.color='#00FFD1'}
               onMouseLeave={e=>e.target.style.color='oklch(35% 0.02 264)'}>{l}</a>
           ))}

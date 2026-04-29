@@ -167,69 +167,126 @@ export function SkillsPanel({ panelRef }) {
   );
 }
 
-// PROJECTS_DATA imported from ProjectDetail.jsx
+// ── PROJECTS PANEL — Full-screen horizontal carousel ─────────────────────────
+// GSAP controls #project-track xPercent (0 / -25 / -50 / -75) per carousel stop
 
 export function ProjectsPanel({ panelRef, onProjectClick }) {
   const [hovered, setHovered] = useState(null);
-  // Show first 4 projects in the panel grid
-  const visible = PROJECTS_DATA.slice(0, 4);
+
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
-      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div style={{ width: '100%', maxWidth: '960px' }}>
-        <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#00FFD1', marginBottom: '1rem' }}>04 / Featured Work</div>
-        <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2rem' }}>
-          BUILT<br />TO SHIP.
-        </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
-          {visible.map((proj, idx) => (
-            // GSAP target: .project-card
-            <motion.div
-              key={proj.id}
-              className="project-card"
+    <div ref={panelRef} className="section-panel absolute inset-0"
+      style={{ opacity: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+
+      {/* Section label — top-left, always visible in Projects */}
+      <div style={{ position:'absolute', top:'5rem', left:'8vw', zIndex:4,
+        fontFamily:'DM Sans', fontSize:'0.7rem', letterSpacing:'0.3em',
+        textTransform:'uppercase', color:'#00FFD1' }}>04 / Featured Work</div>
+
+      {/* Progress indicator — which card of 4 */}
+      <div style={{ position:'absolute', bottom:'2.5rem', left:'8vw', zIndex:4,
+        display:'flex', gap:'0.5rem', alignItems:'center' }}>
+        {PROJECTS_DATA.map((_, i) => (
+          <div key={i} className={`proj-dot-${i}`}
+            style={{ width: i===0?28:8, height:2, borderRadius:999,
+              background: i===0?'#00FFD1':'#ffffff22', transition:'all 0.35s ease' }} />
+        ))}
+      </div>
+
+      {/* The 400vw horizontal track — GSAP targets this element */}
+      <div id="project-track"
+        style={{ display:'flex', width:'400%', height:'100%', willChange:'transform' }}>
+
+        {PROJECTS_DATA.map((proj, idx) => (
+          /* Each card = exactly 25% of 400% track = 100vw */
+          <div key={proj.id} style={{ flex:'0 0 25%', position:'relative',
+            display:'flex', alignItems:'center', overflow:'hidden' }}>
+
+            {/* Full-bleed background image — right 55% */}
+            <div style={{ position:'absolute', right:0, top:0, bottom:0, width:'58%', overflow:'hidden' }}>
+              <motion.img src={proj.img} alt={proj.title}
+                animate={{ scale: hovered === idx ? 1.06 : 1 }}
+                transition={{ duration: 0.6, ease:'easeOut' }}
+                style={{ width:'100%', height:'100%', objectFit:'cover',
+                  display:'block', filter:'brightness(0.55)' }} />
+              {/* Left-to-right gradient masks image edge */}
+              <div style={{ position:'absolute', inset:0,
+                background:`linear-gradient(to right, #0a0a0f 0%, ${proj.color}18 50%, transparent 100%)` }} />
+            </div>
+
+            {/* Left content panel */}
+            <div style={{ position:'relative', zIndex:2, padding:'0 8vw',
+              maxWidth:'55%', width:'100%' }}
               onMouseEnter={() => setHovered(idx)}
-              onMouseLeave={() => setHovered(null)}
-              onClick={() => onProjectClick && onProjectClick(proj)}
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: 'spring', stiffness: 350, damping: 20 }}
-              style={{ borderRadius: '1rem', overflow: 'hidden', border: `1px solid ${proj.color}33`,
-                background: 'oklch(13% 0.012 264)', cursor: 'pointer', position: 'relative' }}>
-              <div style={{ height: '140px', overflow: 'hidden', position: 'relative' }}>
-                <motion.img
-                  src={proj.img} alt={proj.title}
-                  animate={{ scale: hovered === idx ? 1.08 : 1 }}
-                  transition={{ duration: 0.4, ease: 'easeOut' }}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'brightness(0.85)' }} />
-                <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, oklch(13% 0.012 264), transparent 60%)` }} />
-                <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', padding: '0.25rem 0.6rem',
-                  background: `${proj.color}cc`, borderRadius: '9999px', fontFamily: 'DM Sans', fontSize: '0.65rem',
-                  fontWeight: 700, color: '#000', letterSpacing: '0.05em' }}>{proj.tag}</div>
+              onMouseLeave={() => setHovered(null)}>
+
+              {/* Giant index number */}
+              <div style={{ fontFamily:"'Bebas Neue'", fontSize:'clamp(7rem,16vw,13rem)',
+                lineHeight:0.85, color:'#ffffff04', marginBottom:'-1rem',
+                userSelect:'none' }}>0{idx+1}</div>
+
+              {/* Tech tag */}
+              <div style={{ display:'inline-flex', alignItems:'center', gap:'0.5rem',
+                padding:'0.3rem 0.8rem', background:`${proj.color}22`,
+                border:`1px solid ${proj.color}55`, borderRadius:'9999px',
+                fontFamily:'DM Sans', fontSize:'0.7rem', color:proj.color,
+                letterSpacing:'0.1em', marginBottom:'1rem' }}>
+                {proj.tag}
               </div>
-              <div style={{ padding: '1rem' }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.4rem', letterSpacing: '0.04em',
-                  color: 'oklch(94% 0.005 264)', lineHeight: 1 }}>{proj.title}</div>
-                <div style={{ fontFamily: 'DM Sans', fontSize: '0.78rem', color: 'oklch(50% 0.02 264)',
-                  marginTop: '0.25rem' }}>{proj.subtitle}</div>
+
+              {/* Title */}
+              <h2 style={{ fontFamily:"'Bebas Neue'", fontSize:'clamp(3.5rem,8vw,6.5rem)',
+                lineHeight:0.9, color:'#f4f4f5', marginBottom:'1.2rem',
+                letterSpacing:'0.02em' }}>{proj.title}</h2>
+
+              {/* Description */}
+              <p style={{ fontFamily:'DM Sans', fontSize:'clamp(0.88rem,1.4vw,1rem)',
+                color:'#ffffff66', lineHeight:1.75, maxWidth:'36ch',
+                marginBottom:'2rem' }}>
+                {proj.description.slice(0, 130)}...
+              </p>
+
+              {/* CTA buttons */}
+              <div style={{ display:'flex', gap:'1rem', flexWrap:'wrap' }}>
+                <motion.button
+                  onClick={() => onProjectClick && onProjectClick(proj)}
+                  whileHover={{ scale:1.04, x:3 }}
+                  whileTap={{ scale:0.97 }}
+                  transition={{ type:'spring', stiffness:400, damping:18 }}
+                  style={{ display:'inline-flex', alignItems:'center', gap:'0.5rem',
+                    padding:'0.7rem 1.6rem', background:proj.color, color:'#0a0a0f',
+                    border:'none', borderRadius:'9999px', fontFamily:'DM Sans',
+                    fontWeight:700, fontSize:'0.85rem', cursor:'pointer',
+                    letterSpacing:'0.04em' }}>
+                  View Project →
+                </motion.button>
+                <motion.a href={proj.github} target="_blank" rel="noreferrer"
+                  whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
+                  transition={{ type:'spring', stiffness:400, damping:18 }}
+                  style={{ display:'inline-flex', alignItems:'center', gap:'0.5rem',
+                    padding:'0.7rem 1.6rem', border:`1px solid ${proj.color}44`,
+                    color:proj.color, borderRadius:'9999px', fontFamily:'DM Sans',
+                    fontSize:'0.85rem', textDecoration:'none', letterSpacing:'0.04em' }}>
+                  GitHub ↗
+                </motion.a>
               </div>
-              <AnimatePresence>
-                {hovered === idx && (
-                  <motion.div key="overlay"
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.78)',
-                      display: 'flex', flexDirection: 'column', alignItems: 'center',
-                      justifyContent: 'center', gap: '0.5rem' }}>
-                    <div style={{ fontFamily: 'DM Sans', fontWeight: 700, fontSize: '1rem',
-                      color: proj.color, letterSpacing: '0.08em' }}>View Project →</div>
-                    <div style={{ width: 36, height: 1, background: proj.color, opacity: 0.5 }} />
-                    <div style={{ fontFamily: 'monospace', fontSize: '0.65rem',
-                      color: `${proj.color}88`, letterSpacing: '0.15em' }}>{proj.tag}</div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </div>
+
+              {/* Tech pills */}
+              <div style={{ display:'flex', flexWrap:'wrap', gap:'0.4rem', marginTop:'1.5rem' }}>
+                {proj.tech.slice(0,5).map(t => (
+                  <span key={t} style={{ fontFamily:'DM Sans', fontSize:'0.7rem',
+                    padding:'0.2rem 0.55rem', borderRadius:'9999px',
+                    background:`${proj.color}14`, color:'#ffffff77',
+                    border:`1px solid ${proj.color}30` }}>{t}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Right-edge vertical line accent */}
+            <div style={{ position:'absolute', right:0, top:'15%', bottom:'15%',
+              width:1, background:`linear-gradient(to bottom, transparent, ${proj.color}44, transparent)`,
+              zIndex:3 }} />
+          </div>
+        ))}
       </div>
     </div>
   );

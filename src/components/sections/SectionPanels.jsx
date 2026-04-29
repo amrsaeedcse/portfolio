@@ -127,30 +127,26 @@ export function SkillsPanel({ panelRef }) {
     <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
       <div className="w-full max-w-[900px] backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/40 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
-        <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>03 / Technical Stack</div>
-        <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2rem' }}>
-          FULL-STACK<br />THINKING.
+        <div className="text-[0.65rem] md:text-[0.7rem] mb-2 md:mb-4 tracking-[0.2em] md:tracking-[0.3em] uppercase text-[#0ea5e9]" style={{ fontFamily: 'DM Sans' }}>03 / Technical Stack</div>
+        <h2 className="text-[clamp(2.5rem,12vw,5.5rem)] leading-[0.95] text-[oklch(96%_0.005_264)] mb-4 md:mb-8 drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)] md:drop-shadow-none" style={{ fontFamily: "'Bebas Neue'" }}>
+          FULL-STACK<br className="md:hidden" /> THINKING.
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+        <div className="grid grid-cols-2 gap-2 md:gap-4">
           {SKILL_GROUPS.map(({ cat, color, items }) => (
             // GSAP target: .skill-card — stagger scale + opacity on scroll enter
-            <div key={cat} className="skill-card" style={{
-              padding: '1.5rem',
+            <div key={cat} className="skill-card p-2 md:p-6 rounded-xl md:rounded-2xl relative overflow-hidden" style={{
               border: `1px solid ${color}44`,
-              borderRadius: '1rem',
               background: `${color}08`,
-              position: 'relative',
-              overflow: 'hidden',
               boxShadow: `0 0 18px ${color}22, inset 0 0 24px ${color}08`,
             }}>
               {/* Colored glow left border */}
               <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: `linear-gradient(to bottom, ${color}, ${color}44)`, boxShadow: `2px 0 12px ${color}88` }} />
               {/* Category label */}
-              <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.2rem', letterSpacing: '0.08em', color, marginBottom: '0.75rem', paddingLeft: '0.75rem' }}>{cat}</div>
+              <div className="text-[1rem] md:text-[1.2rem] mb-1.5 md:mb-3 pl-2 md:pl-3 tracking-[0.08em]" style={{ fontFamily: "'Bebas Neue'", color }}>{cat}</div>
               {/* Pills */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', paddingLeft: '0.5rem' }}>
+              <div className="flex flex-wrap gap-1 md:gap-1.5 pl-1.5 md:pl-2">
                 {items.map((item) => (
-                  <span key={item} style={{ fontFamily: 'DM Sans', fontSize: '0.75rem', padding: '0.25rem 0.6rem', borderRadius: '9999px', background: `${color}18`, color: 'oklch(75% 0.01 264)', border: `1px solid ${color}44` }}>
+                  <span key={item} className="text-[0.6rem] md:text-[0.75rem] px-1.5 py-0.5 md:px-2.5 md:py-1 rounded-full text-[oklch(75%_0.01_264)]" style={{ fontFamily: 'DM Sans', background: `${color}18`, border: `1px solid ${color}44` }}>
                     {item}
                   </span>
                 ))}

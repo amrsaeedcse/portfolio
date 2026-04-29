@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Observer } from 'gsap/Observer';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { AnimatePresence } from 'framer-motion';
 import Scene from './components/canvas/Scene';
 import Loader from './components/Loader';
@@ -11,7 +13,7 @@ import {
   ProjectsPanel, ExperiencePanel, ContactPanel,
 } from './components/sections/SectionPanels';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
 
 // ── 9-stop architecture ──────────────────────────────────────────────────────
 // Stops: Hero | About | Skills | Proj1 | Proj2 | Proj3 | Proj4 | Experience | Contact
@@ -22,15 +24,15 @@ const TOTAL_SCROLL = 2400;
 
 // Per-stop phone choreography
 const PHONE_STATES = [
-  { x: 2.2,  y: 0,     rotY: 0,      scale: 1.05 }, // 0 Hero
-  { x: 2.8,  y: 0.15,  rotY: 0.1,   scale: 0.9  }, // 1 About
-  { x: 3.1,  y: -0.1,  rotY: -0.08, scale: 0.82 }, // 2 Skills
-  { x: 4.0,  y: 0,     rotY: 0.05,  scale: 0.62 }, // 3 Proj1 — phone small, cards are star
-  { x: 4.0,  y: -0.1,  rotY: -0.05, scale: 0.62 }, // 4 Proj2
-  { x: 4.0,  y: 0.1,   rotY: 0.05,  scale: 0.62 }, // 5 Proj3
-  { x: 4.0,  y: 0,     rotY: -0.05, scale: 0.62 }, // 6 Proj4
-  { x: 2.5,  y: 0,     rotY: 0,      scale: 0.9  }, // 7 Experience
-  { x: 2.2,  y: 0,     rotY: 0,      scale: 1.0  }, // 8 Contact
+  { x: 2.2, y: 0, rotY: 0, scale: 1.05 }, // 0 Hero
+  { x: 2.8, y: 0.15, rotY: 0.1, scale: 0.9 }, // 1 About
+  { x: 3.1, y: -0.1, rotY: -0.08, scale: 0.82 }, // 2 Skills
+  { x: 4.0, y: 0, rotY: 0.05, scale: 0.62 }, // 3 Proj1 — phone small, cards are star
+  { x: 4.0, y: -0.1, rotY: -0.05, scale: 0.62 }, // 4 Proj2
+  { x: 4.0, y: 0.1, rotY: 0.05, scale: 0.62 }, // 5 Proj3
+  { x: 4.0, y: 0, rotY: -0.05, scale: 0.62 }, // 6 Proj4
+  { x: 2.5, y: 0, rotY: 0, scale: 0.9 }, // 7 Experience
+  { x: 2.2, y: 0, rotY: 0, scale: 1.0 }, // 8 Contact
 ];
 
 // Map scroll stop → panel index (panels: 0=Hero 1=About 2=Skills 3=Projects 4=Exp 5=Contact)
@@ -41,14 +43,15 @@ function stopToPanel(stop) {
 }
 
 export default function App() {
-  const [loaded, setLoaded]               = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
-  const pinnedRef   = useRef(null);
-  const phoneRef    = useRef(null);
-  const panelRefs   = useRef([]);
-  const dotRefs     = useRef([]);
-  const tlRef       = useRef(null);
+  const pinnedRef = useRef(null);
+  const phoneRef = useRef(null);
+  const panelRefs = useRef([]);
+  const dotRefs = useRef([]);
+  const tlRef = useRef(null);
   const currentStop = useRef(0);
+  const isAnimating = useRef(false);
 
   const handleLoaderDone = useCallback(() => setLoaded(true), []);
 
@@ -73,65 +76,54 @@ export default function App() {
       tlRef.current = tl;
 
       // Labels at equal 1/8 intervals
-      const LABELS = ['s0','s1','s2','s3','s3b','s3c','s3d','s4','s5'];
+      const LABELS = ['s0', 's1', 's2', 's3', 's3b', 's3c', 's3d', 's4', 's5'];
       LABELS.forEach((lbl, i) => tl.addLabel(lbl, i / STOPS));
 
       // ── PANEL CROSSFADES (only at actual section boundaries) ───────────────
       const crossfades = [
-        ['s1', 0, 1],  // Hero → About
-        ['s2', 1, 2],  // About → Skills
-        ['s3', 2, 3],  // Skills → Projects
-        ['s4', 3, 4],  // Projects → Experience
-        ['s5', 4, 5],  // Experience → Contact
+        ['s0', 0, 1],   // Hero → About (starts at s0, completes at s1)
+        ['s1', 1, 2],   // About → Skills (starts at s1, completes at s2)
+        ['s2', 2, 3],   // Skills → Projects (starts at s2, completes at s3)
+        ['s3d', 3, 4],  // Projects → Experience (starts at s3d, completes at s4)
+        ['s4', 4, 5],   // Experience → Contact (starts at s4, completes at s5)
       ];
       crossfades.forEach(([label, fromIdx, toIdx]) => {
-        tl.to(panels[fromIdx], { autoAlpha: 0, y: -36, duration: 1/STOPS*0.45 }, label);
-        tl.to(panels[toIdx],   { autoAlpha: 1, y: 0,   duration: 1/STOPS*0.45 }, `${label}+=0.02`);
+        tl.to(panels[fromIdx], { autoAlpha: 0, y: -36, duration: 1 / STOPS }, label);
+        tl.to(panels[toIdx], { autoAlpha: 1, y: 0, duration: 1 / STOPS }, label);
       });
 
       // ── PROJECT CAROUSEL (xPercent of #project-track) ─────────────────────
-      // Each card is 100vw = 25% of the 400vw track width → xPercent steps of 25
       tl.set('#project-track', { xPercent: 0 }, 's3');
-      tl.to('#project-track', { xPercent: -25, duration: 1/STOPS*0.5, ease: 'power3.inOut' }, 's3b');
-      tl.to('#project-track', { xPercent: -50, duration: 1/STOPS*0.5, ease: 'power3.inOut' }, 's3c');
-      tl.to('#project-track', { xPercent: -75, duration: 1/STOPS*0.5, ease: 'power3.inOut' }, 's3d');
+      tl.to('#project-track', { xPercent: -25, duration: 1 / STOPS }, 's3');
+      tl.to('#project-track', { xPercent: -50, duration: 1 / STOPS }, 's3b');
+      tl.to('#project-track', { xPercent: -75, duration: 1 / STOPS }, 's3c');
       // Reset carousel when leaving projects
       tl.set('#project-track', { xPercent: 0 }, 's4');
 
       // ── PHONE CHOREOGRAPHY (per stop) ─────────────────────────────────────
-      LABELS.forEach((label, stop) => {
-        if (!phoneRef.current) return;
-        const ps = PHONE_STATES[stop];
-        tl.to(phoneRef.current.position, { x: ps.x, y: ps.y, duration: 1/STOPS*0.6 }, label);
-        tl.to(phoneRef.current.rotation, { y: ps.rotY, duration: 1/STOPS*0.6 }, label);
-        tl.to(phoneRef.current.scale, { x: ps.scale, y: ps.scale, z: ps.scale, duration: 1/STOPS*0.5 }, `${label}+=0.05`);
-      });
-
-      // ── SECTION ENTRANCE ANIMATIONS ───────────────────────────────────────
-      // GSAP SKILL: immediateRender:false prevents from-state override on create
-      tl.to('#hero-content', { x: -80, autoAlpha: 0, duration: 1/STOPS*0.3, ease: 'power2.in' }, 's1');
-      tl.fromTo('#about-photo', { x: -70, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 1/STOPS*0.5, ease: 'power3.out', immediateRender: false }, 's1+=0.05');
-      tl.fromTo('#about-text-content', { x: 70, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 1/STOPS*0.5, ease: 'power3.out', immediateRender: false }, '<');
-      tl.fromTo('.skill-card', { scale: 0.82, autoAlpha: 0, y: 16 }, { scale: 1, autoAlpha: 1, y: 0, stagger: { each: 0.08 }, duration: 1/STOPS*0.5, ease: 'back.out(1.4)', immediateRender: false }, 's2+=0.04');
+      for (let i = 1; i <= STOPS; i++) {
+        if (!phoneRef.current) break;
+        const ps = PHONE_STATES[i];
+        const prevLabel = LABELS[i - 1];
+        tl.to(phoneRef.current.position, { x: ps.x, y: ps.y, duration: 1 / STOPS }, prevLabel);
+        tl.to(phoneRef.current.rotation, { y: ps.rotY, duration: 1 / STOPS }, prevLabel);
+        tl.to(phoneRef.current.scale, { x: ps.scale, y: ps.scale, z: ps.scale, duration: 1 / STOPS }, prevLabel);
+      }
 
       // ── SCROLL TRIGGER — snap to exact stop positions ─────────────────────
+      // ── SCROLL TRIGGER — fallback snap for native scrollbar dragging ────────
       ScrollTrigger.create({
         trigger: pinnedRef.current,
         start: 'top top',
         end: `+=${TOTAL_SCROLL}`,
         pin: true,
         anticipatePin: 1,
-        snap: {
-          snapTo: SNAP_POINTS,
-          duration: { min: 0.3, max: 0.55 },
-          ease: 'power2.inOut',
-          delay: 0.04,
-        },
+        animation: tl, // السر الأول: ربطنا التايم لاين بالـ ScrollTrigger عشان يشوف الـ Labels
+        scrub: true,   // FIX 1: Instant scrub to prevent double-delay lag behind Observer
         onUpdate(self) {
           scrollState.progress = self.progress;
           const stop = Math.min(STOPS, Math.round(self.progress * STOPS));
           const panelIdx = stopToPanel(stop);
-          tl.progress(self.progress);
 
           // Sync pointer-events
           panels.forEach((p, i) => { p.style.pointerEvents = i === panelIdx ? 'auto' : 'none'; });
@@ -140,25 +132,66 @@ export default function App() {
           dotRefs.current.forEach((d, i) => {
             if (!d) return;
             d.style.transform = i === stop ? 'scale(1.8)' : 'scale(1)';
-            d.style.opacity   = i === stop ? '1' : '0.3';
+            d.style.opacity = i === stop ? '1' : '0.3';
           });
           currentStop.current = stop;
         },
       });
 
+      // ── OBSERVER — Intercept Wheel/Touch for Strict Presentation Snapping ───
+      const obs = Observer.create({
+        target: window,
+        type: 'wheel,touch',
+        preventDefault: true,
+        wheelSpeed: -1,            // FIX 3: Prevent native scroll wheel from jumping over sections
+        tolerance: 10,
+        onUp: () => gotoNext(),    // FIX 3: swiped up / wheel down -> MORE content
+        onDown: () => gotoPrev(),  // FIX 3: swiped down / wheel up -> PREV content
+      });
+
+      function gotoNext() {
+        if (isAnimating.current) return;
+        const nextStop = Math.min(STOPS, currentStop.current + 1);
+        if (nextStop !== currentStop.current) {
+          snapToStop(nextStop);
+        }
+      }
+
+      function gotoPrev() {
+        if (isAnimating.current) return;
+        const prevStop = Math.max(0, currentStop.current - 1);
+        if (prevStop !== currentStop.current) {
+          snapToStop(prevStop);
+        }
+      }
+
+      function snapToStop(stopIdx) {
+        isAnimating.current = true;
+        const targetScroll = (stopIdx / STOPS) * TOTAL_SCROLL;
+        gsap.to(window, {
+          scrollTo: targetScroll,
+          duration: 0.6,
+          ease: 'power3.inOut',
+          onComplete: () => {
+            isAnimating.current = false;
+          }
+        });
+      }
+
       // ── ENTRANCE ANIMATION — phone swoops in after loader ─────────────────
       // Point 3: Set phone off-screen right initially, then swoop in
       if (phoneRef.current) {
         gsap.set(phoneRef.current.position, { x: 7 });
-        gsap.set(phoneRef.current.scale,    { x: 0.5, y: 0.5, z: 0.5 });
+        gsap.set(phoneRef.current.scale, { x: 0.5, y: 0.5, z: 0.5 });
         gsap.timeline({ delay: 0.15 })
           .to(phoneRef.current.position, { x: PHONE_STATES[0].x, duration: 1.0, ease: 'power3.out' })
-          .to(phoneRef.current.scale,    { x: PHONE_STATES[0].scale, y: PHONE_STATES[0].scale, z: PHONE_STATES[0].scale, duration: 0.9, ease: 'back.out(1.2)' }, 0.1);
+          .to(phoneRef.current.scale, { x: PHONE_STATES[0].scale, y: PHONE_STATES[0].scale, z: PHONE_STATES[0].scale, duration: 0.9, ease: 'back.out(1.2)' }, 0.1);
       }
     }
 
     return () => {
       cancelAnimationFrame(raf);
+      Observer.getAll().forEach(o => o.kill());
       ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, [loaded]);
@@ -184,86 +217,96 @@ export default function App() {
       {/* ── NAV ─────────────────────────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 flex items-center justify-between px-8 md:px-16 py-5"
         style={{ zIndex: 50 }}>
-        <div style={{ fontFamily:"'Bebas Neue'", fontSize:'1.5rem', letterSpacing:'0.06em', cursor:'pointer' }}
+        <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.5rem', letterSpacing: '0.06em', cursor: 'pointer' }}
           onClick={() => scrollToSection(0)}>
-          <span style={{ color:'#00FFD1' }}>&lt;</span>
-          <span style={{ color:'#f4f4f5' }}>AMR</span>
-          <span style={{ color:'#00FFD1' }}>/&gt;</span>
+          <span style={{ color: '#00FFD1' }}>&lt;</span>
+          <span style={{ color: '#f4f4f5' }}>AMR</span>
+          <span style={{ color: '#00FFD1' }}>/&gt;</span>
         </div>
         <div className="hidden md:flex items-center gap-8">
-          {[['About',1],['Work',3],['Contact',5]].map(([item, idx]) => (
+          {[['About', 1], ['Work', 3], ['Contact', 5]].map(([item, idx]) => (
             <button key={item} onClick={() => scrollToSection(idx)}
-              style={{ fontFamily:'DM Sans', fontSize:'0.75rem', letterSpacing:'0.15em', textTransform:'uppercase',
-                color:'oklch(52% 0.02 264)', background:'none', border:'none', cursor:'pointer', padding:0 }}
-              onMouseEnter={e=>e.target.style.color='#00FFD1'}
-              onMouseLeave={e=>e.target.style.color='oklch(52% 0.02 264)'}>{item}</button>
+              style={{
+                fontFamily: 'DM Sans', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase',
+                color: 'oklch(52% 0.02 264)', background: 'none', border: 'none', cursor: 'pointer', padding: 0
+              }}
+              onMouseEnter={e => e.target.style.color = '#00FFD1'}
+              onMouseLeave={e => e.target.style.color = 'oklch(52% 0.02 264)'}>{item}</button>
           ))}
         </div>
         <a href="/assets/Amr_Abdelazeem_Resume.pdf" download
-          style={{ fontFamily:'DM Sans', fontSize:'0.72rem', letterSpacing:'0.1em', textTransform:'uppercase',
-            padding:'0.5rem 1.2rem', border:'1px solid #ffffff22', color:'oklch(52% 0.02 264)',
-            borderRadius:'9999px', textDecoration:'none' }}
-          onMouseEnter={e=>{e.target.style.borderColor='#00FFD1';e.target.style.color='#00FFD1'}}
-          onMouseLeave={e=>{e.target.style.borderColor='#ffffff22';e.target.style.color='oklch(52% 0.02 264)'}}>
+          style={{
+            fontFamily: 'DM Sans', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase',
+            padding: '0.5rem 1.2rem', border: '1px solid #ffffff22', color: 'oklch(52% 0.02 264)',
+            borderRadius: '9999px', textDecoration: 'none'
+          }}
+          onMouseEnter={e => { e.target.style.borderColor = '#00FFD1'; e.target.style.color = '#00FFD1' }}
+          onMouseLeave={e => { e.target.style.borderColor = '#ffffff22'; e.target.style.color = 'oklch(52% 0.02 264)' }}>
           Resume ↓
         </a>
       </nav>
 
       {/* Side label */}
       <div className="fixed left-5 top-1/2 hidden md:block"
-        style={{ zIndex:50, writingMode:'vertical-rl', transform:'translateY(-50%) rotate(180deg)',
-          fontFamily:'DM Sans', fontSize:'0.6rem', letterSpacing:'0.2em', textTransform:'uppercase',
-          color:'oklch(22% 0.02 264)' }}>AMRSAEEDCSE · 2025</div>
+        style={{
+          zIndex: 50, writingMode: 'vertical-rl', transform: 'translateY(-50%) rotate(180deg)',
+          fontFamily: 'DM Sans', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase',
+          color: 'oklch(22% 0.02 264)'
+        }}>AMRSAEEDCSE · 2025</div>
 
       {/* Progress dots — 9 stops */}
       <div className="fixed right-5 top-1/2 flex flex-col gap-2"
-        style={{ zIndex:50, transform:'translateY(-50%)' }}>
+        style={{ zIndex: 50, transform: 'translateY(-50%)' }}>
         {SNAP_POINTS.map((_, i) => (
           <div key={i} ref={el => dotRefs.current[i] = el}
-            onClick={() => window.scrollTo({ top: (i / STOPS) * TOTAL_SCROLL, behavior:'smooth' })}
+            onClick={() => window.scrollTo({ top: (i / STOPS) * TOTAL_SCROLL, behavior: 'smooth' })}
             style={{
-              width: i === 0 ? 7 : [3,6].includes(i) ? 5 : 6,
-              height: i === 0 ? 7 : [3,6].includes(i) ? 5 : 6,
-              borderRadius:'50%', background:'#f4f4f5',
-              opacity: i===0?1:0.25, transform: i===0?'scale(1.8)':'scale(1)',
-              transition:'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', cursor:'pointer',
+              width: i === 0 ? 7 : [3, 6].includes(i) ? 5 : 6,
+              height: i === 0 ? 7 : [3, 6].includes(i) ? 5 : 6,
+              borderRadius: '50%', background: '#f4f4f5',
+              opacity: i === 0 ? 1 : 0.25, transform: i === 0 ? 'scale(1.8)' : 'scale(1)',
+              transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', cursor: 'pointer',
             }} />
         ))}
       </div>
 
       {/* Scroll hint */}
       <div className="fixed bottom-7 left-1/2 flex flex-col items-center gap-2 pointer-events-none"
-        style={{ zIndex:50, transform:'translateX(-50%)', opacity:0.35 }}>
-        <span style={{ fontFamily:'DM Sans', fontSize:'0.6rem', letterSpacing:'0.25em',
-          color:'oklch(52% 0.02 264)', textTransform:'uppercase' }}>Scroll</span>
-        <div style={{ width:1, height:28, background:'linear-gradient(to bottom, #00FFD1, transparent)' }} />
+        style={{ zIndex: 50, transform: 'translateX(-50%)', opacity: 0.35 }}>
+        <span style={{
+          fontFamily: 'DM Sans', fontSize: '0.6rem', letterSpacing: '0.25em',
+          color: 'oklch(52% 0.02 264)', textTransform: 'uppercase'
+        }}>Scroll</span>
+        <div style={{ width: 1, height: 28, background: 'linear-gradient(to bottom, #00FFD1, transparent)' }} />
       </div>
 
       {/* ── PINNED CONTAINER ─────────────────────────────────────────────────── */}
       <div ref={pinnedRef}
-        style={{ position:'relative', width:'100vw', height:'100vh', overflow:'hidden', zIndex:10 }}>
+        style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 10 }}>
         {/* 6 section panels */}
-        <HeroPanel       panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} />
-        <AboutPanel      panelRef={el => panelRefs.current[1] = el} />
-        <SkillsPanel     panelRef={el => panelRefs.current[2] = el} />
-        <ProjectsPanel   panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} />
+        <HeroPanel panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} />
+        <AboutPanel panelRef={el => panelRefs.current[1] = el} />
+        <SkillsPanel panelRef={el => panelRefs.current[2] = el} />
+        <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} />
         <ExperiencePanel panelRef={el => panelRefs.current[4] = el} />
-        <ContactPanel    panelRef={el => panelRefs.current[5] = el} />
+        <ContactPanel panelRef={el => panelRefs.current[5] = el} />
       </div>
 
       {/* Footer */}
-      <footer style={{ position:'relative', zIndex:10, borderTop:'1px solid #ffffff0d',
-        padding:'2rem 4rem', display:'flex', justifyContent:'space-between', alignItems:'center',
-        flexWrap:'wrap', gap:'1rem', background:'#0a0a0f' }}>
-        <p style={{ fontFamily:'DM Sans', fontSize:'0.72rem', color:'oklch(28% 0.02 264)' }}>
+      <footer style={{
+        position: 'relative', zIndex: 10, borderTop: '1px solid #ffffff0d',
+        padding: '2rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        flexWrap: 'wrap', gap: '1rem', background: '#0a0a0f'
+      }}>
+        <p style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', color: 'oklch(28% 0.02 264)' }}>
           © 2025 Amr Abdelazeem — Built with React &amp; Three.js
         </p>
-        <div style={{ display:'flex', gap:'2rem' }}>
-          {[['LinkedIn','https://linkedin.com/in/amrsaeed-cse'],['GitHub','https://github.com/amrsaeedcse'],['WhatsApp','https://wa.me/201121153059']].map(([l,h])=>(
+        <div style={{ display: 'flex', gap: '2rem' }}>
+          {[['LinkedIn', 'https://linkedin.com/in/amrsaeed-cse'], ['GitHub', 'https://github.com/amrsaeedcse'], ['WhatsApp', 'https://wa.me/201121153059']].map(([l, h]) => (
             <a key={l} href={h} target="_blank" rel="noreferrer"
-              style={{ fontFamily:'DM Sans', fontSize:'0.72rem', color:'oklch(35% 0.02 264)', textDecoration:'none' }}
-              onMouseEnter={e=>e.target.style.color='#00FFD1'}
-              onMouseLeave={e=>e.target.style.color='oklch(35% 0.02 264)'}>{l}</a>
+              style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', color: 'oklch(35% 0.02 264)', textDecoration: 'none' }}
+              onMouseEnter={e => e.target.style.color = '#00FFD1'}
+              onMouseLeave={e => e.target.style.color = 'oklch(35% 0.02 264)'}>{l}</a>
           ))}
         </div>
       </footer>

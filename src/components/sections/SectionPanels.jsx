@@ -166,7 +166,7 @@ export function ProjectsPanel({ panelRef, onProjectClick }) {
   const [hovered, setHovered] = useState(null);
 
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0"
+    <div ref={panelRef} className="section-panel absolute inset-0 backdrop-blur-md md:backdrop-blur-none bg-[#0a0a0f]/40 md:bg-transparent"
       style={{ opacity: 0, pointerEvents: 'none', overflow: 'hidden' }}>
 
       {/* Section label — top-left, always visible in Projects */}

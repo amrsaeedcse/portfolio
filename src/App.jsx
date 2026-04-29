@@ -196,6 +196,19 @@ export default function App() {
           const stop = Math.min(STOPS, Math.round(self.progress * STOPS));
           const panelIdx = stopToPanel(stop, isMobile);
           scrollState.section = panelIdx;
+          
+          // Compute logical section for the Phone Mockup screens (0 to 5)
+          let logicalSection = panelIdx;
+          if (isMobile) {
+            if (stop <= 7) logicalSection = Math.min(3, stop);
+            else if (stop <= 9) logicalSection = 4;
+            else logicalSection = 5;
+          } else {
+            if (stop <= 7) logicalSection = Math.min(3, stop);
+            else if (stop === 8) logicalSection = 4;
+            else logicalSection = 5;
+          }
+          scrollState.logicalSection = logicalSection;
 
           // Sync pointer-events
           panels.forEach((p, i) => { p.style.pointerEvents = i === panelIdx ? 'auto' : 'none'; });

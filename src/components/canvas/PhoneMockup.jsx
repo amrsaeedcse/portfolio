@@ -141,10 +141,12 @@ export const PhoneMockup = React.forwardRef(function PhoneMockup(props, ref) {
     // 3d-web-experience SKILL: smooth idle float on INNER group, isolated from GSAP
     floatRef.current.position.y = Math.sin(t * 1.1) * 0.14;
 
-    const section = scrollState.section;
+    const section = scrollState.logicalSection ?? scrollState.section;
     const { width: w, height: h } = canvas;
     ctx.clearRect(0, 0, w, h);
-    SCREENS[section](ctx, w, h, t, scrollState.lampIntensity);
+    if (SCREENS[section]) {
+      SCREENS[section](ctx, w, h, t, scrollState.lampIntensity);
+    }
     drawStatusBar(ctx, w, t, section);
     texture.needsUpdate = true;
 

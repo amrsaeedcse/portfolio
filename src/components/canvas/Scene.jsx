@@ -10,12 +10,10 @@ const PARTICLES = Array.from({ length: 18 }, () => ({
 
 const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
 
-export default function Scene({ phoneRef }) {
+function SceneComponent({ phoneRef }) {
   return (
     <Canvas
       shadows
-      // Camera slightly right-of-center so it frames the right half (phone) well
-      // while leaving the left half clear for HTML section content
       camera={{ position: [1.0, 0, 9], fov: 46 }}
       gl={{ antialias: !isMobile, alpha: true }}
       dpr={isMobile ? 1 : [1, 1.5]}
@@ -25,11 +23,6 @@ export default function Scene({ phoneRef }) {
       <directionalLight position={[3, 4, 5]} intensity={0.25} color="#ffffff" />
 
       <Suspense fallback={null}>
-        {/*
-          Phone is the SOLE hero object.
-          scale={1.6} makes it visually dominant on the right side.
-          x=2.5 places it in the right ~40% of the visible scene.
-        */}
         <PhoneMockup
           ref={phoneRef}
           position={[2.5, 0, 0]}
@@ -45,3 +38,6 @@ export default function Scene({ phoneRef }) {
     </Canvas>
   );
 }
+
+const Scene = React.memo(SceneComponent);
+export default Scene;

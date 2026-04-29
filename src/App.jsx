@@ -7,6 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 import Scene from './components/canvas/Scene';
 import Loader from './components/Loader';
 import ProjectDetail from './components/sections/ProjectDetail';
+import ProjectArchive from './components/sections/ProjectArchive';
 import { scrollState } from './lib/scrollState';
 import {
   HeroPanel, AboutPanel, SkillsPanel,
@@ -23,17 +24,33 @@ const SNAP_POINTS = Array.from({ length: STOPS + 1 }, (_, i) => i / STOPS);
 const TOTAL_SCROLL = 2400;
 
 // Per-stop phone choreography
-const PHONE_STATES = [
-  { x: 2.2, y: 0, rotY: 0, scale: 1.05 }, // 0 Hero
-  { x: 2.8, y: 0.15, rotY: 0.1, scale: 0.9 }, // 1 About
-  { x: 3.1, y: -0.1, rotY: -0.08, scale: 0.82 }, // 2 Skills
-  { x: 4.0, y: 0, rotY: 0.05, scale: 0.62 }, // 3 Proj1 — phone small, cards are star
-  { x: 4.0, y: -0.1, rotY: -0.05, scale: 0.62 }, // 4 Proj2
-  { x: 4.0, y: 0.1, rotY: 0.05, scale: 0.62 }, // 5 Proj3
-  { x: 4.0, y: 0, rotY: -0.05, scale: 0.62 }, // 6 Proj4
-  { x: 2.5, y: 0, rotY: 0, scale: 0.9 }, // 7 Experience
-  { x: 2.2, y: 0, rotY: 0, scale: 1.0 }, // 8 Contact
-];
+const getPhoneStates = (width) => {
+  const isMobile = width < 768;
+  if (isMobile) {
+    return [
+      { x: 0, y: -2.5, rotY: 0, scale: 0.6 }, // 0 Hero
+      { x: 0, y: -2.5, rotY: 0.1, scale: 0.5 }, // 1 About
+      { x: 0, y: -2.5, rotY: -0.08, scale: 0.5 }, // 2 Skills
+      { x: 0, y: -2.5, rotY: 0.05, scale: 0.4 }, // 3 Proj1
+      { x: 0, y: -2.5, rotY: -0.05, scale: 0.4 }, // 4 Proj2
+      { x: 0, y: -2.5, rotY: 0.05, scale: 0.4 }, // 5 Proj3
+      { x: 0, y: -2.5, rotY: -0.05, scale: 0.4 }, // 6 Proj4
+      { x: 0, y: -2.5, rotY: 0, scale: 0.5 }, // 7 Experience
+      { x: 0, y: -2.5, rotY: 0, scale: 0.6 }, // 8 Contact
+    ];
+  }
+  return [
+    { x: 2.2, y: 0, rotY: 0, scale: 1.05 }, // 0 Hero
+    { x: 3.5, y: 0.15, rotY: 0.1, scale: 0.9 }, // 1 About (pushed right)
+    { x: 3.8, y: -0.1, rotY: -0.08, scale: 0.82 }, // 2 Skills (pushed right)
+    { x: 4.5, y: 0, rotY: 0.05, scale: 0.62 }, // 3 Proj1
+    { x: 4.5, y: -0.1, rotY: -0.05, scale: 0.62 }, // 4 Proj2
+    { x: 4.5, y: 0.1, rotY: 0.05, scale: 0.62 }, // 5 Proj3
+    { x: 4.5, y: 0, rotY: -0.05, scale: 0.62 }, // 6 Proj4
+    { x: 3.2, y: 0, rotY: 0, scale: 0.9 }, // 7 Experience
+    { x: 2.8, y: 0, rotY: 0, scale: 1.0 }, // 8 Contact
+  ];
+};
 
 // Map scroll stop → panel index (panels: 0=Hero 1=About 2=Skills 3=Projects 4=Exp 5=Contact)
 function stopToPanel(stop) {
@@ -52,11 +69,43 @@ export default function App() {
   const tlRef = useRef(null);
   const currentStop = useRef(0);
   const isAnimating = useRef(false);
+  const obsRef = useRef(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const handleLoaderDone = useCallback(() => setLoaded(true), []);
 
+  useEffect(() => {
+    let timeoutId = null;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setWindowWidth(window.innerWidth);
+        window.scrollTo(0, 0); // Reset to start on resize
+      }, 300);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  // Pause observer if modal is open
+  useEffect(() => {
+    if (activeProject) {
+      document.body.style.overflow = 'hidden';
+      if (obsRef.current) obsRef.current.disable();
+    } else {
+      document.body.style.overflow = '';
+      if (obsRef.current) obsRef.current.enable();
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeProject]);
+
   // Nav helper — maps logical section (0-5) to scroll stop
-  const SECTION_TO_STOP = [0, 1, 2, 3, 7, 8]; // About→1, Work→3, Contact→8
+  const SECTION_TO_STOP = [0, 1, 2, 3, 7, 8]; // Hero→0, About→1, Skills→2, Work→3, Exp→7, Contact→8
   const scrollToSection = useCallback((sectionIdx) => {
     const stop = SECTION_TO_STOP[sectionIdx] ?? sectionIdx;
     const target = stop / STOPS;
@@ -68,6 +117,7 @@ export default function App() {
     const raf = requestAnimationFrame(() => requestAnimationFrame(buildTimeline));
 
     function buildTimeline() {
+      const PHONE_STATES = getPhoneStates(windowWidth);
       const panels = panelRefs.current.filter(Boolean);
       if (!pinnedRef.current || panels.length === 0) return;
 
@@ -139,7 +189,7 @@ export default function App() {
       });
 
       // ── OBSERVER — Intercept Wheel/Touch for Strict Presentation Snapping ───
-      const obs = Observer.create({
+      obsRef.current = Observer.create({
         target: window,
         type: 'wheel,touch',
         preventDefault: true,
@@ -191,10 +241,10 @@ export default function App() {
 
     return () => {
       cancelAnimationFrame(raf);
-      Observer.getAll().forEach(o => o.kill());
+      if (obsRef.current) obsRef.current.kill();
       ScrollTrigger.getAll().forEach(st => st.kill());
     };
-  }, [loaded]);
+  }, [loaded, windowWidth]);
 
   return (
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
@@ -205,9 +255,11 @@ export default function App() {
 
       {/* Point 4: Canvas is ALWAYS mounted at top level — never unmounts on project open */}
       <AnimatePresence>
-        {activeProject && (
-          <ProjectDetail project={activeProject} onClose={() => setActiveProject(null)} />
-        )}
+        {activeProject === 'ARCHIVE' ? (
+          <ProjectArchive key="archive" onClose={() => setActiveProject(null)} onOpenProject={setActiveProject} />
+        ) : activeProject ? (
+          <ProjectDetail key="detail" project={activeProject} onClose={() => setActiveProject(null)} />
+        ) : null}
       </AnimatePresence>
 
       <div className="fixed inset-0" style={{ zIndex: 0 }}>
@@ -224,7 +276,7 @@ export default function App() {
           <span style={{ color: '#00FFD1' }}>/&gt;</span>
         </div>
         <div className="hidden md:flex items-center gap-8">
-          {[['About', 1], ['Work', 3], ['Contact', 5]].map(([item, idx]) => (
+          {[['About', 1], ['Skills', 2], ['Work', 3], ['Experience', 4], ['Contact', 5]].map(([item, idx]) => (
             <button key={item} onClick={() => scrollToSection(idx)}
               style={{
                 fontFamily: 'DM Sans', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase',

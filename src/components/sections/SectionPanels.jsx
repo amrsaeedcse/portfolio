@@ -185,7 +185,7 @@ export function ProjectsPanel({ panelRef, onProjectClick }) {
       {/* Progress indicator — which card of 4 */}
       <div style={{ position:'absolute', bottom:'2.5rem', left:'8vw', zIndex:4,
         display:'flex', gap:'0.5rem', alignItems:'center' }}>
-        {PROJECTS_DATA.map((_, i) => (
+        {[0, 1, 2, 3].map((_, i) => (
           <div key={i} className={`proj-dot-${i}`}
             style={{ width: i===0?28:8, height:2, borderRadius:999,
               background: i===0?'#00FFD1':'#ffffff22', transition:'all 0.35s ease' }} />
@@ -196,7 +196,7 @@ export function ProjectsPanel({ panelRef, onProjectClick }) {
       <div id="project-track"
         style={{ display:'flex', width:'400%', height:'100%', willChange:'transform' }}>
 
-        {PROJECTS_DATA.map((proj, idx) => (
+        {PROJECTS_DATA.slice(0, 3).map((proj, idx) => (
           /* Each card = exactly 25% of 400% track = 100vw */
           <div key={proj.id} style={{ flex:'0 0 25%', position:'relative',
             display:'flex', alignItems:'center', overflow:'hidden' }}>
@@ -248,36 +248,14 @@ export function ProjectsPanel({ panelRef, onProjectClick }) {
               {/* CTA buttons */}
               <div style={{ display:'flex', gap:'1rem', flexWrap:'wrap' }}>
                 <motion.button
-                  onClick={() => onProjectClick && onProjectClick(proj)}
-                  whileHover={{ scale:1.04, x:3 }}
-                  whileTap={{ scale:0.97 }}
-                  transition={{ type:'spring', stiffness:400, damping:18 }}
-                  style={{ display:'inline-flex', alignItems:'center', gap:'0.5rem',
-                    padding:'0.7rem 1.6rem', background:proj.color, color:'#0a0a0f',
-                    border:'none', borderRadius:'9999px', fontFamily:'DM Sans',
-                    fontWeight:700, fontSize:'0.85rem', cursor:'pointer',
-                    letterSpacing:'0.04em' }}>
-                  View Project →
+                  whileHover={{ scale:1.05 }} whileTap={{ scale:0.95 }}
+                  onClick={() => onProjectClick(proj)}
+                  style={{ fontFamily:'DM Sans', fontSize:'0.75rem', letterSpacing:'0.1em',
+                    textTransform:'uppercase', padding:'0.7rem 1.5rem', background:proj.color,
+                    color:'#0a0a0f', border:'none', borderRadius:'9999px', cursor:'pointer',
+                    fontWeight:600 }}>
+                  View Details
                 </motion.button>
-                <motion.a href={proj.github} target="_blank" rel="noreferrer"
-                  whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
-                  transition={{ type:'spring', stiffness:400, damping:18 }}
-                  style={{ display:'inline-flex', alignItems:'center', gap:'0.5rem',
-                    padding:'0.7rem 1.6rem', border:`1px solid ${proj.color}44`,
-                    color:proj.color, borderRadius:'9999px', fontFamily:'DM Sans',
-                    fontSize:'0.85rem', textDecoration:'none', letterSpacing:'0.04em' }}>
-                  GitHub ↗
-                </motion.a>
-              </div>
-
-              {/* Tech pills */}
-              <div style={{ display:'flex', flexWrap:'wrap', gap:'0.4rem', marginTop:'1.5rem' }}>
-                {proj.tech.slice(0,5).map(t => (
-                  <span key={t} style={{ fontFamily:'DM Sans', fontSize:'0.7rem',
-                    padding:'0.2rem 0.55rem', borderRadius:'9999px',
-                    background:`${proj.color}14`, color:'#ffffff77',
-                    border:`1px solid ${proj.color}30` }}>{t}</span>
-                ))}
               </div>
             </div>
 
@@ -287,6 +265,25 @@ export function ProjectsPanel({ panelRef, onProjectClick }) {
               zIndex:3 }} />
           </div>
         ))}
+
+        {/* 4th Card: View All Projects CTA */}
+        <div style={{ flex:'0 0 25%', position:'relative', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', background:'#050508' }}>
+          <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at center, #00FFD111 0%, transparent 70%)' }} />
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onProjectClick('ARCHIVE')}
+            style={{ textAlign: 'center', cursor: 'pointer', zIndex: 10, padding: '3rem', border: '1px solid #ffffff11', borderRadius: '2rem', background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}
+          >
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✨</div>
+            <h2 style={{ fontFamily:"'Bebas Neue'", fontSize:'clamp(3rem,6vw,5rem)', lineHeight:0.9, color:'#f4f4f5', marginBottom:'0.5rem', letterSpacing:'0.02em' }}>
+              VIEW ALL <span style={{ color:'#00FFD1' }}>PROJECTS</span>
+            </h2>
+            <p style={{ fontFamily:'DM Sans', fontSize:'0.9rem', color:'#ffffff88', letterSpacing:'0.1em', textTransform: 'uppercase' }}>
+              Explore the complete archive
+            </p>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -375,10 +372,25 @@ export function ContactPanel({ panelRef }) {
           <motion.button type="submit" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
             style={{ padding: '0.9rem', background: 'oklch(68% 0.15 200)', color: 'oklch(10% 0.01 264)', border: 'none', borderRadius: '0.5rem', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', letterSpacing: '0.04em' }}>
-            Send Message →
+            Send Message
           </motion.button>
         </form>
       </div>
+
+      {/* Footer Merged into Contact Panel */}
+      <footer style={{ position:'absolute', bottom: 0, left: 0, right: 0, zIndex:10, borderTop:'1px solid #ffffff0d', padding:'2rem 4rem', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:'1rem', background:'#0a0a0f' }}>
+        <p style={{ fontFamily:'DM Sans', fontSize:'0.72rem', color:'oklch(28% 0.02 264)' }}>
+          © 2025 Amr Abdelazeem — Built with React &amp; Three.js
+        </p>
+        <div style={{ display:'flex', gap:'2rem' }}>
+          {[['LinkedIn', 'https://linkedin.com/in/amrsaeed-cse'], ['GitHub', 'https://github.com/amrsaeedcse'], ['WhatsApp', 'https://wa.me/201121153059']].map(([l, h]) => (
+            <a key={l} href={h} target="_blank" rel="noreferrer"
+              style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', color: 'oklch(35% 0.02 264)', textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => e.target.style.color = '#00FFD1'}
+              onMouseLeave={e => e.target.style.color = 'oklch(35% 0.02 264)'}>{l}</a>
+          ))}
+        </div>
+      </footer>
     </div>
   );
 }

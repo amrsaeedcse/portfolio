@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Observer } from 'gsap/Observer';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import Scene from './components/canvas/Scene';
 import Loader from './components/Loader';
 import ProjectDetail from './components/sections/ProjectDetail';
@@ -334,7 +334,10 @@ export default function App() {
       </div>
 
       {/* ── PINNED CONTAINER ─────────────────────────────────────────────────── */}
-      <div ref={pinnedRef}
+      <motion.div ref={pinnedRef}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: loaded ? 1 : 0, scale: loaded ? 1 : 0.95 }}
+        transition={{ duration: 1.2, ease: [0.85, 0, 0.15, 1], delay: 0.1 }}
         style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 10 }}>
         {/* 6 section panels */}
         <HeroPanel panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} />
@@ -343,7 +346,7 @@ export default function App() {
         <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} />
         <ExperiencePanel panelRef={el => panelRefs.current[4] = el} />
         <ContactPanel panelRef={el => panelRefs.current[5] = el} />
-      </div>
+      </motion.div>
 
       {/* Footer */}
       <footer style={{

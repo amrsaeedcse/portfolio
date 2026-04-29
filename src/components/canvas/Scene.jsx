@@ -26,7 +26,7 @@ export default React.memo(function Scene({ phoneRef }) {
         <PhoneMockup
           ref={phoneRef}
           position={[2.5, 0, 0]}
-          scale={[1.6, 1.6, 1.6]}
+          scale={[isMobile ? 0.6 : 1.05, isMobile ? 0.6 : 1.05, isMobile ? 0.6 : 1.05]}
           rotation={[0, 0, 0]}
         />
 

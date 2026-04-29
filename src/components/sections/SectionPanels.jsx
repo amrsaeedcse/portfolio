@@ -382,12 +382,12 @@ export function ContactPanel({ panelRef }) {
         <p style={{ fontFamily:'DM Sans', fontSize:'0.72rem', color:'oklch(28% 0.02 264)' }}>
           © 2025 Amr Abdelazeem — Built with React &amp; Three.js
         </p>
-        <div style={{ display:'flex', gap:'2rem' }}>
-          {[['LinkedIn', 'https://linkedin.com/in/amrsaeed-cse'], ['GitHub', 'https://github.com/amrsaeedcse'], ['WhatsApp', 'https://wa.me/201121153059']].map(([l, h]) => (
+        <div style={{ display:'flex', gap:'1rem', flexWrap:'wrap' }}>
+          {[['LinkedIn', 'https://linkedin.com/in/amrsaeed-cse', '#0ea5e9'], ['GitHub', 'https://github.com/amrsaeedcse', '#a855f7'], ['WhatsApp', 'https://wa.me/201121153059', '#10b981']].map(([l, h, c]) => (
             <a key={l} href={h} target="_blank" rel="noreferrer"
-              style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', color: 'oklch(35% 0.02 264)', textDecoration: 'none', transition: 'color 0.2s' }}
-              onMouseEnter={e => e.target.style.color = '#00FFD1'}
-              onMouseLeave={e => e.target.style.color = 'oklch(35% 0.02 264)'}>{l}</a>
+              style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', fontWeight: 600, color: '#f4f4f5', textDecoration: 'none', border: `1px solid ${c}66`, padding: '0.4rem 1.2rem', borderRadius: '9999px', transition: 'all 0.2s', background: `${c}11` }}
+              onMouseEnter={e => { e.target.style.background = c; e.target.style.color = '#000'; e.target.style.borderColor = c; }}
+              onMouseLeave={e => { e.target.style.background = `${c}11`; e.target.style.color = '#f4f4f5'; e.target.style.borderColor = `${c}66`; }}>{l}</a>
           ))}
         </div>
       </footer>

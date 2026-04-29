@@ -5,9 +5,9 @@ import { PROJECTS_DATA } from './ProjectDetail';
 // ── HERO PANEL ────────────────────────────────────────────────────────────────
 export function HeroPanel({ panelRef, scrollToSection }) {
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
+    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 1, pointerEvents: 'auto' }}>
-      <div id="hero-content" className="w-full max-w-5xl mx-auto">
+      <div id="hero-content" className="w-full max-w-5xl mx-auto backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/40 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
         {/* Eyebrow */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.6 }}
           className="flex items-center gap-3 mb-4">
@@ -19,7 +19,7 @@ export function HeroPanel({ panelRef, scrollToSection }) {
 
         {/* Giant name */}
         <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(5rem, 15vw, 11rem)', lineHeight: 0.9, letterSpacing: '0.02em', color: 'oklch(96% 0.005 264)', marginBottom: '0.5rem' }}>
+          style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(4.5rem, 15vw, 11rem)', lineHeight: 0.9, letterSpacing: '0.02em', color: 'oklch(96% 0.005 264)', marginBottom: '0.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
           HI, I'M<br />
           <span style={{ color: 'oklch(68% 0.15 200)' }}>AMR.</span>
         </motion.h1>
@@ -64,51 +64,47 @@ export function HeroPanel({ panelRef, scrollToSection }) {
 export function AboutPanel({ panelRef }) {
   const stats = [['3+', 'Years Coding'], ['10+', 'Projects'], ['2', 'Trainings'], ['1', 'University']];
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
+    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', width: '100%', maxWidth: '900px' }}>
-
-        {/* Photo — IoT terminal viewfinder frame, GSAP target: #about-photo */}
-        <div id="about-photo" style={{ position: 'relative', padding: '1rem' }}>
+      <div className="w-full max-w-[900px] flex flex-col md:grid md:grid-cols-[auto_1fr] gap-6 md:gap-16 items-center backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/50 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
+        
+        {/* Photo */}
+        <div id="about-photo" className="relative p-2 md:p-4 w-32 md:w-auto mx-auto md:mx-0">
           {/* Viewfinder corner brackets */}
           {[['top:0,left:0', 'borderTop,borderLeft'], ['top:0,right:0', 'borderTop,borderRight'], ['bottom:0,left:0', 'borderBottom,borderLeft'], ['bottom:0,right:0', 'borderBottom,borderRight']].map((_, ci) => {
             const tops = [0, 0, 'auto', 'auto']; const lefts = [0, 'auto', 0, 'auto'];
             const rights = ['auto', 0, 'auto', 0]; const bottoms = ['auto', 'auto', 0, 0];
             const bTop = ci < 2 ? '2px solid #00FFD1' : 'none'; const bBot = ci >= 2 ? '2px solid #00FFD1' : 'none';
             const bLeft = ci % 2 === 0 ? '2px solid #00FFD1' : 'none'; const bRight = ci % 2 === 1 ? '2px solid #00FFD1' : 'none';
-            return <div key={ci} style={{ position: 'absolute', top: tops[ci], left: lefts[ci], right: rights[ci], bottom: bottoms[ci], width: 32, height: 32, borderTop: bTop, borderBottom: bBot, borderLeft: bLeft, borderRight: bRight, zIndex: 2 }} />;
+            return <div key={ci} style={{ position: 'absolute', top: tops[ci], left: lefts[ci], right: rights[ci], bottom: bottoms[ci], width: '20px', height: '20px', borderTop: bTop, borderBottom: bBot, borderLeft: bLeft, borderRight: bRight, zIndex: 2 }} className="md:w-[32px] md:h-[32px]" />;
           })}
-          {/* Scan line effect */}
-          <div style={{ position: 'absolute', top: 0, left: '1rem', right: '1rem', height: '1px', background: 'linear-gradient(to right, transparent, #00FFD155, transparent)', zIndex: 2 }} />
           {/* Photo container */}
           <div style={{ position: 'relative', borderRadius: '1rem', overflow: 'hidden', aspectRatio: '4/5', border: '1px solid #00FFD122' }}>
             <img src="/assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
               alt="Amr Abdelazeem" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, oklch(10% 0.01 264) 0%, transparent 55%)' }} />
-            {/* IoT terminal overlay text */}
-            <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', fontFamily: 'monospace', fontSize: '0.65rem', color: '#00FFD1aa', letterSpacing: '0.1em' }}>AMR.ENG // STATUS: AVAILABLE</div>
           </div>
           {/* Stat badge */}
-          <div style={{ position: 'absolute', bottom: '0rem', right: '0rem', background: '#00FFD1', borderRadius: '0.75rem', padding: '0.8rem 1.2rem' }}>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: '2.2rem', lineHeight: 1, color: '#0a0a0a' }}>10+</div>
-            <div style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', color: '#0a0a0a', letterSpacing: '0.1em' }}>PROJECTS</div>
+          <div style={{ position: 'absolute', bottom: '-0.5rem', right: '-0.5rem', background: '#00FFD1', borderRadius: '0.5rem', padding: '0.4rem 0.6rem' }} className="md:bottom-0 md:right-0 md:p-3 md:rounded-xl">
+            <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.2rem', lineHeight: 1, color: '#0a0a0a' }} className="md:text-[2.2rem]">10+</div>
+            <div style={{ fontFamily: 'DM Sans', fontSize: '0.5rem', color: '#0a0a0a', letterSpacing: '0.1em' }} className="md:text-[0.65rem]">PROJECTS</div>
           </div>
         </div>
 
-        {/* Text — GSAP target: #about-text-content */}
+        {/* Text */}
         <div id="about-text-content">
-          <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#00FFD1', marginBottom: '1rem' }}>02 / About Me</div>
-          <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 6vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem' }}>
+          <div style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#00FFD1', marginBottom: '0.5rem' }} className="md:text-[0.7rem] md:mb-4 md:tracking-[0.3em]">02 / About Me</div>
+          <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(2.5rem, 8vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
             ENGINEER<br />AT HEART.
           </h2>
-          <p style={{ fontFamily: 'DM Sans', fontSize: '1rem', lineHeight: 1.75, color: 'oklch(52% 0.02 264)', marginBottom: '2rem', maxWidth: '38ch' }}>
+          <p style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2vw, 1rem)', lineHeight: 1.6, color: 'oklch(80% 0.02 264)', marginBottom: '1.5rem', maxWidth: '38ch', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
             I design scalable systems with Clean Architecture. My engineering background lets me tackle Mobile, Backend, and IoT with equal depth — I don't just code, I <em style={{ color: '#00FFD1' }}>engineer solutions</em>.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="grid grid-cols-2 gap-2 md:gap-4">
             {stats.map(([num, label]) => (
-              <div key={label} style={{ padding: '1rem', border: '1px solid #00FFD122', borderRadius: '0.75rem', background: '#00FFD108' }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '2rem', color: '#00FFD1', lineHeight: 1 }}>{num}</div>
-                <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', color: 'oklch(45% 0.02 264)', letterSpacing: '0.1em', marginTop: '0.2rem' }}>{label}</div>
+              <div key={label} style={{ padding: '0.6rem', border: '1px solid #00FFD122', borderRadius: '0.5rem', background: '#00FFD108' }} className="md:p-4 md:rounded-xl">
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.4rem', color: '#00FFD1', lineHeight: 1 }} className="md:text-2xl">{num}</div>
+                <div style={{ fontFamily: 'DM Sans', fontSize: '0.6rem', color: 'oklch(60% 0.02 264)', letterSpacing: '0.1em', marginTop: '0.2rem' }} className="md:text-[0.7rem]">{label}</div>
               </div>
             ))}
           </div>
@@ -128,9 +124,9 @@ const SKILL_GROUPS = [
 
 export function SkillsPanel({ panelRef }) {
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
+    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div style={{ width: '100%', maxWidth: '900px' }}>
+      <div className="w-full max-w-[900px] backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/40 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
         <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>03 / Technical Stack</div>
         <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2rem' }}>
           FULL-STACK<br />THINKING.
@@ -354,12 +350,70 @@ export function ExperiencePanel({ panelRef }) {
   );
 }
 
+// ── EXPERIENCE PANEL MOBILE 1 ──────────────────────────────────────────────────
+export function ExperiencePanelMobile1({ panelRef }) {
+  return (
+    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 pt-24 pb-8"
+      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
+      <div className="backdrop-blur-sm bg-[#0a0a0f]/50 p-4 rounded-2xl w-full max-w-full">
+        <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>05 / Journey</div>
+        <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 12vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
+          GROWING<br />EVERY DAY.
+        </h2>
+        <div style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', left: '7px', top: 0, bottom: 0, width: '1px', background: 'oklch(20% 0.02 264)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {EXP_ITEMS.slice(0, 2).map(({ date, title, org, desc, color }, i) => (
+              <div key={i} style={{ display: 'flex', gap: '1.5rem', paddingLeft: '1rem', position: 'relative' }}>
+                <div style={{ position: 'absolute', left: 0, top: '0.35rem', width: 15, height: 15, borderRadius: '50%', background: color, border: '3px solid oklch(10% 0.01 264)', flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontFamily: 'monospace', fontSize: '0.68rem', letterSpacing: '0.1em', color, marginBottom: '0.3rem' }}>{date}</div>
+                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.3rem', letterSpacing: '0.04em', color: 'oklch(94% 0.005 264)', lineHeight: 1.1 }}>{title}</div>
+                  <div style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color, marginTop: '0.2rem', marginBottom: '0.4rem' }}>{org}</div>
+                  <div style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'oklch(80% 0.02 264)', lineHeight: 1.6, textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── EXPERIENCE PANEL MOBILE 2 ──────────────────────────────────────────────────
+export function ExperiencePanelMobile2({ panelRef }) {
+  return (
+    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 pt-24 pb-8"
+      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
+      <div className="backdrop-blur-sm bg-[#0a0a0f]/50 p-4 rounded-2xl w-full max-w-full">
+        <div style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', left: '7px', top: 0, bottom: 0, width: '1px', background: 'oklch(20% 0.02 264)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {EXP_ITEMS.slice(2).map(({ date, title, org, desc, color }, i) => (
+              <div key={i} style={{ display: 'flex', gap: '1.5rem', paddingLeft: '1rem', position: 'relative' }}>
+                <div style={{ position: 'absolute', left: 0, top: '0.35rem', width: 15, height: 15, borderRadius: '50%', background: color, border: '3px solid oklch(10% 0.01 264)', flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontFamily: 'monospace', fontSize: '0.68rem', letterSpacing: '0.1em', color, marginBottom: '0.3rem' }}>{date}</div>
+                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.3rem', letterSpacing: '0.04em', color: 'oklch(94% 0.005 264)', lineHeight: 1.1 }}>{title}</div>
+                  <div style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color, marginTop: '0.2rem', marginBottom: '0.4rem' }}>{org}</div>
+                  <div style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'oklch(80% 0.02 264)', lineHeight: 1.6, textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── CONTACT PANEL ─────────────────────────────────────────────────────────────
 export function ContactPanel({ panelRef }) {
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
+    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div style={{ width: '100%', maxWidth: '820px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+      <div className="w-full max-w-[820px] flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-16 items-center backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/40 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
         {/* Left */}
         <div>
           <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>06 / Let's Talk</div>
@@ -404,7 +458,7 @@ export function ContactPanel({ panelRef }) {
       </div>
 
       {/* Footer Merged into Contact Panel */}
-      <footer style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10, borderTop: '1px solid #ffffff0d', padding: '2rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: '#0a0a0f' }}>
+      <footer className="hidden md:flex absolute bottom-0 left-0 right-0 z-10 border-t border-[#ffffff0d] py-8 px-16 justify-between items-center bg-[#0a0a0f]">
         <p style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', color: 'oklch(28% 0.02 264)' }}>
           © 2025 Amr Abdelazeem — Built with React &amp; Three.js
         </p>
@@ -416,6 +470,70 @@ export function ContactPanel({ panelRef }) {
               onMouseLeave={e => { e.target.style.background = `${c}11`; e.target.style.color = '#f4f4f5'; e.target.style.borderColor = `${c}66`; }}>{l}</a>
           ))}
         </div>
+      </footer>
+    </div>
+  );
+}
+
+// ── CONTACT PANEL MOBILE 1 (TEXTS) ─────────────────────────────────────────────
+export function ContactPanelMobile1({ panelRef }) {
+  return (
+    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 pt-24 pb-8"
+      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
+      <div className="w-full max-w-full backdrop-blur-sm bg-[#0a0a0f]/50 p-4 rounded-2xl">
+        <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>06 / Let's Talk</div>
+        <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 12vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
+          LET'S<br />BUILD<br />TOGETHER.
+        </h2>
+        <p style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)', lineHeight: 1.6, color: 'oklch(80% 0.02 264)', marginBottom: '2rem', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+          Open to collaborations, freelance, and full-time. Got a project? Let's talk.
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {[['✉', 'amrabdelazeem117@gmail.com', 'mailto:amrabdelazeem117@gmail.com'], ['📱', '+20 112 115 3059', 'https://wa.me/201121153059']].map(([icon, text, href]) => (
+            <a key={text} href={href} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontFamily: 'DM Sans', fontSize: '0.9rem', color: 'oklch(80% 0.02 264)', textDecoration: 'none', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+              <span>{icon}</span>{text}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── CONTACT PANEL MOBILE 2 (FIELDS & FOOTER) ──────────────────────────────────
+export function ContactPanelMobile2({ panelRef }) {
+  return (
+    <div ref={panelRef} className="section-panel absolute inset-0 flex flex-col justify-center px-6 pt-24 pb-4"
+      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
+      <div className="w-full max-w-full backdrop-blur-sm bg-[#0a0a0f]/50 p-4 rounded-2xl mb-4">
+        <form onSubmit={e => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {[['Name', 'text', 'Your name'], ['Email', 'email', 'your@email.com']].map(([label, type, ph]) => (
+            <div key={label}>
+              <label style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'oklch(70% 0.02 264)', display: 'block', marginBottom: '0.25rem' }}>{label}</label>
+              <input type={type} placeholder={ph} style={{ width: '100%', background: 'oklch(13% 0.012 264)', border: '1px solid oklch(20% 0.02 264)', borderRadius: '0.5rem', padding: '0.6rem 0.8rem', color: 'oklch(90% 0.005 264)', fontFamily: 'DM Sans', fontSize: '0.8rem', outline: 'none' }} />
+            </div>
+          ))}
+          <div>
+            <label style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'oklch(70% 0.02 264)', display: 'block', marginBottom: '0.25rem' }}>Message</label>
+            <textarea rows={3} placeholder="Tell me about your project..." style={{ width: '100%', background: 'oklch(13% 0.012 264)', border: '1px solid oklch(20% 0.02 264)', borderRadius: '0.5rem', padding: '0.6rem 0.8rem', color: 'oklch(90% 0.005 264)', fontFamily: 'DM Sans', fontSize: '0.8rem', outline: 'none', resize: 'none' }} />
+          </div>
+          <button type="submit" style={{ padding: '0.8rem', background: 'oklch(68% 0.15 200)', color: 'oklch(10% 0.01 264)', border: 'none', borderRadius: '0.5rem', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', letterSpacing: '0.04em' }}>
+            Send Message
+          </button>
+        </form>
+      </div>
+      
+      {/* Smaller Footer for Mobile */}
+      <footer className="w-full backdrop-blur-sm bg-[#0a0a0f]/50 p-3 rounded-2xl flex flex-col items-center gap-2 border border-[#ffffff0d]">
+        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {[['LinkedIn', 'https://www.linkedin.com/in/amr-saeed-0bb957373/', '#0ea5e9'], ['GitHub', 'https://github.com/amrsaeedcse', '#a855f7'], ['WhatsApp', 'https://wa.me/201121153059', '#10b981']].map(([l, h, c]) => (
+            <a key={l} href={h} target="_blank" rel="noreferrer"
+              style={{ fontFamily: 'DM Sans', fontSize: '0.6rem', fontWeight: 600, color: '#f4f4f5', textDecoration: 'none', border: `1px solid ${c}66`, padding: '0.2rem 0.6rem', borderRadius: '9999px', background: `${c}11` }}>{l}</a>
+          ))}
+        </div>
+        <p style={{ fontFamily: 'DM Sans', fontSize: '0.55rem', color: 'oklch(50% 0.02 264)', textAlign: 'center', lineHeight: 1.4 }}>
+          © 2025 Amr Abdelazeem<br/>Built with React &amp; Three.js
+        </p>
       </footer>
     </div>
   );

@@ -12,34 +12,18 @@ import { scrollState } from './lib/scrollState';
 import {
   HeroPanel, AboutPanel, SkillsPanel,
   ProjectsPanel, ExperiencePanel, ContactPanel,
+  ContactPanelMobile1, ContactPanelMobile2,
+  ExperiencePanelMobile1, ExperiencePanelMobile2
 } from './components/sections/SectionPanels';
 
 
 gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
 
-// ── 9-stop architecture ──────────────────────────────────────────────────────
-// Stops: Hero | About | Skills | Proj1 | Proj2 | Proj3 | Proj4 | Experience | Contact
-// Index:  0       1       2       3       4       5       6        7             8
-const STOPS = 9; // 0-based max (10 values: 0..9)
-const SNAP_POINTS = Array.from({ length: STOPS + 1 }, (_, i) => i / STOPS);
-const TOTAL_SCROLL = 2400;
-
 // Per-stop phone choreography
 const getPhoneStates = (width) => {
   const isMobile = width < 768;
   if (isMobile) {
-    return [
-      { x: 0, y: -2.5, rotY: 0, scale: 0.6 }, // 0 Hero
-      { x: 0, y: -2.5, rotY: 0.1, scale: 0.5 }, // 1 About
-      { x: 0, y: -2.5, rotY: -0.08, scale: 0.5 }, // 2 Skills
-      { x: 0, y: -2.5, rotY: 0.05, scale: 0.4 }, // 3 Proj1
-      { x: 0, y: -2.5, rotY: -0.05, scale: 0.4 }, // 4 Proj2
-      { x: 0, y: -2.5, rotY: 0.05, scale: 0.4 }, // 5 Proj3
-      { x: 0, y: -2.5, rotY: -0.05, scale: 0.4 }, // 6 Proj4
-      { x: 0, y: -2.5, rotY: 0.05, scale: 0.4 }, // 7 Proj5 (MIPS)
-      { x: 0, y: -2.5, rotY: 0, scale: 0.5 }, // 8 Experience
-      { x: 0, y: -2.5, rotY: 0, scale: 0.6 }, // 9 Contact
-    ];
+    return Array.from({ length: 12 }, () => ({ x: 0, y: 0, rotY: 0, scale: 0.7 }));
   }
   return [
     { x: 2.2, y: 0, rotY: 0, scale: 1.05 }, // 0 Hero
@@ -55,11 +39,20 @@ const getPhoneStates = (width) => {
   ];
 };
 
-// Map scroll stop → panel index (panels: 0=Hero 1=About 2=Skills 3=Projects 4=Exp 5=Contact)
-function stopToPanel(stop) {
-  if (stop <= 2) return stop;
-  if (stop <= 7) return 3; // projects carousel
-  return stop - 4;         // 8→4 Experience, 9→5 Contact
+// Map scroll stop → panel index
+function stopToPanel(stop, isMobile) {
+  if (!isMobile) {
+    if (stop <= 2) return stop;
+    if (stop <= 7) return 3; // projects
+    return stop - 4;         // 8→4 Exp, 9→5 Contact
+  } else {
+    if (stop <= 2) return stop; // 0 Hero, 1 About, 2 Skills
+    if (stop <= 7) return 3; // projects 3,4,5,6,7
+    if (stop === 8) return 4; // Exp1
+    if (stop === 9) return 5; // Exp2
+    if (stop === 10) return 6; // Contact1
+    return 7; // Contact2
+  }
 }
 
 export default function App() {
@@ -67,6 +60,7 @@ export default function App() {
   const [loaderExiting, setLoaderExiting] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pinnedRef = useRef(null);
   const phoneRef = useRef(null);
   const panelRefs = useRef([]);
@@ -110,13 +104,19 @@ export default function App() {
     };
   }, [activeProject]);
 
+  const isMobile = windowWidth < 768;
+  const STOPS = isMobile ? 11 : 9;
+  const TOTAL_SCROLL = isMobile ? 2800 : 2400;
+  const SNAP_POINTS = Array.from({ length: STOPS + 1 }, (_, i) => i / STOPS);
+
   // Nav helper — maps logical section (0-5) to scroll stop
-  const SECTION_TO_STOP = [0, 1, 2, 3, 8, 9]; // Hero→0, About→1, Skills→2, Work→3, Exp→8, Contact→9
+  const SECTION_TO_STOP = isMobile ? [0, 1, 2, 3, 8, 10] : [0, 1, 2, 3, 8, 9];
   const scrollToSection = useCallback((sectionIdx) => {
     const stop = SECTION_TO_STOP[sectionIdx] ?? sectionIdx;
     const target = stop / STOPS;
     window.scrollTo({ top: target * TOTAL_SCROLL, behavior: 'smooth' });
-  }, []);
+    setMobileMenuOpen(false); // Close mobile menu on navigate
+  }, [SECTION_TO_STOP, STOPS, TOTAL_SCROLL]);
 
   useEffect(() => {
     if (!loaded) return;
@@ -131,37 +131,51 @@ export default function App() {
       const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
       tlRef.current = tl;
 
-      // Labels at equal 1/9 intervals
-      const LABELS = ['s0', 's1', 's2', 's3', 's3b', 's3c', 's3d', 's3e', 's4', 's5'];
+      // Labels at equal 1/STOPS intervals
+      const LABELS = Array.from({ length: STOPS + 1 }, (_, i) => 's' + i);
       LABELS.forEach((lbl, i) => tl.addLabel(lbl, i / STOPS));
 
       // ── PANEL CROSSFADES (only at actual section boundaries) ───────────────
-      const crossfades = [
-        ['s0', 0, 1],   // Hero → About (starts at s0, completes at s1)
-        ['s1', 1, 2],   // About → Skills (starts at s1, completes at s2)
-        ['s2', 2, 3],   // Skills → Projects (starts at s2, completes at s3)
-        ['s3e', 3, 4],  // Projects → Experience (starts at s3e, completes at s4)
-        ['s4', 4, 5],   // Experience → Contact (starts at s4, completes at s5)
+      const crossfades = isMobile ? [
+        ['s1', 0, 1], // Hero -> About (at stop 1)
+        ['s2', 1, 2], // About -> Skills (at stop 2)
+        ['s3', 2, 3], // Skills -> Proj (at stop 3)
+        ['s8', 3, 4], // Proj -> Exp1 (at stop 8)
+        ['s9', 4, 5], // Exp1 -> Exp2 (at stop 9)
+        ['s10', 5, 6], // Exp2 -> Contact1 (at stop 10)
+        ['s11', 6, 7], // Contact1 -> Contact2 (at stop 11)
+      ] : [
+        ['s1', 0, 1],   // Hero → About (starts at s1)
+        ['s2', 1, 2],   // About → Skills (starts at s2)
+        ['s3', 2, 3],   // Skills → Projects (starts at s3)
+        ['s8', 3, 4],  // Projects → Experience (starts at s8)
+        ['s9', 4, 5],   // Experience → Contact (starts at s9)
       ];
       crossfades.forEach(([label, fromIdx, toIdx]) => {
-        tl.to(panels[fromIdx], { autoAlpha: 0, y: -36, duration: 1 / STOPS }, label);
-        tl.to(panels[toIdx], { autoAlpha: 1, y: 0, duration: 1 / STOPS }, label);
+        // Offset the transition so it completes BY the label, meaning it starts at prev stop
+        tl.to(panels[fromIdx], { autoAlpha: 0, y: -36, duration: 1 / STOPS }, `${label}-=${1 / STOPS}`);
+        tl.to(panels[toIdx], { autoAlpha: 1, y: 0, duration: 1 / STOPS }, `${label}-=${1 / STOPS}`);
       });
 
       // ── PROJECT CAROUSEL (xPercent of #project-track) ─────────────────────
-      tl.set('#project-track', { xPercent: 0 }, 's3');
-      tl.to('#project-track', { xPercent: -20, duration: 1 / STOPS }, 's3');
-      tl.to('#project-track', { xPercent: -40, duration: 1 / STOPS }, 's3b');
-      tl.to('#project-track', { xPercent: -60, duration: 1 / STOPS }, 's3c');
-      tl.to('#project-track', { xPercent: -80, duration: 1 / STOPS }, 's3d');
-      // Reset carousel when leaving projects
-      tl.set('#project-track', { xPercent: 0 }, 's4');
+      const projStart = 's3';
+      const p1 = 's4';
+      const p2 = 's5';
+      const p3 = 's6';
+      const pEnd = 's8';
+      
+      tl.set('#project-track', { xPercent: 0 }, projStart);
+      tl.to('#project-track', { xPercent: -20, duration: 1 / STOPS }, projStart);
+      tl.to('#project-track', { xPercent: -40, duration: 1 / STOPS }, p1);
+      tl.to('#project-track', { xPercent: -60, duration: 1 / STOPS }, p2);
+      tl.to('#project-track', { xPercent: -80, duration: 1 / STOPS }, p3);
+      tl.set('#project-track', { xPercent: 0 }, pEnd);
 
       // ── PHONE CHOREOGRAPHY (per stop) ─────────────────────────────────────
       for (let i = 1; i <= STOPS; i++) {
         if (!phoneRef.current) break;
         const ps = PHONE_STATES[i];
-        const prevLabel = LABELS[i - 1];
+        const prevLabel = LABELS[i - 1]; // tween from previous label to this label
         tl.to(phoneRef.current.position, { x: ps.x, y: ps.y, duration: 1 / STOPS }, prevLabel);
         tl.to(phoneRef.current.rotation, { y: ps.rotY, duration: 1 / STOPS }, prevLabel);
         tl.to(phoneRef.current.scale, { x: ps.scale, y: ps.scale, z: ps.scale, duration: 1 / STOPS }, prevLabel);
@@ -180,7 +194,7 @@ export default function App() {
         onUpdate(self) {
           scrollState.progress = self.progress;
           const stop = Math.min(STOPS, Math.round(self.progress * STOPS));
-          const panelIdx = stopToPanel(stop);
+          const panelIdx = stopToPanel(stop, isMobile);
           scrollState.section = panelIdx;
 
           // Sync pointer-events
@@ -295,7 +309,7 @@ export default function App() {
               onMouseLeave={e => e.target.style.color = 'oklch(52% 0.02 264)'}>{item}</button>
           ))}
         </div>
-        <a href="/assets/Amr_Abdelazeem_Resume.pdf" download
+        <a href="/assets/Amr_Abdelazeem_Resume.pdf" download className="hidden md:inline-flex"
           style={{
             fontFamily: 'DM Sans', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase',
             padding: '0.5rem 1.2rem', border: '1px solid #ffffff22', color: 'oklch(52% 0.02 264)',
@@ -305,7 +319,50 @@ export default function App() {
           onMouseLeave={e => { e.target.style.borderColor = '#ffffff22'; e.target.style.color = 'oklch(52% 0.02 264)' }}>
           Resume ↓
         </a>
+
+        {/* Mobile Hamburger Button */}
+        <button className="md:hidden flex flex-col gap-1.5 p-2 bg-transparent border-none cursor-pointer pointer-events-auto" onClick={() => setMobileMenuOpen(true)}>
+          <div style={{ width: 24, height: 2, background: '#f4f4f5', borderRadius: 2 }} />
+          <div style={{ width: 16, height: 2, background: '#00FFD1', borderRadius: 2, alignSelf: 'flex-end' }} />
+        </button>
       </nav>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 flex flex-col items-center justify-center backdrop-blur-2xl bg-[#0a0a0f]/90"
+            style={{ zIndex: 60 }}
+          >
+            <button className="absolute top-6 right-6 p-2" onClick={() => setMobileMenuOpen(false)}
+              style={{ fontFamily: 'monospace', fontSize: '1.5rem', color: '#00FFD1', background: 'none', border: 'none' }}>
+              ✕
+            </button>
+            <div className="flex flex-col items-center gap-8">
+              {[['Home', 0], ['About', 1], ['Skills', 2], ['Work', 3], ['Experience', 4], ['Contact', 5]].map(([item, idx]) => (
+                <button key={item} onClick={() => scrollToSection(idx)}
+                  style={{
+                    fontFamily: "'Bebas Neue'", fontSize: '2.5rem', letterSpacing: '0.1em',
+                    color: 'oklch(96% 0.005 264)', background: 'none', border: 'none', cursor: 'pointer'
+                  }}>
+                  {item}
+                </button>
+              ))}
+              <a href="/assets/Amr_Abdelazeem_Resume.pdf" download
+                style={{
+                  marginTop: '2rem', fontFamily: 'DM Sans', fontSize: '1rem', letterSpacing: '0.1em', textTransform: 'uppercase',
+                  padding: '1rem 2.5rem', background: '#00FFD1', color: '#0a0a0f', fontWeight: 'bold',
+                  borderRadius: '9999px', textDecoration: 'none'
+                }}>
+                Download Resume
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Side label */}
       <div className="fixed left-5 top-1/2 hidden md:block"
@@ -347,13 +404,26 @@ export default function App() {
         animate={{ opacity: (loaderExiting || loaded) ? 1 : 0, scale: (loaderExiting || loaded) ? 1 : 0.95 }}
         transition={{ duration: 1.2, ease: [0.85, 0, 0.15, 1], delay: 0.1 }}
         style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 10 }}>
-        {/* 6 section panels */}
         <HeroPanel panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} />
-        <AboutPanel panelRef={el => panelRefs.current[1] = el} />
-        <SkillsPanel panelRef={el => panelRefs.current[2] = el} />
-        <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} />
-        <ExperiencePanel panelRef={el => panelRefs.current[4] = el} />
-        <ContactPanel panelRef={el => panelRefs.current[5] = el} />
+        {isMobile ? (
+          <>
+            <AboutPanel panelRef={el => panelRefs.current[1] = el} />
+            <SkillsPanel panelRef={el => panelRefs.current[2] = el} />
+            <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} />
+            <ExperiencePanelMobile1 panelRef={el => panelRefs.current[4] = el} />
+            <ExperiencePanelMobile2 panelRef={el => panelRefs.current[5] = el} />
+            <ContactPanelMobile1 panelRef={el => panelRefs.current[6] = el} />
+            <ContactPanelMobile2 panelRef={el => panelRefs.current[7] = el} />
+          </>
+        ) : (
+          <>
+            <AboutPanel panelRef={el => panelRefs.current[1] = el} />
+            <SkillsPanel panelRef={el => panelRefs.current[2] = el} />
+            <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} />
+            <ExperiencePanel panelRef={el => panelRefs.current[4] = el} />
+            <ContactPanel panelRef={el => panelRefs.current[5] = el} />
+          </>
+        )}
       </motion.div>
 
       {/* Footer */}

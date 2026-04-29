@@ -8,7 +8,7 @@ export const PROJECTS_DATA = [
     subtitle: 'Full-Stack E-Commerce Mobile Application',
     tag: 'Flutter · Node.js · MongoDB',
     color: '#0ea5e9',
-    img: '/assets/batrina/3- Home.png',
+    img: 'assets/batrina/3- Home.png',
     year: '2024',
     status: 'Shipped',
     description:
@@ -16,7 +16,7 @@ export const PROJECTS_DATA = [
     tech: ['Flutter', 'Dart', 'Node.js', 'MongoDB', 'Express', 'Firebase FCM', 'Bloc/Cubit', 'Clean Architecture', 'REST APIs', 'Figma'],
     features: ['User auth & profile management', 'Product catalog with search & filters', 'Real-time cart & order flow', 'Custom Node.js/MongoDB backend', 'FCM Push notifications'],
     github: 'https://github.com/amrsaeedcse', // Note: Need exact Batrina repo name if it exists, leaving as profile for now since it wasn't in top 100 search results.
-    screenshots: ['/assets/batrina/3- Home.png'],
+    screenshots: ['assets/batrina/3- Home.png'],
   },
   {
     id: 'ai-todo',
@@ -24,7 +24,7 @@ export const PROJECTS_DATA = [
     subtitle: 'AI-Powered Task Manager',
     tag: 'Flutter · OpenAI',
     color: '#a855f7',
-    img: '/assets/ai_todo/ChatGPT Image Sep 9, 2025, 11_29_07 AM.png',
+    img: 'assets/ai_todo/ChatGPT Image Sep 9, 2025, 11_29_07 AM.png',
     year: '2024',
     status: 'Shipped',
     description:
@@ -32,7 +32,7 @@ export const PROJECTS_DATA = [
     tech: ['Flutter', 'Dart', 'OpenAI API', 'Bloc/Cubit', 'Hive', 'Clean Architecture', 'HTTP'],
     features: ['AI-generated task breakdowns', 'Smart priority suggestions', 'Daily summary generation', 'Offline-first with Hive', 'Beautiful animated UI'],
     github: 'https://github.com/amrsaeedcse/ai_todo_app',
-    screenshots: ['/assets/ai_todo/ChatGPT Image Sep 9, 2025, 11_29_07 AM.png'],
+    screenshots: ['assets/ai_todo/ChatGPT Image Sep 9, 2025, 11_29_07 AM.png'],
   },
   {
     id: 'green-guardian',
@@ -40,7 +40,7 @@ export const PROJECTS_DATA = [
     subtitle: 'IoT Smart Plant Monitoring System',
     tag: 'ESP32 · Flutter · Blynk',
     color: '#10b981',
-    img: '/assets/GreenGuardian/cover.jpeg',
+    img: 'assets/GreenGuardian/cover.jpeg',
     year: '2024',
     status: 'Live',
     description:
@@ -48,7 +48,7 @@ export const PROJECTS_DATA = [
     tech: ['ESP32', 'C / C++', 'Flutter', 'Blynk IoT', 'Dart', 'DHT22 Sensor', 'Soil Moisture Sensor', 'Relay Module'],
     features: ['Real-time sensor data streaming', 'Automated irrigation control', 'Historical data charts', 'Push alerts for critical readings', 'Cross-platform Flutter dashboard'],
     github: 'https://github.com/amrsaeedcse/greenGurdian',
-    screenshots: ['/assets/GreenGuardian/cover.jpeg'],
+    screenshots: ['assets/GreenGuardian/cover.jpeg'],
   },
   {
     id: 'mips-32',
@@ -56,7 +56,7 @@ export const PROJECTS_DATA = [
     subtitle: 'Pipelined Hardware Processor Design',
     tag: 'VHDL · Quartus',
     color: '#f59e0b',
-    img: '/assets/mips-32/MIPS32_Block.png',
+    img: 'assets/mips-32/MIPS32_Block.png',
     year: '2023',
     status: 'Academic',
     description:
@@ -64,7 +64,7 @@ export const PROJECTS_DATA = [
     tech: ['VHDL', 'Quartus Prime', 'ModelSim', 'FPGA', 'Digital Logic Design', 'Computer Architecture'],
     features: ['5-stage pipeline (IF/ID/EX/MEM/WB)', 'Hazard detection & forwarding', 'Branch prediction unit', '32 general-purpose registers', 'Full MIPS instruction set support'],
     github: 'https://github.com/amrsaeedcse/mips-32',
-    screenshots: ['/assets/mips-32/MIPS32_Block.png'],
+    screenshots: ['assets/mips-32/MIPS32_Block.png'],
   },
   {
     id: 'spotify-clone',
@@ -72,7 +72,7 @@ export const PROJECTS_DATA = [
     subtitle: 'Music Streaming Mobile Application',
     tag: 'Flutter · Cubit',
     color: '#a855f7',
-    img: '/assets/spoify-app/Gemini_Generated_Image_27hq3827hq3827hq.jpg',
+    img: 'assets/spoify-app/Gemini_Generated_Image_27hq3827hq3827hq.jpg',
     year: '2024',
     status: 'Shipped',
     description:
@@ -80,7 +80,7 @@ export const PROJECTS_DATA = [
     tech: ['Flutter', 'Dart', 'Cubit', 'Audio API', 'Clean Architecture'],
     features: ['Audio streaming playback', 'Complex UI animations', 'Playlist management', 'State management with Cubit'],
     github: 'https://github.com/amrsaeedcse/spotify',
-    screenshots: ['/assets/spoify-app/Gemini_Generated_Image_27hq3827hq3827hq.jpg'],
+    screenshots: ['assets/spoify-app/Gemini_Generated_Image_27hq3827hq3827hq.jpg'],
   },
   {
     id: 'ecommerce-app',
@@ -88,7 +88,7 @@ export const PROJECTS_DATA = [
     subtitle: 'Shopping Application with Firebase',
     tag: 'Flutter · Firebase',
     color: '#0ea5e9',
-    img: '/assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.jpg',
+    img: 'assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.jpg',
     year: '2024',
     status: 'Shipped',
     description:
@@ -96,7 +96,7 @@ export const PROJECTS_DATA = [
     tech: ['Flutter', 'Dart', 'Firebase Auth', 'Cloud Firestore', 'Cubit'],
     features: ['User authentication', 'Product catalog', 'Shopping cart', 'Order history'],
     github: 'https://github.com/amrsaeedcse/ecommerce-app',
-    screenshots: ['/assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.jpg'],
+    screenshots: ['assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.jpg'],
   },
   {
     id: 'drink-app',
@@ -104,7 +104,7 @@ export const PROJECTS_DATA = [
     subtitle: 'Mixology & Drink Recipes',
     tag: 'Flutter',
     color: '#ec4899',
-    img: '/assets/drink-app/Gemini_Generated_Image_u6zljzu6zljzu6zl (2).jpg',
+    img: 'assets/drink-app/Gemini_Generated_Image_u6zljzu6zljzu6zl (2).jpg',
     year: '2024',
     status: 'Shipped',
     description:
@@ -112,7 +112,7 @@ export const PROJECTS_DATA = [
     tech: ['Flutter', 'Dart', 'REST APIs', 'UI/UX Design'],
     features: ['Recipe browsing', 'Search functionality', 'Favorites', 'Beautiful animations'],
     github: 'https://github.com/OmarAfifi-CSE/depi-flutter-graduation-project',
-    screenshots: ['/assets/drink-app/Gemini_Generated_Image_u6zljzu6zljzu6zl (2).jpg'],
+    screenshots: ['assets/drink-app/Gemini_Generated_Image_u6zljzu6zljzu6zl (2).jpg'],
   },
 ];
 

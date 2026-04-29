@@ -309,7 +309,7 @@ export default function App() {
               onMouseLeave={e => e.target.style.color = 'oklch(52% 0.02 264)'}>{item}</button>
           ))}
         </div>
-        <a href="/assets/Amr_Abdelazeem_Resume.pdf" download className="hidden md:inline-flex"
+        <a href="assets/Amr_Abdelazeem_Resume.pdf" download className="hidden md:inline-flex"
           style={{
             fontFamily: 'DM Sans', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase',
             padding: '0.5rem 1.2rem', border: '1px solid #ffffff22', color: 'oklch(52% 0.02 264)',
@@ -351,7 +351,7 @@ export default function App() {
                   {item}
                 </button>
               ))}
-              <a href="/assets/Amr_Abdelazeem_Resume.pdf" download
+              <a href="assets/Amr_Abdelazeem_Resume.pdf" download
                 style={{
                   marginTop: '2rem', fontFamily: 'DM Sans', fontSize: '1rem', letterSpacing: '0.1em', textTransform: 'uppercase',
                   padding: '1rem 2.5rem', background: '#00FFD1', color: '#0a0a0f', fontWeight: 'bold',

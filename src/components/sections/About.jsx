@@ -23,7 +23,7 @@ export default function About() {
             transition={{ duration: 0.6 }}
           >
             <img 
-              src="/assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg" 
+              src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg" 
               alt="Amr Abdelazeem" 
               className="absolute inset-0 w-full h-full object-cover"
             />

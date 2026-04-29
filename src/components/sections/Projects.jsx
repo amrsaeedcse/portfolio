@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 
 export default function Projects() {
   const projects = [
-    { title: "Batrina: E-Commerce", subtitle: "Flutter & Firebase", type: "app", image: "/assets/batrina/Gemini_Generated_Image_d6zbovd6zbovd6zb.jpg" },
-    { title: "AI Todo App", subtitle: "Flutter & OpenAI API", type: "app", image: "/assets/ai_todo/Gemini_Generated_Image_u2yiku2yiku2yiku.jpg" },
-    { title: "MIPS-32 CPU", subtitle: "VHDL & Hardware", type: "iot", image: "/assets/mips-32/Gemini_Generated_Image_8zy2cq8zy2cq8zy2.jpg" },
-    { title: "Green Guardian", subtitle: "IoT & ESP32", type: "iot", image: "/assets/GreenGuardian/Gemini_Generated_Image_n7u450n7u450n7u4.jpg" }
+    { title: "Batrina: E-Commerce", subtitle: "Flutter & Firebase", type: "app", image: "assets/batrina/Gemini_Generated_Image_d6zbovd6zbovd6zb.jpg" },
+    { title: "AI Todo App", subtitle: "Flutter & OpenAI API", type: "app", image: "assets/ai_todo/Gemini_Generated_Image_u2yiku2yiku2yiku.jpg" },
+    { title: "MIPS-32 CPU", subtitle: "VHDL & Hardware", type: "iot", image: "assets/mips-32/Gemini_Generated_Image_8zy2cq8zy2cq8zy2.jpg" },
+    { title: "Green Guardian", subtitle: "IoT & ESP32", type: "iot", image: "assets/GreenGuardian/Gemini_Generated_Image_n7u450n7u450n7u4.jpg" }
   ];
 
   const containerVariants = {

@@ -188,7 +188,7 @@ const BOOT_DURATION = BOOT_LINES.length * BOOT_STAGGER + 300; // a bit of buffer
 const NAME_DURATION = 900;  // reduced to feel snappier (was 1200)
 const EXIT_DURATION = 1100; // slightly increased to let shutter finish cleanly (0.2s delay + 0.8s anim = 1.0s)
 
-export default function Loader({ onComplete, onExiting }) {
+export default function Loader({ onComplete, onExiting, readyToExit }) {
   const [phase, setPhase] = useState('boot'); // boot | name | exiting | done
   const [pct, setPct] = useState(0);
 
@@ -212,11 +212,19 @@ export default function Loader({ onComplete, onExiting }) {
     return () => clearTimeout(t1);
   }, []);
 
+  const [minTimePassed, setMinTimePassed] = useState(false);
+
+  // الشرط الأول: وقت العرض الأدنى
   useEffect(() => {
     if (phase !== 'name') return;
-    const t = setTimeout(() => setPhase('exiting'), NAME_DURATION);
+    const t = setTimeout(() => setMinTimePassed(true), NAME_DURATION);
     return () => clearTimeout(t);
   }, [phase]);
+
+  useEffect(() => {
+    if (phase !== 'name' || !minTimePassed || !readyToExit) return;
+    setPhase('exiting');
+  }, [phase, minTimePassed, readyToExit]);
 
   useEffect(() => {
     if (phase !== 'exiting') return;

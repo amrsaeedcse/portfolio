@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PhoneMockup } from './PhoneMockup';
 import { Particle, Floor } from './SceneHelpers';
@@ -10,14 +10,25 @@ const PARTICLES = Array.from({ length: 18 }, () => ({
 
 const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
 
-// Silence Three.js Clock deprecation warning caused by React Three Fiber internals
 const originalWarn = console.warn;
 console.warn = (...args) => {
   if (args[0] && typeof args[0] === 'string' && args[0].includes('THREE.Clock: This module has been deprecated')) return;
   originalWarn(...args);
 };
 
-export default React.memo(function Scene({ phoneRef }) {
+function SceneReadySignal({ onLoaded }) {
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        onLoaded?.();
+      });
+    });
+    return () => cancelAnimationFrame(id);
+  }, []);
+  return null;
+}
+
+export default React.memo(function Scene({ phoneRef, onLoaded }) {
   return (
     <Canvas
       shadows
@@ -36,11 +47,11 @@ export default React.memo(function Scene({ phoneRef }) {
           scale={[isMobile ? 0.6 : 1.05, isMobile ? 0.6 : 1.05, isMobile ? 0.6 : 1.05]}
           rotation={[0, 0, 0]}
         />
-
         {PARTICLES.map((p, i) => (
           <Particle key={i} position={p.position} speed={p.speed} />
         ))}
         <Floor />
+        <SceneReadySignal onLoaded={onLoaded} />
       </Suspense>
     </Canvas>
   );

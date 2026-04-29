@@ -14,6 +14,7 @@ import {
   ProjectsPanel, ExperiencePanel, ContactPanel,
 } from './components/sections/SectionPanels';
 
+
 gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
 
 // ── 9-stop architecture ──────────────────────────────────────────────────────
@@ -64,6 +65,7 @@ function stopToPanel(stop) {
 export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [loaderExiting, setLoaderExiting] = useState(false);
+  const [sceneReady, setSceneReady] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
   const pinnedRef = useRef(null);
   const phoneRef = useRef(null);
@@ -256,7 +258,7 @@ export default function App() {
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
 
       <AnimatePresence>
-        {!loaded && <Loader key="loader" onComplete={handleLoaderDone} onExiting={handleLoaderExiting} />}
+        {!loaded && <Loader key="loader" onComplete={handleLoaderDone} onExiting={handleLoaderExiting} readyToExit={sceneReady} />}
       </AnimatePresence>
 
       {/* Point 4: Canvas is ALWAYS mounted at top level — never unmounts on project open */}
@@ -269,7 +271,8 @@ export default function App() {
       </AnimatePresence>
 
       <div className="fixed inset-0" style={{ zIndex: 0 }}>
-        <Scene phoneRef={phoneRef} />
+        <Scene phoneRef={phoneRef} onLoaded={() => setSceneReady(true)} />
+
       </div>
 
       {/* ── NAV ─────────────────────────────────────────────────────────────── */}

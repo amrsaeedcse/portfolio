@@ -309,8 +309,8 @@ export function ExperiencePanel({ panelRef }) {
           {/* Vertical timeline line */}
           <div style={{ position: 'absolute', left: '7px', top: 0, bottom: 0, width: '1px', background: 'oklch(20% 0.02 264)' }} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {EXP_ITEMS.map(({ date, title, org, desc, color }) => (
-              <div key={title} style={{ display: 'flex', gap: '1.5rem', paddingLeft: '1rem', position: 'relative' }}>
+            {EXP_ITEMS.map(({ date, title, org, desc, color }, i) => (
+              <div key={i} style={{ display: 'flex', gap: '1.5rem', paddingLeft: '1rem', position: 'relative' }}>
                 {/* Dot */}
                 <div style={{ position: 'absolute', left: 0, top: '0.35rem', width: 15, height: 15, borderRadius: '50%', background: color, border: '3px solid oklch(10% 0.01 264)', flexShrink: 0 }} />
                 <div>

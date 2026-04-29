@@ -61,6 +61,7 @@ function stopToPanel(stop) {
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
+  const [loaderExiting, setLoaderExiting] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
   const pinnedRef = useRef(null);
   const phoneRef = useRef(null);
@@ -73,6 +74,7 @@ export default function App() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const handleLoaderDone = useCallback(() => setLoaded(true), []);
+  const handleLoaderExiting = useCallback(() => setLoaderExiting(true), []);
 
   useEffect(() => {
     let timeoutId = null;
@@ -251,7 +253,7 @@ export default function App() {
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
 
       <AnimatePresence>
-        {!loaded && <Loader key="loader" onComplete={handleLoaderDone} />}
+        {!loaded && <Loader key="loader" onComplete={handleLoaderDone} onExiting={handleLoaderExiting} />}
       </AnimatePresence>
 
       {/* Point 4: Canvas is ALWAYS mounted at top level — never unmounts on project open */}
@@ -336,7 +338,7 @@ export default function App() {
       {/* ── PINNED CONTAINER ─────────────────────────────────────────────────── */}
       <motion.div ref={pinnedRef}
         initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: loaded ? 1 : 0, scale: loaded ? 1 : 0.95 }}
+        animate={{ opacity: (loaderExiting || loaded) ? 1 : 0, scale: (loaderExiting || loaded) ? 1 : 0.95 }}
         transition={{ duration: 1.2, ease: [0.85, 0, 0.15, 1], delay: 0.1 }}
         style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 10 }}>
         {/* 6 section panels */}

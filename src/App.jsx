@@ -174,6 +174,7 @@ export default function App() {
           scrollState.progress = self.progress;
           const stop = Math.min(STOPS, Math.round(self.progress * STOPS));
           const panelIdx = stopToPanel(stop);
+          scrollState.section = panelIdx;
 
           // Sync pointer-events
           panels.forEach((p, i) => { p.style.pointerEvents = i === panelIdx ? 'auto' : 'none'; });
@@ -254,7 +255,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Point 4: Canvas is ALWAYS mounted at top level — never unmounts on project open */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {activeProject === 'ARCHIVE' ? (
           <ProjectArchive key="archive" onClose={() => setActiveProject(null)} onOpenProject={setActiveProject} />
         ) : activeProject ? (

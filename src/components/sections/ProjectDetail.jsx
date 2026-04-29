@@ -120,7 +120,7 @@ export const PROJECTS_DATA = [
 const overlayVariants = {
   hidden:  { y: '100%', opacity: 0 },
   visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 30 } },
-  exit:    { y: '100%', opacity: 0, transition: { duration: 0.25, ease: [0.76, 0, 0.24, 1] } },
+  exit:    { y: '100%', opacity: 0, transition: { type: 'tween', duration: 0.2 } },
 };
 
 // Point 4: React.memo prevents re-render when parent App state changes (Canvas stays fast)
@@ -152,7 +152,7 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
           whileHover={{ scale: 1.05, x: -3 }}
           whileTap={{ scale: 0.96 }}
           transition={{ type:'spring', stiffness:400, damping:20 }}
-          style={{ position:'absolute', top:'1.5rem', left:'2rem', display:'flex', alignItems:'center',
+          style={{ position:'absolute', top:'1.5rem', left:'2rem', zIndex: 50, display:'flex', alignItems:'center',
             gap:'0.5rem', background:'#ffffff10', border:`1px solid ${color}44`, borderRadius:'9999px',
             padding:'0.5rem 1.2rem', color:'#f4f4f5', fontFamily:'DM Sans', fontSize:'0.82rem',
             cursor:'pointer', backdropFilter:'blur(8px)' }}>

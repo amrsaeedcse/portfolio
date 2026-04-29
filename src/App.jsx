@@ -259,7 +259,7 @@ export default function App() {
         {activeProject === 'ARCHIVE' ? (
           <ProjectArchive key="archive" onClose={() => setActiveProject(null)} onOpenProject={setActiveProject} />
         ) : activeProject ? (
-          <ProjectDetail key="detail" project={activeProject} onClose={() => setActiveProject(null)} />
+          <ProjectDetail key="project-modal" project={activeProject} onClose={() => setActiveProject(null)} />
         ) : null}
       </AnimatePresence>
 

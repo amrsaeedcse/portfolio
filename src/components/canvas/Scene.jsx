@@ -10,7 +10,7 @@ const PARTICLES = Array.from({ length: 18 }, () => ({
 
 const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
 
-function SceneComponent({ phoneRef }) {
+export default React.memo(function Scene({ phoneRef }) {
   return (
     <Canvas
       shadows
@@ -37,7 +37,4 @@ function SceneComponent({ phoneRef }) {
       </Suspense>
     </Canvas>
   );
-}
-
-const Scene = React.memo(SceneComponent);
-export default Scene;
+});

@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(10% 0.01 264);
+  --color-foreground: oklch(96% 0.005 264);
+  --color-primary: oklch(68% 0.15 200);
+  --color-primary-foreground: oklch(10% 0.01 264);
+  --color-secondary: oklch(17% 0.015 264);
+  --color-muted-foreground: oklch(52% 0.02 264);
+  --color-border: oklch(20% 0.02 264);
+  --color-card: oklch(13% 0.012 264);
+  --color-amber: oklch(75% 0.18 60);
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; overflow-x: hidden; background: oklch(10% 0.01 264); }
+  body { font-family: var(--font-body); color: oklch(96% 0.005 264); -webkit-font-smoothing: antialiased; }
+}
+
+@layer utilities {
+  .section-panel { will-change: opacity, transform; }
+  .font-display { font-family: var(--font-display); }
+  .font-body { font-family: var(--font-body); }
+
+  /* Grain overlay — frontend-design SKILL: "grain overlays for atmosphere" */
+  .grain::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+  .blink { animation: blink 1.2s infinite; }
+  @keyframes scroll-hint { 0%,100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(8px); opacity: 1; } }
+  .scroll-hint { animation: scroll-hint 2s ease-in-out infinite; }
+}

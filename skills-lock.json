@@ -6,10 +6,40 @@
       "sourceType": "github",
       "computedHash": "87c4b32078381ee1e6df164ddd5c28dd67fc7552431a7415626e63b8cf74b11a"
     },
+    "framer-motion-animator": {
+      "source": "patricio0312rev/skills",
+      "sourceType": "github",
+      "skillPath": "frontend/framer-motion-animator/SKILL.md",
+      "computedHash": "22a8401fab0cdf32d5c153b98aba5e95435a479810896879535dc7ac3710efbe"
+    },
     "frontend-design": {
       "source": "anthropics/skills",
       "sourceType": "github",
       "computedHash": "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84"
+    },
+    "gsap": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "skillPath": "skills/gsap/SKILL.md",
+      "computedHash": "22e6fd7e1c1038eebc8304c985fab31839cc19ec291d3d19c022f899fbd36e46"
+    },
+    "react-three-fiber": {
+      "source": "vercel-labs/json-render",
+      "sourceType": "github",
+      "skillPath": "skills/react-three-fiber/SKILL.md",
+      "computedHash": "33cfac131cbe9c89b14c4b49ca01e0b0a4a3f9c23bb6c81ac0514143703283e8"
+    },
+    "tailwind-design-system": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/frontend-mobile-development/skills/tailwind-design-system/SKILL.md",
+      "computedHash": "f54f39ce967af3a4bba1f662c3600f0253467508d5fbbc7c545c67e102da2253"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
     }
   }
 }

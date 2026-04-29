@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Amr Abdelazeem | Flutter Developer & Hardware Engineer</title>
+    <meta name="title" content="Amr Abdelazeem - Portfolio" />
+    <meta
+      name="description"
+      content="Portfolio of Amr Abdelazeem, a Cross-Platform Mobile Developer (Flutter) and Computer Systems Engineer based in Egypt. Specialized in clean architecture and IoT."
+    />
+    <meta
+      name="keywords"
+      content="Flutter, Dart, Mobile Developer, Zagazig University, IoT, Embedded Systems, Portfolio"
+    />
+    <meta name="author" content="Amr Abdelazeem" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://amrabdelazeem.com/" />
+    <meta property="og:title" content="Amr Abdelazeem | Flutter Developer" />
+    <meta
+      property="og:description"
+      content="Crafting high-performance mobile apps and smart hardware solutions. View my latest projects."
+    />
+    <meta property="og:image" content="assets/og-image.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <!-- Three.js & GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  </head>
+
+  <body>
+    <!-- 3D Background Canvas -->
+    <canvas id="hero-canvas"></canvas>
+    <div id="canvas-fallback"></div>
+
+    <div id="preloader">
+      <div class="loader-content">
+        <span class="loader-text">{ Amr }</span>
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+
+    <header class="header" id="header">
+      <nav class="nav container">
+        <a href="#home" class="nav__logo">
+          <span class="nav__logo-symbol">&lt;</span> Amr
+          <span class="nav__logo-symbol">/&gt;</span>
+        </a>
+
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li class="nav__item">
+              <a href="#home" class="nav__link active-link">Home</a>
+            </li>
+            <li class="nav__item">
+              <a href="#about" class="nav__link">About</a>
+            </li>
+            <li class="nav__item">
+              <a href="#skills" class="nav__link">Skills</a>
+            </li>
+            <li class="nav__item">
+              <a href="#projects" class="nav__link">Projects</a>
+            </li>
+            <li class="nav__item">
+              <a href="#experience" class="nav__link">Experience</a>
+            </li>
+            <li class="nav__item">
+              <a href="#contact" class="nav__link">Contact</a>
+            </li>
+          </ul>
+
+          <div class="nav__close" id="nav-close">
+            <i class="fas fa-times"></i>
+          </div>
+        </div>
+
+        <div class="nav__btns">
+          <i class="fas fa-moon change-theme" id="theme-button"></i>
+          <div class="nav__toggle" id="nav-toggle">
+            <i class="fas fa-bars"></i>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main">
+      <section class="home section" id="home">
+        <div class="home__container container grid">
+          <div class="home__content grid">
+            <div class="home__social">
+              <a
+                href="https://www.linkedin.com/in/amrsaeed-cse"
+                target="_blank"
+                class="home__social-icon"
+                data-aos="fade-right"
+                data-aos-delay="200"
+              >
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a
+                href="https://github.com/amrsaeedcse"
+                target="_blank"
+                class="home__social-icon"
+                data-aos="fade-right"
+                data-aos-delay="300"
+              >
+                <i class="fab fa-github"></i>
+              </a>
+              <a
+                href="mailto:amrabdelazeem117@gmail.com"
+                class="home__social-icon"
+                data-aos="fade-right"
+                data-aos-delay="400"
+              >
+                <i class="fas fa-envelope"></i>
+              </a>
+            </div>
+
+            <!-- <div
+              class="home__img-wrapper"
+              data-aos="zoom-in"
+              data-aos-duration="1200"
+            >
+              <script
+                type="module"
+                src="https://unpkg.com/@splinetool/viewer@1.12.42/build/spline-viewer.js"
+              ></script>
+              <spline-viewer
+                url="https://prod.spline.design/oJuGY1gjj7hP6bFj/scene.splinecode"
+              ></spline-viewer>
+            </div> -->
+            <div class="home__data">
+              <h1 class="home__title" data-aos="fade-left" data-aos-delay="200">
+                Hi, I'm Amr
+              </h1>
+              <h3
+                class="home__subtitle"
+                data-aos="fade-left"
+                data-aos-delay="300"
+              >
+                Flutter Developer
+              </h3>
+              <p
+                class="home__description"
+                data-aos="fade-left"
+                data-aos-delay="400"
+              >
+                Computer & Systems Engineering Student at Zagazig University. I
+                bridge the gap between
+                <span class="highlight">Software Elegance</span> and
+                <span class="highlight">Hardware Logic</span>.
+              </p>
+              <a
+                href="#contact"
+                class="button button--flex"
+                data-aos="fade-up"
+                data-aos-delay="500"
+              >
+                Contact Me <i class="fas fa-paper-plane button__icon"></i>
+              </a>
+            </div>
+            <!-- IoT Control Panel Overlay -->
+            <div class="iot-control-panel" data-aos="fade-left" data-aos-delay="600">
+              <div class="iot-header">
+                <i class="fas fa-microchip"></i>
+                <span>Smart Home Hub</span>
+              </div>
+              <div class="iot-body">
+                <div class="iot-device">
+                  <div class="device-info">
+                    <span class="device-name">Desk Lamp</span>
+                    <span class="device-status" id="lamp-status-text">Status: OFF</span>
+                  </div>
+                  <button id="iot-led-toggle" class="iot-toggle">
+                    <div class="toggle-switch"></div>
+                  </button>
+                </div>
+                <div class="iot-divider"></div>
+                <div class="iot-stats">
+                  <span><i class="fas fa-temperature-half"></i> 24°C</span>
+                  <span><i class="fas fa-bolt"></i> 12W</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="tech-stack" data-aos="fade-up" data-aos-delay="200">
+        <div class="tech-track">
+          <span><i class="fab fa-flutter"></i> Flutter</span>
+          <span><i class="fab fa-dart-lang"></i> Dart</span>
+          <span><i class="fab fa-html5"></i> HTML/CSS</span>
+          <span><i class="fab fa-js"></i> JavaScript</span>
+          <span><i class="fas fa-fire"></i> Firebase</span>
+          <span><i class="fas fa-microchip"></i> IoT</span>
+          <span><i class="fab fa-git-alt"></i> Git</span>
+
+          <span><i class="fab fa-flutter"></i> Flutter</span>
+          <span><i class="fab fa-dart-lang"></i> Dart</span>
+          <span><i class="fab fa-html5"></i> HTML/CSS</span>
+          <span><i class="fab fa-js"></i> JavaScript</span>
+          <span><i class="fas fa-fire"></i> Firebase</span>
+          <span><i class="fas fa-microchip"></i> IoT</span>
+          <span><i class="fab fa-git-alt"></i> Git</span>
+
+          <span><i class="fab fa-flutter"></i> Flutter</span>
+          <span><i class="fab fa-dart-lang"></i> Dart</span>
+          <span><i class="fas fa-network-wired"></i> REST APIs</span>
+          <span><i class="fab fa-html5"></i> HTML/CSS</span>
+          <span><i class="fab fa-js"></i> JavaScript</span>
+          <span><i class="fas fa-fire"></i> Firebase</span>
+          <span><i class="fas fa-microchip"></i> IoT</span>
+          <span><i class="fab fa-git-alt"></i> Git</span>
+        </div>
+      </div>
+
+      <section class="about section" id="about">
+        <h2 class="section__title" data-heading="Who I Am">About Me</h2>
+
+        <div class="about__container container grid">
+          <div
+            class="about__img-wrapper"
+            data-aos="flip-left"
+            data-aos-duration="1000"
+          >
+            <img
+              src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
+              alt="Amr Abdelazeem"
+              class="about__img"
+            />
+            <div class="about__img-shadow"></div>
+          </div>
+
+          <div class="about__data">
+            <p class="about__description" data-aos="fade-left">
+              I am a <strong>Computer Systems Engineer</strong> bridging the gap
+              between <span class="highlight">Software</span> and
+              <span class="highlight">Hardware</span>. While I specialize in
+              building high-performance <strong>Mobile Apps</strong> using
+              Flutter, my engineering background allows me to tackle
+              <strong>Web Development</strong>, <strong>Backend Logic</strong>,
+              and <strong>IoT Systems</strong> with ease.
+            </p>
+
+            <p
+              class="about__description"
+              data-aos="fade-left"
+              data-aos-delay="100"
+            >
+              I don't just write code; I design scalable solutions using
+              <strong>Clean Architecture</strong> and solid engineering
+              principles.
+            </p>
+
+            <div class="about__info">
+              <div class="about__box" data-aos="zoom-in" data-aos-delay="200">
+                <i class="fas fa-laptop-code about__icon"></i>
+                <h3 class="about__title">Experience</h3>
+                <span class="about__subtitle">Software & Hardware</span>
+              </div>
+
+              <div class="about__box" data-aos="zoom-in" data-aos-delay="350">
+                <i class="fas fa-briefcase about__icon"></i>
+                <h3 class="about__title">Completed</h3>
+                <span class="about__subtitle">10+ Projects</span>
+              </div>
+
+              <div class="about__box" data-aos="zoom-in" data-aos-delay="500">
+                <i class="fas fa-university about__icon"></i>
+                <h3 class="about__title">Background</h3>
+                <span class="about__subtitle">Systems Engineering</span>
+              </div>
+            </div>
+
+            <div class="about__buttons" data-aos="fade-up" data-aos-delay="600">
+              <a
+                href="assets/Amr_Abdelazeem_Resume.pdf"
+                download="Amr_Abdelazeem_Resume.pdf"
+                class="button button--flex"
+              >
+                Download CV <i class="fas fa-download button__icon"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="skills section" id="skills">
+        <h2 class="section__title" data-heading="My Stack">Technical Skills</h2>
+
+        <div class="skills__container container grid">
+          <div class="skills__card" data-aos="fade-up">
+            <i
+              class="fas fa-mobile-alt skills__card-icon"
+              style="color: #45d1fd"
+            ></i>
+            <h3 class="skills__card-title">Mobile App Dev</h3>
+            <p class="skills__description">
+              Flutter, Dart, Bloc, Clean Architecture, Native Integration
+            </p>
+          </div>
+
+          <div class="skills__card" data-aos="fade-up" data-aos-delay="100">
+            <i class="fas fa-code skills__card-icon" style="color: #e34f26"></i>
+            <h3 class="skills__card-title">Web Dev</h3>
+            <p class="skills__description">
+              HTML5, CSS3, JavaScript, Responsive Design
+            </p>
+          </div>
+
+          <div class="skills__card" data-aos="fade-up" data-aos-delay="200">
+            <i
+              class="fas fa-microchip skills__card-icon"
+              style="color: #ffb300"
+            ></i>
+            <h3 class="skills__card-title">Embedded / IoT</h3>
+            <p class="skills__description">
+              C/C++, Arduino, ESP32, Sensors & Actuators
+            </p>
+          </div>
+
+          <div class="skills__card" data-aos="fade-up" data-aos-delay="300">
+            <i
+              class="fas fa-layer-group skills__card-icon"
+              style="color: #6c5ce7"
+            ></i>
+            <h3 class="skills__card-title">Tools & Cloud</h3>
+            <p class="skills__description">
+              Git, GitHub, Firebase, Postman, Figma
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="work section" id="projects">
+        <h2
+          class="section__title"
+          data-heading="My Portfolio"
+          data-aos="fade-down"
+        >
+          Featured Projects
+        </h2>
+
+        <div class="work__filters" data-aos="fade-up">
+          <span class="work__item active-work" data-filter="all">All</span>
+          <span class="work__item" data-filter=".app">Mobile Apps</span>
+          <span class="work__item" data-filter=".iot">IoT & Hardware</span>
+          <span class="work__item" data-filter=".web">Web / Other</span>
+        </div>
+
+        <div class="work__container container grid">
+          <div class="work__card mix app">
+            <img
+              src="assets\batrina\Gemini_Generated_Image_d6zbovd6zbovd6zb.jpg"
+              alt="Batrina"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Batrina: E-Commerce</h3>
+              <span class="work__subtitle"> Flutter & Firebase </span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/OmarAfifi-CSE/depi-flutter-graduation-project"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="batrina.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="work__card mix app">
+            <img
+              src="assets\ai_todo\Gemini_Generated_Image_u2yiku2yiku2yiku.jpg"
+              alt="Ai_Todo"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">AI Todo App</h3>
+              <span class="work__subtitle">
+                Flutter & OpenAI API & Speech Recognition
+              </span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/ai_todo_app"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="ai_todo_details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="work__card mix app">
+            <img
+              src="assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.jpg"
+              alt="E-Commerce"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Flutter E-Commerce App</h3>
+              <span class="work__subtitle">Cubit & Firebase</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/ecommerce-app"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="ecommerce-details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="work__card mix app">
+            <img
+              src="assets\spoify-app\Gemini_Generated_Image_27hq3827hq3827hq.jpg"
+              alt="Spotify Clone"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Spotify Clone</h3>
+              <span class="work__subtitle">Cubit & Audio</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/spotify"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="spotify-details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="work__card mix iot">
+            <img
+              src="assets\mips-32\Gemini_Generated_Image_8zy2cq8zy2cq8zy2.jpg"
+              alt="MIPS CPU"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">MIPS-32 CPU</h3>
+              <span class="work__subtitle">VHDL & Hardware</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/mips-32"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="mips-details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="work__card mix app">
+            <img
+              src="assets\drink-app\Gemini_Generated_Image_u6zljzu6zljzu6zl (2).jpg"
+              alt="Drink_App"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Drink Recipe App</h3>
+              <span class="work__subtitle"> Flutter </span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/OmarAfifi-CSE/depi-flutter-graduation-project"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="drinks-details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="work__card mix iot">
+            <img
+              src="assets\GreenGuardian\Gemini_Generated_Image_n7u450n7u450n7u4.jpg"
+              alt="Green Guardian"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Green Guardian</h3>
+              <span class="work__subtitle">IoT & ESP32</span>
+              <div class="work__links">
+                <a
+                  href="https://github.com/amrsaeedcse/greenGurdian"
+                  target="_blank"
+                  class="work__button"
+                >
+                  Code <i class="fab fa-github"></i>
+                </a>
+                <a href="greenguardian-details.html" class="work__button">
+                  Details <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="work__card mix web">
+            <img
+              src="assets\Gemini_Generated_Image_gtgoh9gtgoh9gtgo (1).jpg"
+              alt="Portfolio"
+              class="work__img"
+            />
+            <div class="work__data">
+              <h3 class="work__title">Portfolio Website</h3>
+              <span class="work__subtitle">HTML, CSS, JS</span>
+              <div class="work__links">
+                <span class="work__button">Live Preview</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="experience section" id="experience">
+        <h2
+          class="section__title"
+          data-heading="My Journey"
+          data-aos="fade-down"
+        >
+          Experience & Education
+        </h2>
+
+        <div class="experience__container container">
+          <div class="experience__content">
+            <div class="experience__data">
+              <div class="experience__left"></div>
+              <div class="experience__divider">
+                <span class="experience__rounder"></span>
+                <span class="experience__line"></span>
+              </div>
+              <div class="experience__right" data-aos="fade-left">
+                <h3 class="experience__title">Mobile App Trainee</h3>
+                <span class="experience__subtitle"
+                  >DEPI (Digital Pioneers Initiative)</span
+                >
+                <p class="experience__description">
+                  Intensive training program in partnership with Ministry of
+                  CIT. Focused on advanced Flutter concepts, freelance skills,
+                  and project delivery.
+                </p>
+                <div class="experience__calendar">
+                  <i class="far fa-calendar-alt"></i> 2024
+                </div>
+              </div>
+            </div>
+
+            <div class="experience__data">
+              <div class="experience__left" data-aos="fade-right">
+                <h3 class="experience__title">Mobile App Trainee</h3>
+                <span class="experience__subtitle"
+                  >Information Technology Institute (ITI)</span
+                >
+                <p class="experience__description">
+                  Summer training focusing on Flutter fundamentals and Dart.
+                </p>
+                <div class="experience__calendar">
+                  <i class="far fa-calendar-alt"></i> Summer 2024
+                </div>
+              </div>
+              <div class="experience__divider">
+                <span class="experience__rounder"></span>
+                <span class="experience__line"></span>
+              </div>
+              <div class="experience__right"></div>
+            </div>
+
+            <div class="experience__data">
+              <div class="experience__left"></div>
+              <div class="experience__divider">
+                <span class="experience__rounder"></span>
+              </div>
+              <div class="experience__right" data-aos="fade-left">
+                <h3 class="experience__title">Computer Engineering Student</h3>
+                <span class="experience__subtitle">Zagazig University</span>
+                <p class="experience__description">
+                  Studying Systems, Embedded Software, and CS fundamentals.
+                </p>
+                <div class="experience__calendar">
+                  <i class="far fa-calendar-alt"></i> 2021 - Present
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact section" id="contact">
+        <h2
+          class="section__title"
+          data-heading="Get in Touch"
+          data-aos="fade-down"
+        >
+          Contact Me
+        </h2>
+
+        <div class="contact__container container grid">
+          <div class="contact__content" data-aos="fade-right">
+            <h3 class="contact__title">Talk to me</h3>
+
+            <div class="contact__info">
+              <div class="contact__card">
+                <i class="fab fa-whatsapp contact__card-icon"></i>
+                <h3 class="contact__card-title">WhatsApp</h3>
+                <span class="contact__card-data">+20 112 115 3059</span>
+                <a
+                  href="https://wa.me/201121153059"
+                  target="_blank"
+                  class="contact__button"
+                >
+                  Chat Now
+                  <i class="fas fa-arrow-right contact__button-icon"></i>
+                </a>
+              </div>
+
+              <div class="contact__card">
+                <i class="fas fa-envelope contact__card-icon"></i>
+                <h3 class="contact__card-title">Email</h3>
+                <span class="contact__card-data">amrabdelazeem117</span>
+                <a
+                  href="mailto:amrabdelazeem117@gmail.com"
+                  class="contact__button"
+                >
+                  Send Email
+                  <i class="fas fa-arrow-right contact__button-icon"></i>
+                </a>
+              </div>
+
+              <div class="contact__card">
+                <i class="fas fa-map-marker-alt contact__card-icon"></i>
+                <h3 class="contact__card-title">Location</h3>
+                <span class="contact__card-data">Minya Al Qamh, Sharqia</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact__content" data-aos="fade-left">
+            <h3 class="contact__title">Write me your project</h3>
+
+            <form action="" class="contact__form" id="contact-form">
+              <div class="contact__form-div">
+                <label class="contact__form-tag">Name</label>
+                <input
+                  type="text"
+                  placeholder="Insert your name"
+                  class="contact__form-input"
+                  id="name"
+                  required
+                />
+              </div>
+
+              <div class="contact__form-div">
+                <label class="contact__form-tag">Mail</label>
+                <input
+                  type="email"
+                  placeholder="Insert your email"
+                  class="contact__form-input"
+                  id="email"
+                  required
+                />
+              </div>
+
+              <div class="contact__form-div contact__form-area">
+                <label class="contact__form-tag">Project</label>
+                <textarea
+                  cols="30"
+                  rows="10"
+                  placeholder="Write your project idea"
+                  class="contact__form-input"
+                  id="message"
+                  required
+                ></textarea>
+              </div>
+
+              <button class="button button--flex">
+                Send Message <i class="fas fa-paper-plane button__icon"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__bg">
+        <div class="footer__container container grid">
+          <div>
+            <h1 class="footer__title">Amr</h1>
+            <span class="footer__subtitle">Flutter Developer</span>
+          </div>
+
+          <ul class="footer__links">
+            <li>
+              <a href="#projects" class="footer__link">Portfolio</a>
+            </li>
+            <li>
+              <a href="#skills" class="footer__link">Skills</a>
+            </li>
+            <li>
+              <a href="#contact" class="footer__link">Contact</a>
+            </li>
+          </ul>
+
+          <div class="footer__socials">
+            <a
+              href="https://www.linkedin.com/in/amrsaeed-cse/"
+              target="_blank"
+              class="footer__social"
+            >
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a
+              href="https://github.com/amrsaeedcse"
+              target="_blank"
+              class="footer__social"
+            >
+              <i class="fab fa-github"></i>
+            </a>
+            <a
+              href="https://wa.me/201121153059"
+              target="_blank"
+              class="footer__social"
+            >
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+
+        <p class="footer__copy">
+          &#169; 2024 Amr Abdelazeem. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <a href="#" class="scrollup" id="scroll-up">
+      <i class="fas fa-arrow-up scrollup__icon"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <!-- Custom Cursor Elements -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-ring"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,58 +1,46 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PhoneMockup } from './PhoneMockup';
-import { IotLamp } from './IotLamp';
-import { Particle, Floor, TechChips } from './SceneHelpers';
+import { Particle, Floor } from './SceneHelpers';
 
-// Particles spread across the scene
-const PARTICLES = Array.from({ length: 35 }, (_, i) => ({
-  position: [
-    (Math.random() - 0.5) * 14,
-    (Math.random() - 0.5) * 8,
-    (Math.random() - 0.5) * 6,
-  ],
-  speed: 0.4 + Math.random() * 0.8,
+const PARTICLES = Array.from({ length: 18 }, () => ({
+  position: [(Math.random() - 0.5) * 10, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 4],
+  speed: 0.3 + Math.random() * 0.7,
 }));
 
-// 3d-web-experience SKILL: "DPR limit on mobile", "Suspense with loading fallback"
 const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
 
-export default function Scene({ phoneRef, lampRef }) {
+export default function Scene({ phoneRef }) {
   return (
     <Canvas
       shadows
-      camera={{ position: [0, 0, 8], fov: 45 }}
+      // Camera slightly right-of-center so it frames the right half (phone) well
+      // while leaving the left half clear for HTML section content
+      camera={{ position: [1.0, 0, 9], fov: 46 }}
       gl={{ antialias: !isMobile, alpha: true }}
-      dpr={isMobile ? 1 : [1, 2]}
+      dpr={isMobile ? 1 : [1, 1.5]}
       style={{ width: '100%', height: '100%', background: 'transparent' }}
     >
-      {/* 3d-web-experience SKILL: "limit lights — one ambient + targeted" */}
-      <ambientLight intensity={0.04} color="#1a1a2e" />
-
-      {/* Subtle fill light from opposite side */}
-      <directionalLight
-        position={[-6, 4, 4]}
-        intensity={0.15}
-        color="#4a5568"
-      />
+      <ambientLight intensity={0.05} color="#0d1020" />
+      <directionalLight position={[3, 4, 5]} intensity={0.25} color="#ffffff" />
 
       <Suspense fallback={null}>
-        {/* IoT Lamp — left side, controls all the scene lighting */}
-        <IotLamp ref={lampRef} position={[-4.5, 1, 0]} />
+        {/*
+          Phone is the SOLE hero object.
+          scale={1.6} makes it visually dominant on the right side.
+          x=2.5 places it in the right ~40% of the visible scene.
+        */}
+        <PhoneMockup
+          ref={phoneRef}
+          position={[2.5, 0, 0]}
+          scale={[1.6, 1.6, 1.6]}
+          rotation={[0, 0, 0]}
+        />
 
-        {/* Phone Mockup — right side, slider driven by scroll */}
-        <PhoneMockup ref={phoneRef} position={[2.8, 0, 0]} />
-
-        {/* Floating ambient particles */}
         {PARTICLES.map((p, i) => (
           <Particle key={i} position={p.position} speed={p.speed} />
         ))}
-
-        {/* Floor for shadow receipt */}
         <Floor />
-
-        {/* Orbiting tech tags */}
-        <TechChips phonePos={[2.8, 0, 0]} />
       </Suspense>
     </Canvas>
   );

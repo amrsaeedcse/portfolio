@@ -28,7 +28,7 @@ function IotPanel() {
   const LED_COLORS = ['#00ff88', '#ffaa00', '#ff4444', '#00aaff', '#ff00ff'];
 
   return (
-    <group ref={panelRef} position={[-3.2, -1.8, 1.2]}>
+    <group ref={panelRef} position={[0.2, -2.6, 0.8]}>
       {/* Panel board */}
       <mesh castShadow>
         <boxGeometry args={[1.4, 1.0, 0.08]} />

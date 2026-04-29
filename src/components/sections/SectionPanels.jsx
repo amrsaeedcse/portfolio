@@ -1,12 +1,13 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PROJECTS_DATA } from './ProjectDetail';
 
 // ── HERO PANEL ────────────────────────────────────────────────────────────────
-export function HeroPanel({ panelRef }) {
+export function HeroPanel({ panelRef, scrollToSection }) {
   return (
     <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
       style={{ opacity: 1, pointerEvents: 'auto' }}>
-      <div className="w-full max-w-5xl mx-auto">
+      <div id="hero-content" className="w-full max-w-5xl mx-auto">
         {/* Eyebrow */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.6 }}
           className="flex items-center gap-3 mb-4">
@@ -31,11 +32,12 @@ export function HeroPanel({ panelRef }) {
         {/* CTAs */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.5 }}
           style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <motion.a href="#projects" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+          <motion.button onClick={() => scrollToSection(3)}
+            whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.9rem 2rem', borderRadius: '9999px', background: 'oklch(68% 0.15 200)', color: 'oklch(10% 0.01 264)', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.88rem', textDecoration: 'none', letterSpacing: '0.04em' }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.9rem 2rem', borderRadius: '9999px', background: 'oklch(68% 0.15 200)', color: 'oklch(10% 0.01 264)', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.88rem', border:'none', cursor:'pointer', letterSpacing: '0.04em' }}>
             See My Work →
-          </motion.a>
+          </motion.button>
           <motion.a href="/assets/Amr_Abdelazeem_Resume.pdf" download whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.9rem 2rem', borderRadius: '9999px', border: '1px solid oklch(30% 0.02 264)', color: 'oklch(70% 0.01 264)', fontFamily: 'DM Sans', fontWeight: 500, fontSize: '0.88rem', textDecoration: 'none' }}>
@@ -65,37 +67,47 @@ export function AboutPanel({ panelRef }) {
     <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', width: '100%', maxWidth: '900px' }}>
-        {/* Photo */}
-        <div style={{ position: 'relative' }}>
-          <div style={{ position: 'relative', borderRadius: '1.5rem', overflow: 'hidden', aspectRatio: '4/5' }}>
+
+        {/* Photo — IoT terminal viewfinder frame, GSAP target: #about-photo */}
+        <div id="about-photo" style={{ position: 'relative', padding: '1rem' }}>
+          {/* Viewfinder corner brackets */}
+          {[['top:0,left:0','borderTop,borderLeft'],['top:0,right:0','borderTop,borderRight'],['bottom:0,left:0','borderBottom,borderLeft'],['bottom:0,right:0','borderBottom,borderRight']].map((_, ci) => {
+            const tops = [0,0,'auto','auto']; const lefts = [0,'auto',0,'auto'];
+            const rights = ['auto',0,'auto',0]; const bottoms = ['auto','auto',0,0];
+            const bTop = ci<2?'2px solid #00FFD1':'none'; const bBot = ci>=2?'2px solid #00FFD1':'none';
+            const bLeft = ci%2===0?'2px solid #00FFD1':'none'; const bRight = ci%2===1?'2px solid #00FFD1':'none';
+            return <div key={ci} style={{ position:'absolute', top:tops[ci], left:lefts[ci], right:rights[ci], bottom:bottoms[ci], width:32, height:32, borderTop:bTop, borderBottom:bBot, borderLeft:bLeft, borderRight:bRight, zIndex:2 }} />;
+          })}
+          {/* Scan line effect */}
+          <div style={{ position:'absolute', top:0, left:'1rem', right:'1rem', height:'1px', background:'linear-gradient(to right, transparent, #00FFD155, transparent)', zIndex:2 }} />
+          {/* Photo container */}
+          <div style={{ position: 'relative', borderRadius: '1rem', overflow: 'hidden', aspectRatio: '4/5', border:'1px solid #00FFD122' }}>
             <img src="/assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
               alt="Amr Abdelazeem" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-            {/* Overlay gradient */}
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, oklch(10% 0.01 264) 0%, transparent 50%)' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, oklch(10% 0.01 264) 0%, transparent 55%)' }} />
+            {/* IoT terminal overlay text */}
+            <div style={{ position:'absolute', bottom:'1rem', left:'1rem', fontFamily:'monospace', fontSize:'0.65rem', color:'#00FFD1aa', letterSpacing:'0.1em' }}>AMR.ENG // STATUS: AVAILABLE</div>
           </div>
-          {/* Floating stat badge */}
-          <div style={{ position: 'absolute', bottom: '-1rem', right: '-1rem', background: 'oklch(68% 0.15 200)', borderRadius: '1rem', padding: '1rem 1.5rem' }}>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: '2.5rem', lineHeight: 1, color: 'oklch(10% 0.01 264)' }}>10+</div>
-            <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', color: 'oklch(10% 0.01 264)', letterSpacing: '0.1em' }}>PROJECTS</div>
+          {/* Stat badge */}
+          <div style={{ position: 'absolute', bottom: '0rem', right: '0rem', background: '#00FFD1', borderRadius: '0.75rem', padding: '0.8rem 1.2rem' }}>
+            <div style={{ fontFamily: "'Bebas Neue'", fontSize: '2.2rem', lineHeight: 1, color: '#0a0a0a' }}>10+</div>
+            <div style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', color: '#0a0a0a', letterSpacing: '0.1em' }}>PROJECTS</div>
           </div>
-          {/* Decorative corner */}
-          <div style={{ position: 'absolute', top: '-1rem', left: '-1rem', width: 60, height: 60, borderTop: '2px solid oklch(68% 0.15 200)', borderLeft: '2px solid oklch(68% 0.15 200)', borderRadius: '0.5rem 0 0 0' }} />
         </div>
 
-        {/* Text */}
-        <div>
-          <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>02 / About Me</div>
+        {/* Text — GSAP target: #about-text-content */}
+        <div id="about-text-content">
+          <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#00FFD1', marginBottom: '1rem' }}>02 / About Me</div>
           <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 6vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem' }}>
             ENGINEER<br />AT HEART.
           </h2>
           <p style={{ fontFamily: 'DM Sans', fontSize: '1rem', lineHeight: 1.75, color: 'oklch(52% 0.02 264)', marginBottom: '2rem', maxWidth: '38ch' }}>
-            I design scalable systems with Clean Architecture. My engineering background lets me tackle Mobile, Backend, and IoT with equal depth — I don't just code, I <em style={{ color: 'oklch(68% 0.15 200)' }}>engineer solutions</em>.
+            I design scalable systems with Clean Architecture. My engineering background lets me tackle Mobile, Backend, and IoT with equal depth — I don't just code, I <em style={{ color: '#00FFD1' }}>engineer solutions</em>.
           </p>
-          {/* Stats grid */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             {stats.map(([num, label]) => (
-              <div key={label} style={{ padding: '1rem', border: '1px solid oklch(20% 0.02 264)', borderRadius: '0.75rem', background: 'oklch(13% 0.012 264)' }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '2rem', color: 'oklch(68% 0.15 200)', lineHeight: 1 }}>{num}</div>
+              <div key={label} style={{ padding: '1rem', border: '1px solid #00FFD122', borderRadius: '0.75rem', background: '#00FFD108' }}>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '2rem', color: '#00FFD1', lineHeight: 1 }}>{num}</div>
                 <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', color: 'oklch(45% 0.02 264)', letterSpacing: '0.1em', marginTop: '0.2rem' }}>{label}</div>
               </div>
             ))}
@@ -125,12 +137,24 @@ export function SkillsPanel({ panelRef }) {
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
           {SKILL_GROUPS.map(({ cat, color, items }) => (
-            <div key={cat} style={{ padding: '1.5rem', border: `1px solid ${color}33`, borderRadius: '1rem', background: `${color}08`, position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: '3px', height: '100%', background: color, borderRadius: '999px' }} />
+            // GSAP target: .skill-card — stagger scale + opacity on scroll enter
+            <div key={cat} className="skill-card" style={{
+              padding: '1.5rem',
+              border: `1px solid ${color}44`,
+              borderRadius: '1rem',
+              background: `${color}08`,
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: `0 0 18px ${color}22, inset 0 0 24px ${color}08`,
+            }}>
+              {/* Colored glow left border */}
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: `linear-gradient(to bottom, ${color}, ${color}44)`, boxShadow: `2px 0 12px ${color}88` }} />
+              {/* Category label */}
               <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.2rem', letterSpacing: '0.08em', color, marginBottom: '0.75rem', paddingLeft: '0.75rem' }}>{cat}</div>
+              {/* Pills */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', paddingLeft: '0.5rem' }}>
                 {items.map((item) => (
-                  <span key={item} style={{ fontFamily: 'DM Sans', fontSize: '0.75rem', padding: '0.25rem 0.6rem', borderRadius: '9999px', background: `${color}18`, color: 'oklch(75% 0.01 264)', border: `1px solid ${color}30` }}>
+                  <span key={item} style={{ fontFamily: 'DM Sans', fontSize: '0.75rem', padding: '0.25rem 0.6rem', borderRadius: '9999px', background: `${color}18`, color: 'oklch(75% 0.01 264)', border: `1px solid ${color}44` }}>
                     {item}
                   </span>
                 ))}
@@ -143,38 +167,66 @@ export function SkillsPanel({ panelRef }) {
   );
 }
 
-// ── PROJECTS PANEL ────────────────────────────────────────────────────────────
-const PROJECTS = [
-  { title: 'Batrina', sub: 'E-Commerce App', tag: 'Flutter · Firebase', img: '/assets/batrina/3- Home.png', color: '#0ea5e9' },
-  { title: 'AI Todo', sub: 'AI-Powered Task Manager', tag: 'Flutter · OpenAI', img: '/assets/ai_todo/ChatGPT Image Sep 9, 2025, 11_29_07 AM.png', color: '#a855f7' },
-  { title: 'Green Guardian', sub: 'IoT Plant Monitor', tag: 'ESP32 · Blynk', img: '/assets/GreenGuardian/cover.jpeg', color: '#10b981' },
-  { title: 'MIPS-32 CPU', sub: 'Hardware Design', tag: 'VHDL · Quartus', img: '/assets/mips-32/MIPS32_Block.png', color: '#f59e0b' },
-];
+// PROJECTS_DATA imported from ProjectDetail.jsx
 
-export function ProjectsPanel({ panelRef }) {
+export function ProjectsPanel({ panelRef, onProjectClick }) {
+  const [hovered, setHovered] = useState(null);
+  // Show first 4 projects in the panel grid
+  const visible = PROJECTS_DATA.slice(0, 4);
   return (
     <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
       <div style={{ width: '100%', maxWidth: '960px' }}>
-        <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>04 / Featured Work</div>
+        <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#00FFD1', marginBottom: '1rem' }}>04 / Featured Work</div>
         <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2rem' }}>
           BUILT<br />TO SHIP.
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
-          {PROJECTS.map(({ title, sub, tag, img, color }) => (
-            <motion.div key={title} whileHover={{ y: -4, scale: 1.01 }} transition={{ type: 'spring', stiffness: 350, damping: 20 }}
-              style={{ borderRadius: '1rem', overflow: 'hidden', border: `1px solid ${color}25`, background: 'oklch(13% 0.012 264)', cursor: 'pointer' }}>
+          {visible.map((proj, idx) => (
+            // GSAP target: .project-card
+            <motion.div
+              key={proj.id}
+              className="project-card"
+              onMouseEnter={() => setHovered(idx)}
+              onMouseLeave={() => setHovered(null)}
+              onClick={() => onProjectClick && onProjectClick(proj)}
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 20 }}
+              style={{ borderRadius: '1rem', overflow: 'hidden', border: `1px solid ${proj.color}33`,
+                background: 'oklch(13% 0.012 264)', cursor: 'pointer', position: 'relative' }}>
               <div style={{ height: '140px', overflow: 'hidden', position: 'relative' }}>
-                <img src={img} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'brightness(0.85)' }} />
+                <motion.img
+                  src={proj.img} alt={proj.title}
+                  animate={{ scale: hovered === idx ? 1.08 : 1 }}
+                  transition={{ duration: 0.4, ease: 'easeOut' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'brightness(0.85)' }} />
                 <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, oklch(13% 0.012 264), transparent 60%)` }} />
-                <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', padding: '0.25rem 0.6rem', background: `${color}cc`, borderRadius: '9999px', fontFamily: 'DM Sans', fontSize: '0.65rem', fontWeight: 700, color: '#000', letterSpacing: '0.05em' }}>
-                  {tag}
-                </div>
+                <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', padding: '0.25rem 0.6rem',
+                  background: `${proj.color}cc`, borderRadius: '9999px', fontFamily: 'DM Sans', fontSize: '0.65rem',
+                  fontWeight: 700, color: '#000', letterSpacing: '0.05em' }}>{proj.tag}</div>
               </div>
               <div style={{ padding: '1rem' }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.4rem', letterSpacing: '0.04em', color: 'oklch(94% 0.005 264)', lineHeight: 1 }}>{title}</div>
-                <div style={{ fontFamily: 'DM Sans', fontSize: '0.78rem', color: 'oklch(50% 0.02 264)', marginTop: '0.25rem' }}>{sub}</div>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.4rem', letterSpacing: '0.04em',
+                  color: 'oklch(94% 0.005 264)', lineHeight: 1 }}>{proj.title}</div>
+                <div style={{ fontFamily: 'DM Sans', fontSize: '0.78rem', color: 'oklch(50% 0.02 264)',
+                  marginTop: '0.25rem' }}>{proj.subtitle}</div>
               </div>
+              <AnimatePresence>
+                {hovered === idx && (
+                  <motion.div key="overlay"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.78)',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center',
+                      justifyContent: 'center', gap: '0.5rem' }}>
+                    <div style={{ fontFamily: 'DM Sans', fontWeight: 700, fontSize: '1rem',
+                      color: proj.color, letterSpacing: '0.08em' }}>View Project →</div>
+                    <div style={{ width: 36, height: 1, background: proj.color, opacity: 0.5 }} />
+                    <div style={{ fontFamily: 'monospace', fontSize: '0.65rem',
+                      color: `${proj.color}88`, letterSpacing: '0.15em' }}>{proj.tag}</div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
         </div>

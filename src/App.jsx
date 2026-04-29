@@ -19,7 +19,7 @@ gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
 // ── 9-stop architecture ──────────────────────────────────────────────────────
 // Stops: Hero | About | Skills | Proj1 | Proj2 | Proj3 | Proj4 | Experience | Contact
 // Index:  0       1       2       3       4       5       6        7             8
-const STOPS = 8; // 0-based max (9 values: 0..8)
+const STOPS = 9; // 0-based max (10 values: 0..9)
 const SNAP_POINTS = Array.from({ length: STOPS + 1 }, (_, i) => i / STOPS);
 const TOTAL_SCROLL = 2400;
 
@@ -35,8 +35,9 @@ const getPhoneStates = (width) => {
       { x: 0, y: -2.5, rotY: -0.05, scale: 0.4 }, // 4 Proj2
       { x: 0, y: -2.5, rotY: 0.05, scale: 0.4 }, // 5 Proj3
       { x: 0, y: -2.5, rotY: -0.05, scale: 0.4 }, // 6 Proj4
-      { x: 0, y: -2.5, rotY: 0, scale: 0.5 }, // 7 Experience
-      { x: 0, y: -2.5, rotY: 0, scale: 0.6 }, // 8 Contact
+      { x: 0, y: -2.5, rotY: 0.05, scale: 0.4 }, // 7 Proj5 (MIPS)
+      { x: 0, y: -2.5, rotY: 0, scale: 0.5 }, // 8 Experience
+      { x: 0, y: -2.5, rotY: 0, scale: 0.6 }, // 9 Contact
     ];
   }
   return [
@@ -47,16 +48,17 @@ const getPhoneStates = (width) => {
     { x: 4.5, y: -0.1, rotY: -0.05, scale: 0.62 }, // 4 Proj2
     { x: 4.5, y: 0.1, rotY: 0.05, scale: 0.62 }, // 5 Proj3
     { x: 4.5, y: 0, rotY: -0.05, scale: 0.62 }, // 6 Proj4
-    { x: 3.2, y: 0, rotY: 0, scale: 0.9 }, // 7 Experience
-    { x: 2.8, y: 0, rotY: 0, scale: 1.0 }, // 8 Contact
+    { x: 4.5, y: -0.1, rotY: 0.05, scale: 0.62 }, // 7 Proj5 (MIPS)
+    { x: 3.2, y: 0, rotY: 0, scale: 0.9 }, // 8 Experience
+    { x: 2.8, y: 0, rotY: 0, scale: 1.0 }, // 9 Contact
   ];
 };
 
 // Map scroll stop → panel index (panels: 0=Hero 1=About 2=Skills 3=Projects 4=Exp 5=Contact)
 function stopToPanel(stop) {
   if (stop <= 2) return stop;
-  if (stop <= 6) return 3; // projects carousel
-  return stop - 3;         // 7→4 Experience, 8→5 Contact
+  if (stop <= 7) return 3; // projects carousel
+  return stop - 4;         // 8→4 Experience, 9→5 Contact
 }
 
 export default function App() {
@@ -107,7 +109,7 @@ export default function App() {
   }, [activeProject]);
 
   // Nav helper — maps logical section (0-5) to scroll stop
-  const SECTION_TO_STOP = [0, 1, 2, 3, 7, 8]; // Hero→0, About→1, Skills→2, Work→3, Exp→7, Contact→8
+  const SECTION_TO_STOP = [0, 1, 2, 3, 8, 9]; // Hero→0, About→1, Skills→2, Work→3, Exp→8, Contact→9
   const scrollToSection = useCallback((sectionIdx) => {
     const stop = SECTION_TO_STOP[sectionIdx] ?? sectionIdx;
     const target = stop / STOPS;
@@ -127,8 +129,8 @@ export default function App() {
       const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
       tlRef.current = tl;
 
-      // Labels at equal 1/8 intervals
-      const LABELS = ['s0', 's1', 's2', 's3', 's3b', 's3c', 's3d', 's4', 's5'];
+      // Labels at equal 1/9 intervals
+      const LABELS = ['s0', 's1', 's2', 's3', 's3b', 's3c', 's3d', 's3e', 's4', 's5'];
       LABELS.forEach((lbl, i) => tl.addLabel(lbl, i / STOPS));
 
       // ── PANEL CROSSFADES (only at actual section boundaries) ───────────────
@@ -136,7 +138,7 @@ export default function App() {
         ['s0', 0, 1],   // Hero → About (starts at s0, completes at s1)
         ['s1', 1, 2],   // About → Skills (starts at s1, completes at s2)
         ['s2', 2, 3],   // Skills → Projects (starts at s2, completes at s3)
-        ['s3d', 3, 4],  // Projects → Experience (starts at s3d, completes at s4)
+        ['s3e', 3, 4],  // Projects → Experience (starts at s3e, completes at s4)
         ['s4', 4, 5],   // Experience → Contact (starts at s4, completes at s5)
       ];
       crossfades.forEach(([label, fromIdx, toIdx]) => {
@@ -146,9 +148,10 @@ export default function App() {
 
       // ── PROJECT CAROUSEL (xPercent of #project-track) ─────────────────────
       tl.set('#project-track', { xPercent: 0 }, 's3');
-      tl.to('#project-track', { xPercent: -25, duration: 1 / STOPS }, 's3');
-      tl.to('#project-track', { xPercent: -50, duration: 1 / STOPS }, 's3b');
-      tl.to('#project-track', { xPercent: -75, duration: 1 / STOPS }, 's3c');
+      tl.to('#project-track', { xPercent: -20, duration: 1 / STOPS }, 's3');
+      tl.to('#project-track', { xPercent: -40, duration: 1 / STOPS }, 's3b');
+      tl.to('#project-track', { xPercent: -60, duration: 1 / STOPS }, 's3c');
+      tl.to('#project-track', { xPercent: -80, duration: 1 / STOPS }, 's3d');
       // Reset carousel when leaving projects
       tl.set('#project-track', { xPercent: 0 }, 's4');
 

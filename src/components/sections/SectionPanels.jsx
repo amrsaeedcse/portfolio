@@ -18,7 +18,7 @@ export function HeroPanel({ panelRef, scrollToSection }) {
         </motion.div>
 
         {/* Giant name */}
-        <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.76,0,0.24,1] }}
+        <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(5rem, 15vw, 11rem)', lineHeight: 0.9, letterSpacing: '0.02em', color: 'oklch(96% 0.005 264)', marginBottom: '0.5rem' }}>
           HI, I'M<br />
           <span style={{ color: 'oklch(68% 0.15 200)' }}>AMR.</span>
@@ -35,7 +35,7 @@ export function HeroPanel({ panelRef, scrollToSection }) {
           <motion.button onClick={() => scrollToSection(3)}
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.9rem 2rem', borderRadius: '9999px', background: 'oklch(68% 0.15 200)', color: 'oklch(10% 0.01 264)', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.88rem', border:'none', cursor:'pointer', letterSpacing: '0.04em' }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.9rem 2rem', borderRadius: '9999px', background: 'oklch(68% 0.15 200)', color: 'oklch(10% 0.01 264)', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.88rem', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
             See My Work →
           </motion.button>
           <motion.a href="/assets/Amr_Abdelazeem_Resume.pdf" download whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
@@ -71,22 +71,22 @@ export function AboutPanel({ panelRef }) {
         {/* Photo — IoT terminal viewfinder frame, GSAP target: #about-photo */}
         <div id="about-photo" style={{ position: 'relative', padding: '1rem' }}>
           {/* Viewfinder corner brackets */}
-          {[['top:0,left:0','borderTop,borderLeft'],['top:0,right:0','borderTop,borderRight'],['bottom:0,left:0','borderBottom,borderLeft'],['bottom:0,right:0','borderBottom,borderRight']].map((_, ci) => {
-            const tops = [0,0,'auto','auto']; const lefts = [0,'auto',0,'auto'];
-            const rights = ['auto',0,'auto',0]; const bottoms = ['auto','auto',0,0];
-            const bTop = ci<2?'2px solid #00FFD1':'none'; const bBot = ci>=2?'2px solid #00FFD1':'none';
-            const bLeft = ci%2===0?'2px solid #00FFD1':'none'; const bRight = ci%2===1?'2px solid #00FFD1':'none';
-            return <div key={ci} style={{ position:'absolute', top:tops[ci], left:lefts[ci], right:rights[ci], bottom:bottoms[ci], width:32, height:32, borderTop:bTop, borderBottom:bBot, borderLeft:bLeft, borderRight:bRight, zIndex:2 }} />;
+          {[['top:0,left:0', 'borderTop,borderLeft'], ['top:0,right:0', 'borderTop,borderRight'], ['bottom:0,left:0', 'borderBottom,borderLeft'], ['bottom:0,right:0', 'borderBottom,borderRight']].map((_, ci) => {
+            const tops = [0, 0, 'auto', 'auto']; const lefts = [0, 'auto', 0, 'auto'];
+            const rights = ['auto', 0, 'auto', 0]; const bottoms = ['auto', 'auto', 0, 0];
+            const bTop = ci < 2 ? '2px solid #00FFD1' : 'none'; const bBot = ci >= 2 ? '2px solid #00FFD1' : 'none';
+            const bLeft = ci % 2 === 0 ? '2px solid #00FFD1' : 'none'; const bRight = ci % 2 === 1 ? '2px solid #00FFD1' : 'none';
+            return <div key={ci} style={{ position: 'absolute', top: tops[ci], left: lefts[ci], right: rights[ci], bottom: bottoms[ci], width: 32, height: 32, borderTop: bTop, borderBottom: bBot, borderLeft: bLeft, borderRight: bRight, zIndex: 2 }} />;
           })}
           {/* Scan line effect */}
-          <div style={{ position:'absolute', top:0, left:'1rem', right:'1rem', height:'1px', background:'linear-gradient(to right, transparent, #00FFD155, transparent)', zIndex:2 }} />
+          <div style={{ position: 'absolute', top: 0, left: '1rem', right: '1rem', height: '1px', background: 'linear-gradient(to right, transparent, #00FFD155, transparent)', zIndex: 2 }} />
           {/* Photo container */}
-          <div style={{ position: 'relative', borderRadius: '1rem', overflow: 'hidden', aspectRatio: '4/5', border:'1px solid #00FFD122' }}>
+          <div style={{ position: 'relative', borderRadius: '1rem', overflow: 'hidden', aspectRatio: '4/5', border: '1px solid #00FFD122' }}>
             <img src="/assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
               alt="Amr Abdelazeem" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, oklch(10% 0.01 264) 0%, transparent 55%)' }} />
             {/* IoT terminal overlay text */}
-            <div style={{ position:'absolute', bottom:'1rem', left:'1rem', fontFamily:'monospace', fontSize:'0.65rem', color:'#00FFD1aa', letterSpacing:'0.1em' }}>AMR.ENG // STATUS: AVAILABLE</div>
+            <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', fontFamily: 'monospace', fontSize: '0.65rem', color: '#00FFD1aa', letterSpacing: '0.1em' }}>AMR.ENG // STATUS: AVAILABLE</div>
           </div>
           {/* Stat badge */}
           <div style={{ position: 'absolute', bottom: '0rem', right: '0rem', background: '#00FFD1', borderRadius: '0.75rem', padding: '0.8rem 1.2rem' }}>
@@ -178,108 +178,134 @@ export function ProjectsPanel({ panelRef, onProjectClick }) {
       style={{ opacity: 0, pointerEvents: 'none', overflow: 'hidden' }}>
 
       {/* Section label — top-left, always visible in Projects */}
-      <div style={{ position:'absolute', top:'5rem', left:'8vw', zIndex:4,
-        fontFamily:'DM Sans', fontSize:'0.7rem', letterSpacing:'0.3em',
-        textTransform:'uppercase', color:'#00FFD1' }}>04 / Featured Work</div>
+      <div style={{
+        position: 'absolute', top: '5rem', left: '8vw', zIndex: 4,
+        fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em',
+        textTransform: 'uppercase', color: '#00FFD1'
+      }}>04 / Featured Work</div>
 
       {/* Progress indicator — which card of 4 */}
-      <div style={{ position:'absolute', bottom:'2.5rem', left:'8vw', zIndex:4,
-        display:'flex', gap:'0.5rem', alignItems:'center' }}>
-        {[0, 1, 2, 3].map((_, i) => (
+      <div style={{
+        position: 'absolute', bottom: '2.5rem', left: '8vw', zIndex: 4,
+        display: 'flex', gap: '0.5rem', alignItems: 'center'
+      }}>
+        {[0, 1, 2, 3, 4].map((_, i) => (
           <div key={i} className={`proj-dot-${i}`}
-            style={{ width: i===0?28:8, height:2, borderRadius:999,
-              background: i===0?'#00FFD1':'#ffffff22', transition:'all 0.35s ease' }} />
+            style={{
+              width: i === 0 ? 28 : 8, height: 2, borderRadius: 999,
+              background: i === 0 ? '#00FFD1' : '#ffffff22', transition: 'all 0.35s ease'
+            }} />
         ))}
       </div>
 
       {/* The 400vw horizontal track — GSAP targets this element */}
       <div id="project-track"
-        style={{ display:'flex', width:'400%', height:'100%', willChange:'transform' }}>
+        style={{ display: 'flex', width: '500%', height: '100%', willChange: 'transform' }}>
 
-        {PROJECTS_DATA.slice(0, 3).map((proj, idx) => (
-          /* Each card = exactly 25% of 400% track = 100vw */
-          <div key={proj.id} style={{ flex:'0 0 25%', position:'relative',
-            display:'flex', alignItems:'center', overflow:'hidden' }}>
+        {PROJECTS_DATA.slice(0, 4).map((proj, idx) => (
+          /* Each card = exactly 20% of 500% track = 100vw */
+          <div key={proj.id} style={{
+            flex: '0 0 20%', position: 'relative',
+            display: 'flex', alignItems: 'center', overflow: 'hidden'
+          }}>
 
             {/* Full-bleed background image — right 55% */}
-            <div style={{ position:'absolute', right:0, top:0, bottom:0, width:'58%', overflow:'hidden' }}>
+            <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '58%', overflow: 'hidden' }}>
               <motion.img src={proj.img} alt={proj.title}
                 animate={{ scale: hovered === idx ? 1.06 : 1 }}
-                transition={{ duration: 0.6, ease:'easeOut' }}
-                style={{ width:'100%', height:'100%', objectFit:'cover',
-                  display:'block', filter:'brightness(0.55)' }} />
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                style={{
+                  width: '100%', height: '100%', objectFit: 'cover',
+                  display: 'block', filter: 'brightness(0.55)'
+                }} />
               {/* Left-to-right gradient masks image edge */}
-              <div style={{ position:'absolute', inset:0,
-                background:`linear-gradient(to right, #0a0a0f 0%, ${proj.color}18 50%, transparent 100%)` }} />
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: `linear-gradient(to right, #0a0a0f 0%, ${proj.color}18 50%, transparent 100%)`
+              }} />
             </div>
 
             {/* Left content panel */}
-            <div style={{ position:'relative', zIndex:2, padding:'0 8vw',
-              maxWidth:'55%', width:'100%' }}
+            <div style={{
+              position: 'relative', zIndex: 2, padding: '0 8vw',
+              maxWidth: '55%', width: '100%'
+            }}
               onMouseEnter={() => setHovered(idx)}
               onMouseLeave={() => setHovered(null)}>
 
               {/* Giant index number */}
-              <div style={{ fontFamily:"'Bebas Neue'", fontSize:'clamp(7rem,16vw,13rem)',
-                lineHeight:0.85, color:'#ffffff04', marginBottom:'-1rem',
-                userSelect:'none' }}>0{idx+1}</div>
+              <div style={{
+                fontFamily: "'Bebas Neue'", fontSize: 'clamp(7rem,16vw,13rem)',
+                lineHeight: 0.85, color: '#ffffff04', marginBottom: '-1rem',
+                userSelect: 'none'
+              }}>0{idx + 1}</div>
 
               {/* Tech tag */}
-              <div style={{ display:'inline-flex', alignItems:'center', gap:'0.5rem',
-                padding:'0.3rem 0.8rem', background:`${proj.color}22`,
-                border:`1px solid ${proj.color}55`, borderRadius:'9999px',
-                fontFamily:'DM Sans', fontSize:'0.7rem', color:proj.color,
-                letterSpacing:'0.1em', marginBottom:'1rem' }}>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                padding: '0.3rem 0.8rem', background: `${proj.color}22`,
+                border: `1px solid ${proj.color}55`, borderRadius: '9999px',
+                fontFamily: 'DM Sans', fontSize: '0.7rem', color: proj.color,
+                letterSpacing: '0.1em', marginBottom: '1rem'
+              }}>
                 {proj.tag}
               </div>
 
               {/* Title */}
-              <h2 style={{ fontFamily:"'Bebas Neue'", fontSize:'clamp(3.5rem,8vw,6.5rem)',
-                lineHeight:0.9, color:'#f4f4f5', marginBottom:'1.2rem',
-                letterSpacing:'0.02em' }}>{proj.title}</h2>
+              <h2 style={{
+                fontFamily: "'Bebas Neue'", fontSize: 'clamp(3.5rem,8vw,6.5rem)',
+                lineHeight: 0.9, color: '#f4f4f5', marginBottom: '1.2rem',
+                letterSpacing: '0.02em'
+              }}>{proj.title}</h2>
 
               {/* Description */}
-              <p style={{ fontFamily:'DM Sans', fontSize:'clamp(0.88rem,1.4vw,1rem)',
-                color:'#ffffff66', lineHeight:1.75, maxWidth:'36ch',
-                marginBottom:'2rem' }}>
+              <p style={{
+                fontFamily: 'DM Sans', fontSize: 'clamp(0.88rem,1.4vw,1rem)',
+                color: '#ffffff66', lineHeight: 1.75, maxWidth: '36ch',
+                marginBottom: '2rem'
+              }}>
                 {proj.description.slice(0, 130)}...
               </p>
 
               {/* CTA buttons */}
-              <div style={{ display:'flex', gap:'1rem', flexWrap:'wrap' }}>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <motion.button
-                  whileHover={{ scale:1.05 }} whileTap={{ scale:0.95 }}
+                  whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                   onClick={() => onProjectClick(proj)}
-                  style={{ fontFamily:'DM Sans', fontSize:'0.75rem', letterSpacing:'0.1em',
-                    textTransform:'uppercase', padding:'0.7rem 1.5rem', background:proj.color,
-                    color:'#0a0a0f', border:'none', borderRadius:'9999px', cursor:'pointer',
-                    fontWeight:600 }}>
+                  style={{
+                    fontFamily: 'DM Sans', fontSize: '0.75rem', letterSpacing: '0.1em',
+                    textTransform: 'uppercase', padding: '0.7rem 1.5rem', background: proj.color,
+                    color: '#0a0a0f', border: 'none', borderRadius: '9999px', cursor: 'pointer',
+                    fontWeight: 600
+                  }}>
                   View Details
                 </motion.button>
               </div>
             </div>
 
             {/* Right-edge vertical line accent */}
-            <div style={{ position:'absolute', right:0, top:'15%', bottom:'15%',
-              width:1, background:`linear-gradient(to bottom, transparent, ${proj.color}44, transparent)`,
-              zIndex:3 }} />
+            <div style={{
+              position: 'absolute', right: 0, top: '15%', bottom: '15%',
+              width: 1, background: `linear-gradient(to bottom, transparent, ${proj.color}44, transparent)`,
+              zIndex: 3
+            }} />
           </div>
         ))}
 
-        {/* 4th Card: View All Projects CTA */}
-        <div style={{ flex:'0 0 25%', position:'relative', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', background:'#050508' }}>
-          <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at center, #00FFD111 0%, transparent 70%)' }} />
-          <motion.div 
+        {/* 5th Card: View All Projects CTA */}
+        <div style={{ flex: '0 0 20%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: '#050508' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, #00FFD111 0%, transparent 70%)' }} />
+          <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onProjectClick('ARCHIVE')}
             style={{ textAlign: 'center', cursor: 'pointer', zIndex: 10, padding: '3rem', border: '1px solid #ffffff11', borderRadius: '2rem', background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}
           >
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✨</div>
-            <h2 style={{ fontFamily:"'Bebas Neue'", fontSize:'clamp(3rem,6vw,5rem)', lineHeight:0.9, color:'#f4f4f5', marginBottom:'0.5rem', letterSpacing:'0.02em' }}>
-              VIEW ALL <span style={{ color:'#00FFD1' }}>PROJECTS</span>
+            <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem,6vw,5rem)', lineHeight: 0.9, color: '#f4f4f5', marginBottom: '0.5rem', letterSpacing: '0.02em' }}>
+              VIEW ALL <span style={{ color: '#00FFD1' }}>PROJECTS</span>
             </h2>
-            <p style={{ fontFamily:'DM Sans', fontSize:'0.9rem', color:'#ffffff88', letterSpacing:'0.1em', textTransform: 'uppercase' }}>
+            <p style={{ fontFamily: 'DM Sans', fontSize: '0.9rem', color: '#ffffff88', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
               Explore the complete archive
             </p>
           </motion.div>
@@ -378,12 +404,12 @@ export function ContactPanel({ panelRef }) {
       </div>
 
       {/* Footer Merged into Contact Panel */}
-      <footer style={{ position:'absolute', bottom: 0, left: 0, right: 0, zIndex:10, borderTop:'1px solid #ffffff0d', padding:'2rem 4rem', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:'1rem', background:'#0a0a0f' }}>
-        <p style={{ fontFamily:'DM Sans', fontSize:'0.72rem', color:'oklch(28% 0.02 264)' }}>
+      <footer style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10, borderTop: '1px solid #ffffff0d', padding: '2rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: '#0a0a0f' }}>
+        <p style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', color: 'oklch(28% 0.02 264)' }}>
           © 2025 Amr Abdelazeem — Built with React &amp; Three.js
         </p>
-        <div style={{ display:'flex', gap:'1rem', flexWrap:'wrap' }}>
-          {[['LinkedIn', 'https://linkedin.com/in/amrsaeed-cse', '#0ea5e9'], ['GitHub', 'https://github.com/amrsaeedcse', '#a855f7'], ['WhatsApp', 'https://wa.me/201121153059', '#10b981']].map(([l, h, c]) => (
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          {[['LinkedIn', 'https://www.linkedin.com/in/amr-saeed-0bb957373/', '#0ea5e9'], ['GitHub', 'https://github.com/amrsaeedcse', '#a855f7'], ['WhatsApp', 'https://wa.me/201121153059', '#10b981']].map(([l, h, c]) => (
             <a key={l} href={h} target="_blank" rel="noreferrer"
               style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', fontWeight: 600, color: '#f4f4f5', textDecoration: 'none', border: `1px solid ${c}66`, padding: '0.4rem 1.2rem', borderRadius: '9999px', transition: 'all 0.2s', background: `${c}11` }}
               onMouseEnter={e => { e.target.style.background = c; e.target.style.color = '#000'; e.target.style.borderColor = c; }}

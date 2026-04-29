@@ -15,7 +15,7 @@ export const PROJECTS_DATA = [
       'A production-grade e-commerce platform built with Flutter. Originally backed by Firebase, I completely migrated the backend architecture to a custom Node.js and MongoDB REST API to ensure high scalability and avoid "Pay as you go" vendor lock-in. I retained Firebase FCM exclusively for push notifications. The Flutter client follows strict Clean Architecture principles with a Repository pattern and Bloc/Cubit state management.',
     tech: ['Flutter', 'Dart', 'Node.js', 'MongoDB', 'Express', 'Firebase FCM', 'Bloc/Cubit', 'Clean Architecture', 'REST APIs', 'Figma'],
     features: ['User auth & profile management', 'Product catalog with search & filters', 'Real-time cart & order flow', 'Custom Node.js/MongoDB backend', 'FCM Push notifications'],
-    github: 'https://github.com/amrsaeedcse',
+    github: 'https://github.com/amrsaeedcse', // Note: Need exact Batrina repo name if it exists, leaving as profile for now since it wasn't in top 100 search results.
     screenshots: ['/assets/batrina/3- Home.png'],
   },
   {
@@ -31,7 +31,7 @@ export const PROJECTS_DATA = [
       'An intelligent task management application that integrates OpenAI\'s GPT API to auto-generate subtasks, suggest priorities, and summarize your day. Built with Flutter using Clean Architecture and the Bloc pattern. Features offline-first Hive local storage.',
     tech: ['Flutter', 'Dart', 'OpenAI API', 'Bloc/Cubit', 'Hive', 'Clean Architecture', 'HTTP'],
     features: ['AI-generated task breakdowns', 'Smart priority suggestions', 'Daily summary generation', 'Offline-first with Hive', 'Beautiful animated UI'],
-    github: 'https://github.com/amrsaeedcse',
+    github: 'https://github.com/amrsaeedcse/ai_todo_app',
     screenshots: ['/assets/ai_todo/ChatGPT Image Sep 9, 2025, 11_29_07 AM.png'],
   },
   {
@@ -47,7 +47,7 @@ export const PROJECTS_DATA = [
       'An end-to-end IoT solution for real-time plant health monitoring. An ESP32 microcontroller reads soil moisture, temperature, and humidity sensors, transmitting data to the Blynk cloud platform. A companion Flutter app visualizes the live data and triggers automated irrigation via a relay module.',
     tech: ['ESP32', 'C / C++', 'Flutter', 'Blynk IoT', 'Dart', 'DHT22 Sensor', 'Soil Moisture Sensor', 'Relay Module'],
     features: ['Real-time sensor data streaming', 'Automated irrigation control', 'Historical data charts', 'Push alerts for critical readings', 'Cross-platform Flutter dashboard'],
-    github: 'https://github.com/amrsaeedcse',
+    github: 'https://github.com/amrsaeedcse/greenGurdian',
     screenshots: ['/assets/GreenGuardian/cover.jpeg'],
   },
   {
@@ -63,7 +63,7 @@ export const PROJECTS_DATA = [
       'A fully functional 32-bit pipelined MIPS processor designed in VHDL and synthesized on an FPGA using Quartus Prime. Implements a 5-stage pipeline (IF, ID, EX, MEM, WB) with hazard detection, data forwarding, and branch prediction logic.',
     tech: ['VHDL', 'Quartus Prime', 'ModelSim', 'FPGA', 'Digital Logic Design', 'Computer Architecture'],
     features: ['5-stage pipeline (IF/ID/EX/MEM/WB)', 'Hazard detection & forwarding', 'Branch prediction unit', '32 general-purpose registers', 'Full MIPS instruction set support'],
-    github: 'https://github.com/amrsaeedcse',
+    github: 'https://github.com/amrsaeedcse/mips-32',
     screenshots: ['/assets/mips-32/MIPS32_Block.png'],
   },
   {

@@ -1,0 +1,86 @@
+{
+  "hash": "9c576a5a",
+  "configHash": "130fb8c3",
+  "lockfileHash": "a8ad2cbf",
+  "browserHash": "01315e9a",
+  "optimized": {
+    "@react-three/fiber": {
+      "src": "../../node_modules/@react-three/fiber/dist/react-three-fiber.esm.js",
+      "file": "@react-three_fiber.js",
+      "fileHash": "c03b6b54",
+      "needsInterop": false
+    },
+    "framer-motion": {
+      "src": "../../node_modules/framer-motion/dist/es/index.mjs",
+      "file": "framer-motion.js",
+      "fileHash": "ca404f51",
+      "needsInterop": false
+    },
+    "gsap": {
+      "src": "../../node_modules/gsap/index.js",
+      "file": "gsap.js",
+      "fileHash": "109deb83",
+      "needsInterop": false
+    },
+    "gsap/Observer": {
+      "src": "../../node_modules/gsap/Observer.js",
+      "file": "gsap_Observer.js",
+      "fileHash": "1f298bfb",
+      "needsInterop": false
+    },
+    "gsap/ScrollToPlugin": {
+      "src": "../../node_modules/gsap/ScrollToPlugin.js",
+      "file": "gsap_ScrollToPlugin.js",
+      "fileHash": "85aad6b1",
+      "needsInterop": false
+    },
+    "gsap/ScrollTrigger": {
+      "src": "../../node_modules/gsap/ScrollTrigger.js",
+      "file": "gsap_ScrollTrigger.js",
+      "fileHash": "20f56fe5",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "92269f29",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "62c7a879",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "602af42d",
+      "needsInterop": true
+    },
+    "three": {
+      "src": "../../node_modules/three/build/three.module.js",
+      "file": "three.js",
+      "fileHash": "ca2b34d4",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-CYJPkc-J": {
+      "file": "chunk-CYJPkc-J.js",
+      "isDynamicEntry": false
+    },
+    "jsx-runtime-C-sL0UFa": {
+      "file": "jsx-runtime-C-sL0UFa.js",
+      "isDynamicEntry": false
+    },
+    "scheduler-CtQc8lLn": {
+      "file": "scheduler-CtQc8lLn.js",
+      "isDynamicEntry": false
+    },
+    "three.module-DxTnMYRF": {
+      "file": "three.module-DxTnMYRF.js",
+      "isDynamicEntry": false
+    }
+  }
+}

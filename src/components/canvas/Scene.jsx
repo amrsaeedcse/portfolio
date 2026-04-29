@@ -43,8 +43,8 @@ export default React.memo(function Scene({ phoneRef, onLoaded }) {
       <Suspense fallback={null}>
         <PhoneMockup
           ref={phoneRef}
-          position={[2.5, 0, 0]}
-          scale={[isMobile ? 0.6 : 1.05, isMobile ? 0.6 : 1.05, isMobile ? 0.6 : 1.05]}
+          position={[isMobile ? 0 : 2.5, 0, 0]}
+          scale={[isMobile ? 0.7 : 1.05, isMobile ? 0.7 : 1.05, isMobile ? 0.7 : 1.05]}
           rotation={[0, 0, 0]}
         />
         {PARTICLES.map((p, i) => (

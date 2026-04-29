@@ -69,7 +69,7 @@ export function AboutPanel({ panelRef }) {
       <div className="w-full max-w-[900px] flex flex-col md:grid md:grid-cols-[auto_1fr] gap-6 md:gap-16 items-center backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/50 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
         
         {/* Photo */}
-        <div id="about-photo" className="relative p-2 md:p-4 w-32 md:w-auto mx-auto md:mx-0">
+        <div id="about-photo" className="relative p-2 md:p-4 w-36 md:w-[260px] lg:w-[300px] mx-auto md:mx-0">
           {/* Viewfinder corner brackets */}
           {[['top:0,left:0', 'borderTop,borderLeft'], ['top:0,right:0', 'borderTop,borderRight'], ['bottom:0,left:0', 'borderBottom,borderLeft'], ['bottom:0,right:0', 'borderBottom,borderRight']].map((_, ci) => {
             const tops = [0, 0, 'auto', 'auto']; const lefts = [0, 'auto', 0, 'auto'];

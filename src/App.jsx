@@ -76,11 +76,15 @@ export default function App() {
 
   useEffect(() => {
     let timeoutId = null;
+    let lastWidth = window.innerWidth;
     const handleResize = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        setWindowWidth(window.innerWidth);
-        window.scrollTo(0, 0); // Reset to start on resize
+        if (window.innerWidth !== lastWidth) {
+          lastWidth = window.innerWidth;
+          setWindowWidth(window.innerWidth);
+          window.scrollTo(0, 0); // Reset to start only on true width resize
+        }
       }, 300);
     };
     window.addEventListener('resize', handleResize);
@@ -438,25 +442,6 @@ export default function App() {
           </>
         )}
       </motion.div>
-
-      {/* Footer */}
-      <footer style={{
-        position: 'relative', zIndex: 10, borderTop: '1px solid #ffffff0d',
-        padding: '2rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: '1rem', background: '#0a0a0f'
-      }}>
-        <p style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', color: 'oklch(28% 0.02 264)' }}>
-          © 2025 Amr Abdelazeem — Built with React &amp; Three.js
-        </p>
-        <div style={{ display: 'flex', gap: '2rem' }}>
-          {[['LinkedIn', 'https://linkedin.com/in/amrsaeed-cse'], ['GitHub', 'https://github.com/amrsaeedcse'], ['WhatsApp', 'https://wa.me/201121153059']].map(([l, h]) => (
-            <a key={l} href={h} target="_blank" rel="noreferrer"
-              style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', color: 'oklch(35% 0.02 264)', textDecoration: 'none' }}
-              onMouseEnter={e => e.target.style.color = '#00FFD1'}
-              onMouseLeave={e => e.target.style.color = 'oklch(35% 0.02 264)'}>{l}</a>
-          ))}
-        </div>
-      </footer>
     </div>
   );
 }

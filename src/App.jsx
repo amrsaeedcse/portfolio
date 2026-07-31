@@ -69,7 +69,14 @@ export default function App() {
   const currentStop = useRef(0);
   const isAnimating = useRef(false);
   const obsRef = useRef(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const reducedMotion = useRef(
+    typeof window !== 'undefined'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false
+  );
+  // VERCEL SKILL: rerender-lazy-state-init — pass a function to useState
+  // so window.innerWidth is only read once during mount, not on every render.
+  const [windowWidth, setWindowWidth] = useState(() => window.innerWidth);
 
   const handleLoaderDone = useCallback(() => setLoaded(true), []);
   const handleLoaderExiting = useCallback(() => setLoaderExiting(true), []);
@@ -156,9 +163,19 @@ export default function App() {
         ['s9', 4, 5],   // Experience → Contact (starts at s9)
       ];
       crossfades.forEach(([label, fromIdx, toIdx]) => {
-        // Offset the transition so it completes BY the label, meaning it starts at prev stop
-        tl.to(panels[fromIdx], { autoAlpha: 0, y: -36, duration: 1 / STOPS }, `${label}-=${1 / STOPS}`);
-        tl.to(panels[toIdx], { autoAlpha: 1, y: 0, duration: 1 / STOPS }, `${label}-=${1 / STOPS}`);
+        // Offset so transition completes BY the label
+        tl.to(panels[fromIdx], {
+          autoAlpha: 0, y: -36, duration: 1 / STOPS,
+          onComplete: () => panels[fromIdx]?.classList.remove('panel-entered'),
+        }, `${label}-=${1 / STOPS}`);
+        tl.to(panels[toIdx], {
+          autoAlpha: 1, y: 0, duration: 1 / STOPS,
+          onComplete: () => {
+            // Remove then re-add to replay animation on every entry
+            panels[toIdx]?.classList.remove('panel-entered');
+            requestAnimationFrame(() => panels[toIdx]?.classList.add('panel-entered'));
+          },
+        }, `${label}-=${1 / STOPS}`);
       });
 
       // ── PROJECT CAROUSEL (xPercent of #project-track) ─────────────────────
@@ -193,8 +210,11 @@ export default function App() {
         end: `+=${TOTAL_SCROLL}`,
         pin: true,
         anticipatePin: 1,
-        animation: tl, // السر الأول: ربطنا التايم لاين بالـ ScrollTrigger عشان يشوف الـ Labels
-        scrub: true,   // FIX 1: Instant scrub to prevent double-delay lag behind Observer
+        animation: tl,
+        // VERCEL SKILL: Use scrub: 0.5 instead of true.
+        // scrub:true = instant (causes jank when scroll jumps).
+        // scrub:0.5 = 500ms lerp — eliminates perceived lag while staying smooth.
+        scrub: 0.5,
         onUpdate(self) {
           scrollState.progress = self.progress;
           const stop = Math.min(STOPS, Math.round(self.progress * STOPS));
@@ -217,11 +237,15 @@ export default function App() {
           // Sync pointer-events
           panels.forEach((p, i) => { p.style.pointerEvents = i === panelIdx ? 'auto' : 'none'; });
 
-          // Sync dots
+          // Sync dots — add .dot-active for ember glow, CSS handles the pulse
           dotRefs.current.forEach((d, i) => {
             if (!d) return;
+            const inner = d.firstElementChild;
             d.style.transform = i === stop ? 'scale(1.8)' : 'scale(1)';
             d.style.opacity = i === stop ? '1' : '0.3';
+            if (inner) {
+              inner.classList.toggle('dot-active', i === stop);
+            }
           });
           currentStop.current = stop;
         },
@@ -237,6 +261,41 @@ export default function App() {
         onUp: () => gotoNext(),    // FIX 3: swiped up / wheel down -> MORE content
         onDown: () => gotoPrev(),  // FIX 3: swiped down / wheel up -> PREV content
       });
+
+      // ── KEYBOARD NAVIGATION — WCAG 2.1.1 Keyboard (Level A) ─────────────────
+      // Pause observer when a form field has focus so typing doesn't nav sections.
+      const isFormField = () => {
+        const el = document.activeElement;
+        return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT');
+      };
+
+      const handleKeyDown = (e) => {
+        if (isFormField()) return; // never hijack typing
+        switch (e.key) {
+          case 'ArrowDown':
+          case 'PageDown':
+          case ' ':              // Space
+            e.preventDefault();
+            gotoNext();
+            break;
+          case 'ArrowUp':
+          case 'PageUp':
+            e.preventDefault();
+            gotoPrev();
+            break;
+          case 'Home':
+            e.preventDefault();
+            snapToStop(0);
+            break;
+          case 'End':
+            e.preventDefault();
+            snapToStop(STOPS);
+            break;
+          default:
+            break;
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
 
       function gotoNext() {
         if (isAnimating.current) return;
@@ -268,13 +327,17 @@ export default function App() {
       }
 
       // ── ENTRANCE ANIMATION — phone swoops in after loader ─────────────────
-      // Point 3: Set phone off-screen right initially, then swoop in
-      if (phoneRef.current) {
+      // Skipped entirely under prefers-reduced-motion — phone appears at rest position
+      if (phoneRef.current && !reducedMotion.current) {
         gsap.set(phoneRef.current.position, { x: 7 });
         gsap.set(phoneRef.current.scale, { x: 0.5, y: 0.5, z: 0.5 });
         gsap.timeline({ delay: 0.15 })
           .to(phoneRef.current.position, { x: PHONE_STATES[0].x, duration: 1.0, ease: 'power3.out' })
           .to(phoneRef.current.scale, { x: PHONE_STATES[0].scale, y: PHONE_STATES[0].scale, z: PHONE_STATES[0].scale, duration: 0.9, ease: 'back.out(1.2)' }, 0.1);
+      } else if (phoneRef.current) {
+        // Reduced motion: place phone instantly at its rest position
+        gsap.set(phoneRef.current.position, { x: PHONE_STATES[0].x, y: PHONE_STATES[0].y });
+        gsap.set(phoneRef.current.scale, { x: PHONE_STATES[0].scale, y: PHONE_STATES[0].scale, z: PHONE_STATES[0].scale });
       }
     }
 
@@ -282,6 +345,7 @@ export default function App() {
       cancelAnimationFrame(raf);
       if (obsRef.current) obsRef.current.kill();
       ScrollTrigger.getAll().forEach(st => st.kill());
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [loaded, windowWidth]);
 
@@ -307,8 +371,12 @@ export default function App() {
       </div>
 
       {/* ── NAV ─────────────────────────────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 flex items-center justify-between px-8 md:px-16 py-5"
-        style={{ zIndex: 50 }}>
+      <nav className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6 md:px-16 py-5"
+        style={{
+          zIndex: 50,
+          background: 'linear-gradient(to bottom, oklch(10% 0.01 264 / 0.85) 0%, transparent 100%)',
+          backdropFilter: 'blur(2px)',
+        }}>
         <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.5rem', letterSpacing: '0.06em', cursor: 'pointer' }}
           onClick={() => scrollToSection(0)}>
           <span style={{ color: '#00FFD1' }}>&lt;</span>
@@ -318,6 +386,7 @@ export default function App() {
         <div className="hidden md:flex items-center gap-8">
           {[['About', 1], ['Skills', 2], ['Work', 3], ['Experience', 4], ['Contact', 5]].map(([item, idx]) => (
             <button key={item} onClick={() => scrollToSection(idx)}
+              className="nav-link"
               style={{
                 fontFamily: 'DM Sans', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase',
                 color: 'oklch(52% 0.02 264)', background: 'none', border: 'none', cursor: 'pointer', padding: 0
@@ -386,32 +455,34 @@ export default function App() {
         style={{
           zIndex: 50, writingMode: 'vertical-rl', transform: 'translateY(-50%) rotate(180deg)',
           fontFamily: 'DM Sans', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase',
-          color: 'oklch(22% 0.02 264)'
-        }}>AMRSAEEDCSE · 2025</div>
+          color: 'oklch(32% 0.02 264)'
+        }}>AMRSAEEDCSE · 2026</div>
 
-      {/* Progress dots — 9 stops */}
-      <div className="fixed right-5 top-1/2 flex flex-col gap-2"
+      {/* Progress dots — each wrapped in a 44px touch-target: WCAG 2.5.8 */}
+      <div className="fixed right-5 top-1/2 flex flex-col"
         style={{ zIndex: 50, transform: 'translateY(-50%)' }}>
         {SNAP_POINTS.map((_, i) => (
-          <div key={i} ref={el => dotRefs.current[i] = el}
+          <div key={i} className="touch-target"
+            ref={el => dotRefs.current[i] = el}
+            role="button"
+            tabIndex={0}
+            aria-label={`Go to section ${i + 1}`}
             onClick={() => window.scrollTo({ top: (i / STOPS) * TOTAL_SCROLL, behavior: 'smooth' })}
-            style={{
+            onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && window.scrollTo({ top: (i / STOPS) * TOTAL_SCROLL, behavior: 'smooth' })}>
+            <div style={{
               width: i === 0 ? 7 : [3, 6].includes(i) ? 5 : 6,
               height: i === 0 ? 7 : [3, 6].includes(i) ? 5 : 6,
               borderRadius: '50%', background: '#f4f4f5',
               opacity: i === 0 ? 1 : 0.25, transform: i === 0 ? 'scale(1.8)' : 'scale(1)',
-              transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
             }} />
+          </div>
         ))}
       </div>
 
-      {/* Scroll hint */}
-      <div className="fixed bottom-7 left-1/2 flex flex-col items-center gap-2 pointer-events-none"
+      {/* Scroll indicator — line only; dots already signal position */}
+      <div className="fixed bottom-7 left-1/2 pointer-events-none"
         style={{ zIndex: 50, transform: 'translateX(-50%)', opacity: 0.35 }}>
-        <span style={{
-          fontFamily: 'DM Sans', fontSize: '0.6rem', letterSpacing: '0.25em',
-          color: 'oklch(52% 0.02 264)', textTransform: 'uppercase'
-        }}>Scroll</span>
         <div style={{ width: 1, height: 28, background: 'linear-gradient(to bottom, #00FFD1, transparent)' }} />
       </div>
 

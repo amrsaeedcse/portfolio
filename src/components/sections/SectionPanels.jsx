@@ -1,23 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PROJECTS_DATA } from './ProjectDetail';
 
+// ── Shared social link data ───────────────────────────────────────────────────
+const SOCIAL_LINKS = [
+  { label: 'GitHub',    abbr: 'GH', href: 'https://github.com/amrsaeedcse' },
+  { label: 'LinkedIn',  abbr: 'LI', href: 'https://linkedin.com/in/amrsaeed-cse' },
+  { label: 'WhatsApp',  abbr: 'WA', href: 'https://wa.me/201121153059' },
+];
+
 // ── HERO PANEL ────────────────────────────────────────────────────────────────
-export function HeroPanel({ panelRef, scrollToSection }) {
+// VERCEL SKILL: rerender-memo — wrap with memo since panelRef and scrollToSection are stable
+export const HeroPanel = memo(function HeroPanel({ panelRef, scrollToSection }) {
   return (
     <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 1, pointerEvents: 'auto' }}>
-      <div id="hero-content" className="w-full max-w-5xl mx-auto backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/40 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
-        {/* Eyebrow */}
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.6 }}
-          className="flex items-center gap-3 mb-4">
-          <div style={{ width: 32, height: 1, background: 'oklch(68% 0.15 200)' }} />
-          <span style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)' }}>
-            01 / Flutter · IoT · Systems
-          </span>
-        </motion.div>
-
-        {/* Giant name */}
+      <div id="hero-content" className="w-full max-w-5xl mx-auto hero-glow">
+        {/* Giant name — heading carries its own weight, no eyebrow needed */}
         <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(4.5rem, 15vw, 11rem)', lineHeight: 0.9, letterSpacing: '0.02em', color: 'oklch(96% 0.005 264)', marginBottom: '0.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
           HI, I'M<br />
@@ -25,8 +24,8 @@ export function HeroPanel({ panelRef, scrollToSection }) {
         </motion.h1>
 
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}
-          style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)', color: 'oklch(52% 0.02 264)', maxWidth: '42ch', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-          Computer & Systems Engineering student at Zagazig University. I bridge the gap between Software Elegance and Hardware Logic.
+          style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)', color: 'oklch(56% 0.025 264)', maxWidth: '42ch', lineHeight: 1.7, marginBottom: '2.5rem' }}>
+          Flutter & Hardware Engineer. I bridge mobile software and embedded systems.
         </motion.p>
 
         {/* CTAs */}
@@ -45,12 +44,14 @@ export function HeroPanel({ panelRef, scrollToSection }) {
           </motion.a>
         </motion.div>
 
-        {/* Social links */}
+        {/* Social links — DM Sans, not monospace costume */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.5 }}
           style={{ marginTop: '2.5rem', display: 'flex', gap: '1.5rem' }}>
-          {[['GH', 'https://github.com/amrsaeedcse'], ['LI', 'https://linkedin.com/in/amrsaeed-cse'], ['WA', 'https://wa.me/201121153059']].map(([abbr, href]) => (
-            <motion.a key={abbr} href={href} target="_blank" rel="noreferrer" whileHover={{ scale: 1.2, color: 'oklch(68% 0.15 200)' }}
-              style={{ fontFamily: 'monospace', fontSize: '0.7rem', letterSpacing: '0.2em', color: 'oklch(35% 0.02 264)', textDecoration: 'none' }}>
+          {SOCIAL_LINKS.map(({ label, abbr, href }) => (
+            <motion.a key={abbr} href={href} target="_blank" rel="noreferrer"
+              aria-label={label}
+              whileHover={{ color: 'oklch(68% 0.15 200)' }}
+              style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.15em', color: 'oklch(35% 0.02 264)', textDecoration: 'none' }}>
               {abbr}
             </motion.a>
           ))}
@@ -58,111 +59,160 @@ export function HeroPanel({ panelRef, scrollToSection }) {
       </div>
     </div>
   );
-}
+});
 
 // ── ABOUT PANEL ───────────────────────────────────────────────────────────────
-export function AboutPanel({ panelRef }) {
+export const AboutPanel = memo(function AboutPanel({ panelRef }) {
   const stats = [['3+', 'Years Coding'], ['10+', 'Projects'], ['2', 'Trainings'], ['1', 'University']];
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
+    <section ref={panelRef} aria-labelledby="about-heading"
+      className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div className="w-full max-w-[900px] flex flex-col md:grid md:grid-cols-[auto_1fr] gap-6 md:gap-16 items-center backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/50 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
-        
+      {/* Photo column min-width prevents collapse; 1fr text column fills remaining space */}
+      <div className="w-full max-w-[900px] flex flex-col md:grid gap-6 md:gap-16 items-center"
+        style={{ gridTemplateColumns: '280px 1fr' }}>
+
         {/* Photo */}
-        <div id="about-photo" className="relative p-2 md:p-4 w-36 md:w-[260px] lg:w-[300px] mx-auto md:mx-0">
+        <div id="about-photo" className="relative p-2 md:p-4 w-36 md:w-full mx-auto md:mx-0">
           {/* Viewfinder corner brackets */}
-          {[['top:0,left:0', 'borderTop,borderLeft'], ['top:0,right:0', 'borderTop,borderRight'], ['bottom:0,left:0', 'borderBottom,borderLeft'], ['bottom:0,right:0', 'borderBottom,borderRight']].map((_, ci) => {
+          {[0, 1, 2, 3].map((ci) => {
             const tops = [0, 0, 'auto', 'auto']; const lefts = [0, 'auto', 0, 'auto'];
             const rights = ['auto', 0, 'auto', 0]; const bottoms = ['auto', 'auto', 0, 0];
             const bTop = ci < 2 ? '2px solid #00FFD1' : 'none'; const bBot = ci >= 2 ? '2px solid #00FFD1' : 'none';
             const bLeft = ci % 2 === 0 ? '2px solid #00FFD1' : 'none'; const bRight = ci % 2 === 1 ? '2px solid #00FFD1' : 'none';
             return <div key={ci} style={{ position: 'absolute', top: tops[ci], left: lefts[ci], right: rights[ci], bottom: bottoms[ci], width: '20px', height: '20px', borderTop: bTop, borderBottom: bBot, borderLeft: bLeft, borderRight: bRight, zIndex: 2 }} className="md:w-[32px] md:h-[32px]" />;
           })}
-          {/* Photo container */}
           <div style={{ position: 'relative', borderRadius: '1rem', overflow: 'hidden', aspectRatio: '4/5', border: '1px solid #00FFD122' }}>
             <img src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
               alt="Amr Abdelazeem" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, oklch(10% 0.01 264) 0%, transparent 55%)' }} />
           </div>
-          {/* Stat badge */}
-          <div style={{ position: 'absolute', bottom: '-0.5rem', right: '-0.5rem', background: '#00FFD1', borderRadius: '0.5rem', padding: '0.4rem 0.6rem' }} className="md:bottom-0 md:right-0 md:p-3 md:rounded-xl">
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.2rem', lineHeight: 1, color: '#0a0a0a' }} className="md:text-[2.2rem]">10+</div>
-            <div style={{ fontFamily: 'DM Sans', fontSize: '0.5rem', color: '#0a0a0a', letterSpacing: '0.1em' }} className="md:text-[0.65rem]">PROJECTS</div>
-          </div>
         </div>
 
         {/* Text */}
         <div id="about-text-content">
-          <div style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#00FFD1', marginBottom: '0.5rem' }} className="md:text-[0.7rem] md:mb-4 md:tracking-[0.3em]">02 / About Me</div>
-          <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(2.5rem, 8vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
+          <h2 id="about-heading" style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(2.5rem, 8vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
             ENGINEER<br />AT HEART.
           </h2>
-          <p style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2vw, 1rem)', lineHeight: 1.6, color: 'oklch(80% 0.02 264)', marginBottom: '1.5rem', maxWidth: '38ch', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
-            I design scalable systems with Clean Architecture. My engineering background lets me tackle Mobile, Backend, and IoT with equal depth — I don't just code, I <em style={{ color: '#00FFD1' }}>engineer solutions</em>.
+          <p style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2vw, 1rem)', lineHeight: 1.6, color: 'oklch(62% 0.025 264)', marginBottom: '2rem', maxWidth: '38ch' }}>
+            Clean Architecture across mobile, backend, and embedded. I don't just code — I <em style={{ color: '#00FFD1', fontStyle: 'normal' }}>engineer solutions</em>.
           </p>
-          <div className="grid grid-cols-2 gap-2 md:gap-4">
+          {/* Stats: 2-col above 360px, single-col below — numbers stay readable */}
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-2" style={{ gap: '0.75rem' }}>
             {stats.map(([num, label]) => (
-              <div key={label} style={{ padding: '0.6rem', border: '1px solid #00FFD122', borderRadius: '0.5rem', background: '#00FFD108' }} className="md:p-4 md:rounded-xl">
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.4rem', color: '#00FFD1', lineHeight: 1 }} className="md:text-2xl">{num}</div>
-                <div style={{ fontFamily: 'DM Sans', fontSize: '0.6rem', color: 'oklch(60% 0.02 264)', letterSpacing: '0.1em', marginTop: '0.2rem' }} className="md:text-[0.7rem]">{label}</div>
+              <div key={label} style={{ padding: '0.75rem 1rem', border: '1px solid #00FFD133', borderRadius: '0.75rem', background: '#00FFD114' }}>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(1.4rem, 4vw, 2rem)', color: '#00FFD1', lineHeight: 1 }}>{num}</div>
+                <div style={{ fontFamily: 'DM Sans', fontSize: '0.68rem', color: 'oklch(60% 0.02 264)', letterSpacing: '0.1em', marginTop: '0.25rem' }}>{label}</div>
               </div>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
-}
+});
 
 // ── SKILLS PANEL ──────────────────────────────────────────────────────────────
+// Two semantic tones only: cyan (digital) and amber (hardware) — from brand palette
+// domain: 'digital' = cyan, 'systems' = amber — used as non-colour secondary cue (WCAG 1.4.1)
 const SKILL_GROUPS = [
-  { cat: 'Mobile', color: '#0ea5e9', items: ['Flutter', 'Dart', 'Bloc/Cubit', 'Clean Arch', 'Firebase'] },
-  { cat: 'Web', color: '#10b981', items: ['React', 'HTML5/CSS3', 'JavaScript', 'Tailwind', 'REST APIs'] },
-  { cat: 'Embedded', color: '#f59e0b', items: ['C / C++', 'ESP32', 'Arduino', 'VHDL', 'Sensors'] },
-  { cat: 'DevOps', color: '#a855f7', items: ['Git & GitHub', 'Firebase', 'Postman', 'Figma', 'Linux CLI'] },
+  { cat: 'Mobile',   color: '#00FFD1',           domain: 'DIGITAL',  items: ['Flutter', 'Dart', 'Bloc/Cubit', 'Clean Arch', 'Firebase'] },
+  { cat: 'Web',      color: '#00FFD1',           domain: 'DIGITAL',  items: ['React', 'JavaScript', 'Tailwind', 'REST APIs', 'Vite'] },
+  { cat: 'Embedded', color: 'oklch(75% 0.18 60)', domain: 'SYSTEMS', items: ['C / C++', 'ESP32', 'Arduino', 'VHDL', 'Sensors'] },
+  { cat: 'DevOps',   color: 'oklch(75% 0.18 60)', domain: 'SYSTEMS', items: ['Git & GitHub', 'Vercel', 'Postman', 'Figma', 'Linux'] },
 ];
 
-export function SkillsPanel({ panelRef }) {
+export const SkillsPanel = memo(function SkillsPanel({ panelRef }) {
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
+    <section ref={panelRef} aria-labelledby="skills-heading"
+      className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div className="w-full max-w-[900px] backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/40 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
-        <div className="text-[0.65rem] md:text-[0.7rem] mb-2 md:mb-4 tracking-[0.2em] md:tracking-[0.3em] uppercase text-[#0ea5e9]" style={{ fontFamily: 'DM Sans' }}>03 / Technical Stack</div>
-        <h2 className="text-[clamp(2.5rem,12vw,5.5rem)] leading-[0.95] text-[oklch(96%_0.005_264)] mb-4 md:mb-8 drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)] md:drop-shadow-none" style={{ fontFamily: "'Bebas Neue'" }}>
-          FULL-STACK<br className="md:hidden" /> THINKING.
+      <div className="w-full max-w-[900px]">
+        <h2 id="skills-heading"
+          className="text-[clamp(2.5rem,12vw,5.5rem)] leading-[0.95] text-[oklch(96%_0.005_264)] mb-6 md:mb-10"
+          style={{ fontFamily: "'Bebas Neue'", textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
+          FULL-STACK THINKING.
         </h2>
-        <div className="grid grid-cols-2 gap-2 md:gap-4">
-          {SKILL_GROUPS.map(({ cat, color, items }) => (
-            // GSAP target: .skill-card — stagger scale + opacity on scroll enter
-            <div key={cat} className="skill-card p-2 md:p-6 rounded-xl md:rounded-2xl relative overflow-hidden" style={{
-              border: `1px solid ${color}44`,
-              background: `${color}08`,
-              boxShadow: `0 0 18px ${color}22, inset 0 0 24px ${color}08`,
-            }}>
-              {/* Colored glow left border */}
-              <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: `linear-gradient(to bottom, ${color}, ${color}44)`, boxShadow: `2px 0 12px ${color}88` }} />
-              {/* Category label */}
-              <div className="text-[1rem] md:text-[1.2rem] mb-1.5 md:mb-3 pl-2 md:pl-3 tracking-[0.08em]" style={{ fontFamily: "'Bebas Neue'", color }}>{cat}</div>
-              {/* Pills */}
-              <div className="flex flex-wrap gap-1 md:gap-1.5 pl-1.5 md:pl-2">
-                {items.map((item) => (
-                  <span key={item} className="text-[0.6rem] md:text-[0.75rem] px-1.5 py-0.5 md:px-2.5 md:py-1 rounded-full text-[oklch(75%_0.01_264)]" style={{ fontFamily: 'DM Sans', background: `${color}18`, border: `1px solid ${color}44` }}>
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
+        <div className="grid gap-3 md:gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
+          {SKILL_GROUPS.map(({ cat, color, domain, items }, idx) => {
+            const headingId = `skill-cat-${cat.toLowerCase()}`;
+            // Insert a structural separator between DIGITAL (0,1) and SYSTEMS (2,3) groups
+            // The separator spans the full grid width to act as a visual section break
+            const isFirstSystems = idx === 2;
+            const isFirstDigital  = idx === 0;
+            const separatorStyle  = { gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.25rem 0' };
+            const lineStyle       = { flex: 1, height: '1px', background: 'oklch(22% 0.025 264)' };
+            const labelStyle      = { fontFamily: 'DM Sans', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'oklch(38% 0.025 264)' };
+            return (
+              <React.Fragment key={cat}>
+                {isFirstDigital && (
+                  <div style={separatorStyle}>
+                    <div style={lineStyle} />
+                    <span style={labelStyle}>Digital</span>
+                    <div style={lineStyle} />
+                  </div>
+                )}
+                {isFirstSystems && (
+                  <div style={separatorStyle}>
+                    <div style={lineStyle} />
+                    <span style={labelStyle}>Systems</span>
+                    <div style={lineStyle} />
+                  </div>
+                )}
+                <div
+                  role="group"
+                  aria-labelledby={headingId}
+                  className="skill-card p-3 md:p-6 rounded-xl md:rounded-2xl relative overflow-hidden"
+                  style={{
+                    border: `1px solid ${color}55`,
+                    background: `${color}14`,
+                    boxShadow: `0 0 24px ${color}18, inset 0 0 24px ${color}0a`,
+                  }}>
+                  {/* Colored glow left border */}
+                  <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: `linear-gradient(to bottom, ${color}, ${color}44)`, boxShadow: `2px 0 12px ${color}88` }} />
+                  {/* Domain badge — non-colour secondary cue (WCAG 1.4.1) */}
+                  <div style={{
+                    position: 'absolute', top: '0.6rem', right: '0.6rem',
+                    fontFamily: 'DM Sans', fontSize: '0.55rem', letterSpacing: '0.12em',
+                    color: `${color}99`, border: `1px solid ${color}33`,
+                    padding: '0.15rem 0.4rem', borderRadius: '9999px',
+                  }}>{domain}</div>
+                  {/* Category heading — pl-3/pl-4 gives deliberate breathing room from left border */}
+                  <h3 id={headingId}
+                    className="text-[1rem] md:text-[1.2rem] mb-2 md:mb-3 pl-3 md:pl-4 tracking-[0.08em]"
+                    style={{ fontFamily: "'Bebas Neue'", color, fontWeight: 'normal' }}>{cat}</h3>
+                  {/* Pills — fluid font floor prevents sub-11px rendering at narrow widths */}
+                  <div className="flex flex-wrap gap-1.5 pl-3 md:pl-4">
+                    {items.map((item) => (
+                      <span key={item}
+                        style={{
+                          fontFamily: 'DM Sans',
+                          fontSize: 'clamp(0.68rem, 1.8vw, 0.75rem)',
+                          color: 'oklch(88% 0.005 264)',
+                          background: `${color}18`,
+                          border: `1px solid ${color}44`,
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: '9999px',
+                          lineHeight: 1.4,
+                        }}>
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })}
         </div>
       </div>
-    </div>
+    </section>
   );
-}
+});
 
 // ── PROJECTS PANEL — Full-screen horizontal carousel ─────────────────────────
 // GSAP controls #project-track xPercent (0 / -25 / -50 / -75) per carousel stop
 
-export function ProjectsPanel({ panelRef, onProjectClick }) {
+export const ProjectsPanel = memo(function ProjectsPanel({ panelRef, onProjectClick }) {
   const [hovered, setHovered] = useState(null);
 
   return (
@@ -174,7 +224,7 @@ export function ProjectsPanel({ panelRef, onProjectClick }) {
         position: 'absolute', top: '5rem', left: '8vw', zIndex: 4,
         fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em',
         textTransform: 'uppercase', color: '#00FFD1'
-      }}>04 / Featured Work</div>
+      }}>Featured Work</div>
 
       {/* Progress indicator — which card of 4 */}
       <div style={{
@@ -284,58 +334,93 @@ export function ProjectsPanel({ panelRef, onProjectClick }) {
           </div>
         ))}
 
-        {/* 5th Card: View All Projects CTA */}
+        {/* 5th Card: View All Projects CTA — no emoji decoration */}
         <div style={{ flex: '0 0 20%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: '#050508' }}>
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, #00FFD111 0%, transparent 70%)' }} />
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onProjectClick('ARCHIVE')}
-            style={{ textAlign: 'center', cursor: 'pointer', zIndex: 10, padding: '3rem', border: '1px solid #ffffff11', borderRadius: '2rem', background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}
+            style={{ textAlign: 'center', cursor: 'pointer', zIndex: 10, padding: '3rem', border: '1px solid #ffffff11', borderRadius: '2rem' }}
           >
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✨</div>
             <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem,6vw,5rem)', lineHeight: 0.9, color: '#f4f4f5', marginBottom: '0.5rem', letterSpacing: '0.02em' }}>
               VIEW ALL <span style={{ color: '#00FFD1' }}>PROJECTS</span>
             </h2>
-            <p style={{ fontFamily: 'DM Sans', fontSize: '0.9rem', color: '#ffffff88', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-              Explore the complete archive
+            <p style={{ fontFamily: 'DM Sans', fontSize: '0.9rem', color: '#ffffff66', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              Complete archive →
             </p>
           </motion.div>
         </div>
       </div>
     </div>
   );
-}
+});
 
 // ── EXPERIENCE PANEL ──────────────────────────────────────────────────────────
+// Two accent tones: cyan (training) and amber (education) — matches skills palette
 const EXP_ITEMS = [
-  { date: '2024–Now', title: 'Mobile App Trainee', org: 'DEPI — Ministry of CIT', desc: 'Intensive Flutter & Dart training program, government initiative.', color: '#0ea5e9' },
-  { date: 'Summer 2024', title: 'Mobile App Trainee', org: 'ITI — Information Technology Institute', desc: 'Flutter fundamentals, Dart, state management, and Clean Architecture.', color: '#a855f7' },
-  { date: '2021–Now', title: 'Computer Engineering Student', org: 'Zagazig University', desc: 'B.Sc. in Computer & Systems Engineering. GPA focus on Embedded & Software.', color: '#10b981' },
+  { date: '2024–Now',    title: 'Mobile App Trainee',          org: 'DEPI — Ministry of CIT',           desc: 'Intensive Flutter & Dart, government initiative.', color: '#00FFD1' },
+  { date: 'Summer 2024', title: 'Mobile App Trainee',          org: 'ITI — Information Technology Inst.', desc: 'Flutter, Dart, state management, Clean Architecture.', color: '#00FFD1' },
+  { date: '2021–Now',    title: 'Computer Engineering Student', org: 'Zagazig University',                desc: 'B.Sc. in Computer & Systems Engineering — Embedded & Software focus.', color: 'oklch(75% 0.18 60)' },
 ];
 
-export function ExperiencePanel({ panelRef }) {
+export const ExperiencePanel = memo(function ExperiencePanel({ panelRef }) {
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
+    <section ref={panelRef} aria-labelledby="experience-heading"
+      className="section-panel absolute inset-0 flex items-center px-10 md:px-20"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
       <div style={{ width: '100%', maxWidth: '720px' }}>
-        <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>05 / Journey</div>
-        <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2.5rem' }}>
+        <h2 id="experience-heading" style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2.5rem' }}>
           GROWING<br />EVERY DAY.
         </h2>
-        <div style={{ position: 'relative' }}>
-          {/* Vertical timeline line */}
-          <div style={{ position: 'absolute', left: '7px', top: 0, bottom: 0, width: '1px', background: 'oklch(20% 0.02 264)' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        {/* Timeline — line at left:8px; dot centred on line via left:-8px + marginLeft:8px on content */}
+        <div style={{ position: 'relative', paddingLeft: '2rem' }}>
+          <div style={{ position: 'absolute', left: '8px', top: '6px', bottom: 0, width: '1px', background: 'oklch(30% 0.025 264)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
             {EXP_ITEMS.map(({ date, title, org, desc, color }, i) => (
+              <div key={i} className="exp-item" style={{ position: 'relative' }}>
+                {/* Dot centred on the line: centre at 8px from container left */}
+                <div style={{
+                  position: 'absolute', left: '-1.5rem', top: '0.3rem',
+                  width: 16, height: 16, borderRadius: '50%',
+                  background: color, border: '3px solid oklch(10% 0.01 264)',
+                  transform: 'translateX(50%)',
+                }} />
+                <div style={{ fontFamily: 'DM Sans', fontSize: '0.68rem', letterSpacing: '0.1em', color, marginBottom: '0.25rem' }}>{date}</div>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.5rem', letterSpacing: '0.04em', color: 'oklch(94% 0.005 264)', lineHeight: 1.05, marginBottom: '0.25rem' }}>{title}</div>
+                <div style={{ fontFamily: 'DM Sans', fontSize: '0.82rem', color, marginBottom: '0.5rem' }}>{org}</div>
+                <div style={{ fontFamily: 'DM Sans', fontSize: '0.88rem', color: 'oklch(55% 0.02 264)', lineHeight: 1.65 }}>{desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+// ── EXPERIENCE MOBILE PANEL — shared parameterized component ─────────────────
+function ExpMobilePanel({ panelRef, items, showHeading }) {
+  return (
+    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 pt-24 pb-8"
+      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
+      <div className="w-full">
+        {showHeading && (
+          <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 12vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
+            GROWING<br />EVERY DAY.
+          </h2>
+        )}
+        <div style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', left: '7px', top: 0, bottom: 0, width: '1px', background: 'oklch(20% 0.02 264)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {items.map(({ date, title, org, desc, color }, i) => (
               <div key={i} style={{ display: 'flex', gap: '1.5rem', paddingLeft: '1rem', position: 'relative' }}>
-                {/* Dot */}
                 <div style={{ position: 'absolute', left: 0, top: '0.35rem', width: 15, height: 15, borderRadius: '50%', background: color, border: '3px solid oklch(10% 0.01 264)', flexShrink: 0 }} />
                 <div>
-                  <div style={{ fontFamily: 'monospace', fontSize: '0.68rem', letterSpacing: '0.1em', color, marginBottom: '0.3rem' }}>{date}</div>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.4rem', letterSpacing: '0.04em', color: 'oklch(94% 0.005 264)', lineHeight: 1.1 }}>{title}</div>
+                  <div style={{ fontFamily: 'DM Sans', fontSize: '0.68rem', letterSpacing: '0.05em', color, marginBottom: '0.3rem' }}>{date}</div>
+                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.3rem', letterSpacing: '0.04em', color: 'oklch(94% 0.005 264)', lineHeight: 1.1 }}>{title}</div>
                   <div style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color, marginTop: '0.2rem', marginBottom: '0.4rem' }}>{org}</div>
-                  <div style={{ fontFamily: 'DM Sans', fontSize: '0.82rem', color: 'oklch(50% 0.02 264)', lineHeight: 1.6 }}>{desc}</div>
+                  <div style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'oklch(65% 0.02 264)', lineHeight: 1.6 }}>{desc}</div>
                 </div>
               </div>
             ))}
@@ -346,191 +431,293 @@ export function ExperiencePanel({ panelRef }) {
   );
 }
 
-// ── EXPERIENCE PANEL MOBILE 1 ──────────────────────────────────────────────────
-export function ExperiencePanelMobile1({ panelRef }) {
-  return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 pt-24 pb-8"
-      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div className="backdrop-blur-sm bg-[#0a0a0f]/50 p-4 rounded-2xl w-full max-w-full">
-        <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>05 / Journey</div>
-        <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 12vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
-          GROWING<br />EVERY DAY.
-        </h2>
-        <div style={{ position: 'relative' }}>
-          <div style={{ position: 'absolute', left: '7px', top: 0, bottom: 0, width: '1px', background: 'oklch(20% 0.02 264)' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {EXP_ITEMS.slice(0, 2).map(({ date, title, org, desc, color }, i) => (
-              <div key={i} style={{ display: 'flex', gap: '1.5rem', paddingLeft: '1rem', position: 'relative' }}>
-                <div style={{ position: 'absolute', left: 0, top: '0.35rem', width: 15, height: 15, borderRadius: '50%', background: color, border: '3px solid oklch(10% 0.01 264)', flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontFamily: 'monospace', fontSize: '0.68rem', letterSpacing: '0.1em', color, marginBottom: '0.3rem' }}>{date}</div>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.3rem', letterSpacing: '0.04em', color: 'oklch(94% 0.005 264)', lineHeight: 1.1 }}>{title}</div>
-                  <div style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color, marginTop: '0.2rem', marginBottom: '0.4rem' }}>{org}</div>
-                  <div style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'oklch(80% 0.02 264)', lineHeight: 1.6, textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+export const ExperiencePanelMobile1 = memo(function ExperiencePanelMobile1({ panelRef }) {
+  return <ExpMobilePanel panelRef={panelRef} items={EXP_ITEMS.slice(0, 2)} showHeading />;
+});
 
-// ── EXPERIENCE PANEL MOBILE 2 ──────────────────────────────────────────────────
-export function ExperiencePanelMobile2({ panelRef }) {
-  return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 pt-24 pb-8"
-      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div className="backdrop-blur-sm bg-[#0a0a0f]/50 p-4 rounded-2xl w-full max-w-full">
-        <div style={{ position: 'relative' }}>
-          <div style={{ position: 'absolute', left: '7px', top: 0, bottom: 0, width: '1px', background: 'oklch(20% 0.02 264)' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {EXP_ITEMS.slice(2).map(({ date, title, org, desc, color }, i) => (
-              <div key={i} style={{ display: 'flex', gap: '1.5rem', paddingLeft: '1rem', position: 'relative' }}>
-                <div style={{ position: 'absolute', left: 0, top: '0.35rem', width: 15, height: 15, borderRadius: '50%', background: color, border: '3px solid oklch(10% 0.01 264)', flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontFamily: 'monospace', fontSize: '0.68rem', letterSpacing: '0.1em', color, marginBottom: '0.3rem' }}>{date}</div>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.3rem', letterSpacing: '0.04em', color: 'oklch(94% 0.005 264)', lineHeight: 1.1 }}>{title}</div>
-                  <div style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color, marginTop: '0.2rem', marginBottom: '0.4rem' }}>{org}</div>
-                  <div style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'oklch(80% 0.02 264)', lineHeight: 1.6, textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+export const ExperiencePanelMobile2 = memo(function ExperiencePanelMobile2({ panelRef }) {
+  return <ExpMobilePanel panelRef={panelRef} items={EXP_ITEMS.slice(2)} showHeading={false} />;
+});
 
 // ── CONTACT PANEL ─────────────────────────────────────────────────────────────
+const CONTACT_LINKS = [
+  { label: 'Email',    text: 'amrabdelazeem117@gmail.com', href: 'mailto:amrabdelazeem117@gmail.com' },
+  { label: 'WhatsApp', text: '+20 112 115 3059',            href: 'https://wa.me/201121153059' },
+];
+
+// ContactPanel has its own state — cannot be a pure memo anymore.
+// formState: 'idle' | 'sending' | 'success' | 'error'
 export function ContactPanel({ panelRef }) {
+  const [formState, setFormState] = React.useState('idle');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formState === 'sending') return;
+    setFormState('sending');
+    const form = e.target;
+    const data = new FormData(form);
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: data,
+      });
+      if (res.ok) {
+        setFormState('success');
+        form.reset();
+      } else {
+        setFormState('error');
+      }
+    } catch {
+      setFormState('error');
+    }
+  };
+
+  const inputStyle = {
+    width: '100%', background: 'oklch(14% 0.014 264)',
+    border: '1px solid oklch(25% 0.025 264)', borderRadius: '0.5rem',
+    padding: '0.75rem 1rem', color: 'oklch(90% 0.005 264)',
+    fontFamily: 'DM Sans', fontSize: '0.9rem', outline: 'none',
+  };
+  const labelStyle = {
+    fontFamily: 'DM Sans', fontSize: '0.72rem', letterSpacing: '0.12em',
+    textTransform: 'uppercase', color: 'oklch(50% 0.02 264)',
+    display: 'block', marginBottom: '0.35rem',
+  };
+
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
+    <section ref={panelRef} aria-labelledby="contact-heading"
+      className="section-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div className="w-full max-w-[820px] flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-16 items-center backdrop-blur-sm md:backdrop-blur-none bg-[#0a0a0f]/40 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
+      <div className="w-full max-w-[820px] flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-16 items-center">
         {/* Left */}
         <div>
-          <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>06 / Let's Talk</div>
-          <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 6vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem' }}>
+          <h2 id="contact-heading" style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 6vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem' }}>
             LET'S<br />BUILD<br />TOGETHER.
           </h2>
           <p style={{ fontFamily: 'DM Sans', fontSize: '0.95rem', lineHeight: 1.75, color: 'oklch(50% 0.02 264)', marginBottom: '2rem' }}>
-            Open to collaborations, freelance, and full-time. Got a project? Let's talk.
+            Open to freelance and collaboration. Got a project?
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {[['✉', 'amrabdelazeem117@gmail.com', 'mailto:amrabdelazeem117@gmail.com'], ['📱', '+20 112 115 3059', 'https://wa.me/201121153059']].map(([icon, text, href]) => (
-              <a key={text} href={href} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontFamily: 'DM Sans', fontSize: '0.85rem', color: 'oklch(60% 0.02 264)', textDecoration: 'none' }}
+            {CONTACT_LINKS.map(({ label, text, href }) => (
+              <a key={label} href={href}
+                aria-label={label}
+                style={{ fontFamily: 'DM Sans', fontSize: '0.85rem', color: 'oklch(60% 0.02 264)', textDecoration: 'none' }}
                 onMouseEnter={e => e.currentTarget.style.color = 'oklch(68% 0.15 200)'}
                 onMouseLeave={e => e.currentTarget.style.color = 'oklch(60% 0.02 264)'}>
-                <span>{icon}</span>{text}
+                {text}
               </a>
             ))}
           </div>
         </div>
+
         {/* Right — Form */}
-        <form onSubmit={e => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {[['Name', 'text', 'Your name'], ['Email', 'email', 'your@email.com']].map(([label, type, ph]) => (
-            <div key={label}>
-              <label style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'oklch(50% 0.02 264)', display: 'block', marginBottom: '0.35rem' }}>{label}</label>
-              <input type={type} placeholder={ph} style={{ width: '100%', background: 'oklch(13% 0.012 264)', border: '1px solid oklch(20% 0.02 264)', borderRadius: '0.5rem', padding: '0.75rem 1rem', color: 'oklch(90% 0.005 264)', fontFamily: 'DM Sans', fontSize: '0.9rem', outline: 'none' }}
-                onFocus={e => e.target.style.borderColor = 'oklch(68% 0.15 200)'}
-                onBlur={e => e.target.style.borderColor = 'oklch(20% 0.02 264)'} />
+        <AnimatePresence mode="wait">
+          {formState === 'success' ? (
+            <motion.div key="success" className="contact-success"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem',
+                padding: '2rem', border: '1px solid #00FFD133', borderRadius: '0.75rem', background: '#00FFD108' }}>
+              <div style={{ fontFamily: "'Bebas Neue'", fontSize: '2rem', color: '#00FFD1', lineHeight: 1 }}>Message Sent.</div>
+              <p style={{ fontFamily: 'DM Sans', fontSize: '0.9rem', color: 'oklch(65% 0.02 264)', lineHeight: 1.6 }}>
+                Got it — I'll get back to you soon.
+              </p>
+              <button onClick={() => setFormState('idle')}
+                style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color: 'oklch(68% 0.15 200)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.08em' }}>
+                Send another →
+              </button>
+            </motion.div>
+          ) : (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {/* Web3Forms access key — public key, safe to commit */}
+            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY" />
+            <input type="hidden" name="subject" value="Portfolio contact form submission" />
+            <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
+
+            {[['Name', 'name', 'text', 'Your name', true], ['Email', 'email', 'email', 'your@email.com', true]].map(([label, name, type, ph, req]) => (
+              <div key={label}>
+                <label style={labelStyle} htmlFor={`field-${name}`}>{label}</label>
+                <input id={`field-${name}`} type={type} name={name} placeholder={ph}
+                  required={req} autoComplete={name}
+                  style={inputStyle} />
+              </div>
+            ))}
+            <div>
+              <label style={labelStyle} htmlFor="field-message">Message</label>
+              <textarea id="field-message" name="message" rows={4}
+                placeholder="Tell me about your project..."
+                required
+                style={{ ...inputStyle, resize: 'none' }} />
             </div>
-          ))}
-          <div>
-            <label style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'oklch(50% 0.02 264)', display: 'block', marginBottom: '0.35rem' }}>Message</label>
-            <textarea rows={4} placeholder="Tell me about your project..." style={{ width: '100%', background: 'oklch(13% 0.012 264)', border: '1px solid oklch(20% 0.02 264)', borderRadius: '0.5rem', padding: '0.75rem 1rem', color: 'oklch(90% 0.005 264)', fontFamily: 'DM Sans', fontSize: '0.9rem', outline: 'none', resize: 'none' }}
-              onFocus={e => e.target.style.borderColor = 'oklch(68% 0.15 200)'}
-              onBlur={e => e.target.style.borderColor = 'oklch(20% 0.02 264)'} />
-          </div>
-          <motion.button type="submit" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            style={{ padding: '0.9rem', background: 'oklch(68% 0.15 200)', color: 'oklch(10% 0.01 264)', border: 'none', borderRadius: '0.5rem', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', letterSpacing: '0.04em' }}>
-            Send Message
-          </motion.button>
-        </form>
+
+            {formState === 'error' && (
+              <p role="alert" style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color: 'oklch(62% 0.2 25)', margin: 0 }}>
+                Something went wrong — try emailing me directly.
+              </p>
+            )}
+
+            <motion.button type="submit"
+              disabled={formState === 'sending'}
+              whileHover={formState !== 'sending' ? { scale: 1.03 } : {}}
+              whileTap={formState !== 'sending' ? { scale: 0.97 } : {}}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+              style={{
+                padding: '0.9rem', background: 'oklch(68% 0.15 200)',
+                color: 'oklch(10% 0.01 264)', border: 'none', borderRadius: '0.5rem',
+                fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.9rem',
+                cursor: formState === 'sending' ? 'not-allowed' : 'pointer',
+                letterSpacing: '0.04em', opacity: formState === 'sending' ? 0.7 : 1,
+              }}>
+              {formState === 'sending' ? 'Sending…' : 'Send Message'}
+            </motion.button>
+          </form>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Footer Merged into Contact Panel */}
       <footer className="hidden md:flex absolute bottom-0 left-0 right-0 z-10 border-t border-[#ffffff0d] py-8 px-16 justify-between items-center bg-[#0a0a0f]">
         <p style={{ fontFamily: 'DM Sans', fontSize: '0.72rem', color: 'oklch(28% 0.02 264)' }}>
-          © 2025 Amr Abdelazeem — Built with React &amp; Three.js
+          © 2026 Amr Abdelazeem — Built with React &amp; Three.js
         </p>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           {[['LinkedIn', 'https://www.linkedin.com/in/amr-saeed-0bb957373/', '#0ea5e9'], ['GitHub', 'https://github.com/amrsaeedcse', '#a855f7'], ['WhatsApp', 'https://wa.me/201121153059', '#10b981']].map(([l, h, c]) => (
             <a key={l} href={h} target="_blank" rel="noreferrer"
               style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', fontWeight: 600, color: '#f4f4f5', textDecoration: 'none', border: `1px solid ${c}66`, padding: '0.4rem 1.2rem', borderRadius: '9999px', transition: 'all 0.2s', background: `${c}11` }}
-              onMouseEnter={e => { e.target.style.background = c; e.target.style.color = '#000'; e.target.style.borderColor = c; }}
-              onMouseLeave={e => { e.target.style.background = `${c}11`; e.target.style.color = '#f4f4f5'; e.target.style.borderColor = `${c}66`; }}>{l}</a>
+              onMouseEnter={e => { e.currentTarget.style.background = c; e.currentTarget.style.color = '#000'; e.currentTarget.style.borderColor = c; }}
+              onMouseLeave={e => { e.currentTarget.style.background = `${c}11`; e.currentTarget.style.color = '#f4f4f5'; e.currentTarget.style.borderColor = `${c}66`; }}>{l}</a>
           ))}
         </div>
       </footer>
-    </div>
+    </section>
   );
 }
 
-// ── CONTACT PANEL MOBILE 1 (TEXTS) ─────────────────────────────────────────────
-export function ContactPanelMobile1({ panelRef }) {
+
+// ── CONTACT MOBILE PANEL — shared parameterized component ────────────────────
+const FOOTER_LINKS = [
+  { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/amr-saeed-0bb957373/' },
+  { label: 'GitHub',   href: 'https://github.com/amrsaeedcse' },
+  { label: 'WhatsApp', href: 'https://wa.me/201121153059' },
+];
+
+export const ContactPanelMobile1 = memo(function ContactPanelMobile1({ panelRef }) {
   return (
     <div ref={panelRef} className="section-panel absolute inset-0 flex items-center px-6 pt-24 pb-8"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div className="w-full max-w-full backdrop-blur-sm bg-[#0a0a0f]/50 p-4 rounded-2xl">
-        <div style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'oklch(68% 0.15 200)', marginBottom: '1rem' }}>06 / Let's Talk</div>
+      <div className="w-full">
         <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 12vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
           LET'S<br />BUILD<br />TOGETHER.
         </h2>
-        <p style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)', lineHeight: 1.6, color: 'oklch(80% 0.02 264)', marginBottom: '2rem', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
-          Open to collaborations, freelance, and full-time. Got a project? Let's talk.
+        <p style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)', lineHeight: 1.6, color: 'oklch(62% 0.025 264)', marginBottom: '2rem' }}>
+          Open to freelance and collaboration.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {[['✉', 'amrabdelazeem117@gmail.com', 'mailto:amrabdelazeem117@gmail.com'], ['📱', '+20 112 115 3059', 'https://wa.me/201121153059']].map(([icon, text, href]) => (
-            <a key={text} href={href} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontFamily: 'DM Sans', fontSize: '0.9rem', color: 'oklch(80% 0.02 264)', textDecoration: 'none', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
-              <span>{icon}</span>{text}
+          {CONTACT_LINKS.map(({ label, text, href }) => (
+            <a key={label} href={href} aria-label={label}
+              style={{ fontFamily: 'DM Sans', fontSize: '0.9rem', color: '#00FFD1', textDecoration: 'none' }}>
+              {text}
             </a>
           ))}
         </div>
       </div>
     </div>
   );
-}
+});
 
-// ── CONTACT PANEL MOBILE 2 (FIELDS & FOOTER) ──────────────────────────────────
+// Mobile form — fully wired to Web3Forms, same 4-state machine as desktop
 export function ContactPanelMobile2({ panelRef }) {
+  const [formState, setFormState] = React.useState('idle');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formState === 'sending') return;
+    setFormState('sending');
+    const form = e.target;
+    const data = new FormData(form);
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+      if (res.ok) { setFormState('success'); form.reset(); }
+      else setFormState('error');
+    } catch { setFormState('error'); }
+  };
+
+  const mobileInputStyle = {
+    width: '100%', background: 'oklch(14% 0.014 264)',
+    border: '1px solid oklch(25% 0.025 264)', borderRadius: '0.5rem',
+    padding: '0.6rem 0.8rem', color: 'oklch(90% 0.005 264)',
+    fontFamily: 'DM Sans', fontSize: '0.85rem', outline: 'none',
+  };
+  const mobileLabelStyle = {
+    fontFamily: 'DM Sans', fontSize: '0.65rem', letterSpacing: '0.12em',
+    textTransform: 'uppercase', color: 'oklch(56% 0.025 264)',
+    display: 'block', marginBottom: '0.25rem',
+  };
+
   return (
     <div ref={panelRef} className="section-panel absolute inset-0 flex flex-col justify-center px-6 pt-24 pb-4"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <div className="w-full max-w-full backdrop-blur-sm bg-[#0a0a0f]/50 p-4 rounded-2xl mb-4">
-        <form onSubmit={e => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {[['Name', 'text', 'Your name'], ['Email', 'email', 'your@email.com']].map(([label, type, ph]) => (
-            <div key={label}>
-              <label style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'oklch(70% 0.02 264)', display: 'block', marginBottom: '0.25rem' }}>{label}</label>
-              <input type={type} placeholder={ph} style={{ width: '100%', background: 'oklch(13% 0.012 264)', border: '1px solid oklch(20% 0.02 264)', borderRadius: '0.5rem', padding: '0.6rem 0.8rem', color: 'oklch(90% 0.005 264)', fontFamily: 'DM Sans', fontSize: '0.8rem', outline: 'none' }} />
+
+      <AnimatePresence mode="wait">
+        {formState === 'success' ? (
+          <motion.div key="success" className="contact-success"
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            style={{ padding: '1.5rem', border: '1px solid #00FFD133', borderRadius: '0.75rem', background: '#00FFD114', marginBottom: '1.5rem' }}>
+            <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.8rem', color: '#00FFD1', lineHeight: 1, marginBottom: '0.5rem' }}>Message Sent.</div>
+            <p style={{ fontFamily: 'DM Sans', fontSize: '0.85rem', color: 'oklch(62% 0.025 264)', lineHeight: 1.6, marginBottom: '0.75rem' }}>
+              Got it — I'll get back to you soon.
+            </p>
+            <button onClick={() => setFormState('idle')}
+              style={{ fontFamily: 'DM Sans', fontSize: '0.78rem', color: '#00FFD1', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.08em' }}>
+              Send another →
+            </button>
+          </motion.div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY" />
+            <input type="hidden" name="subject" value="Portfolio contact (mobile)" />
+            <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
+            {[['Name', 'name', 'text', 'Your name'], ['Email', 'email', 'email', 'your@email.com']].map(([lbl, name, type, ph]) => (
+              <div key={lbl}>
+                <label style={mobileLabelStyle} htmlFor={`m-${name}`}>{lbl}</label>
+                <input id={`m-${name}`} type={type} name={name} placeholder={ph}
+                  required autoComplete={name} style={mobileInputStyle} />
+              </div>
+            ))}
+            <div>
+              <label style={mobileLabelStyle} htmlFor="m-message">Message</label>
+              <textarea id="m-message" name="message" rows={3}
+                placeholder="Tell me about your project..."
+                required style={{ ...mobileInputStyle, resize: 'none' }} />
             </div>
-          ))}
-          <div>
-            <label style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'oklch(70% 0.02 264)', display: 'block', marginBottom: '0.25rem' }}>Message</label>
-            <textarea rows={3} placeholder="Tell me about your project..." style={{ width: '100%', background: 'oklch(13% 0.012 264)', border: '1px solid oklch(20% 0.02 264)', borderRadius: '0.5rem', padding: '0.6rem 0.8rem', color: 'oklch(90% 0.005 264)', fontFamily: 'DM Sans', fontSize: '0.8rem', outline: 'none', resize: 'none' }} />
-          </div>
-          <button type="submit" style={{ padding: '0.8rem', background: 'oklch(68% 0.15 200)', color: 'oklch(10% 0.01 264)', border: 'none', borderRadius: '0.5rem', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', letterSpacing: '0.04em' }}>
-            Send Message
-          </button>
-        </form>
-      </div>
-      
-      {/* Smaller Footer for Mobile */}
-      <footer className="w-full backdrop-blur-sm bg-[#0a0a0f]/50 p-3 rounded-2xl flex flex-col items-center gap-2 border border-[#ffffff0d]">
-        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-          {[['LinkedIn', 'https://www.linkedin.com/in/amr-saeed-0bb957373/', '#0ea5e9'], ['GitHub', 'https://github.com/amrsaeedcse', '#a855f7'], ['WhatsApp', 'https://wa.me/201121153059', '#10b981']].map(([l, h, c]) => (
-            <a key={l} href={h} target="_blank" rel="noreferrer"
-              style={{ fontFamily: 'DM Sans', fontSize: '0.6rem', fontWeight: 600, color: '#f4f4f5', textDecoration: 'none', border: `1px solid ${c}66`, padding: '0.2rem 0.6rem', borderRadius: '9999px', background: `${c}11` }}>{l}</a>
-          ))}
-        </div>
-        <p style={{ fontFamily: 'DM Sans', fontSize: '0.55rem', color: 'oklch(50% 0.02 264)', textAlign: 'center', lineHeight: 1.4 }}>
-          © 2025 Amr Abdelazeem<br/>Built with React &amp; Three.js
-        </p>
+            {formState === 'error' && (
+              <p role="alert" style={{ fontFamily: 'DM Sans', fontSize: '0.75rem', color: 'oklch(62% 0.2 25)', margin: 0 }}>
+                Something went wrong — try again.
+              </p>
+            )}
+            <button type="submit" disabled={formState === 'sending'}
+              style={{ padding: '0.8rem', background: 'oklch(68% 0.15 200)', color: 'oklch(10% 0.01 264)', border: 'none', borderRadius: '0.5rem', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.85rem', cursor: formState === 'sending' ? 'not-allowed' : 'pointer', letterSpacing: '0.04em', opacity: formState === 'sending' ? 0.7 : 1 }}>
+              {formState === 'sending' ? 'Sending…' : 'Send Message'}
+            </button>
+          </form>
+        )}
+      </AnimatePresence>
+
+      <footer style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
+        {FOOTER_LINKS.map(({ label, href }) => (
+          <a key={label} href={href} target="_blank" rel="noreferrer"
+            style={{ fontFamily: 'DM Sans', fontSize: '0.7rem', fontWeight: 600, color: 'oklch(56% 0.025 264)', textDecoration: 'none' }}>
+            {label}
+          </a>
+        ))}
       </footer>
+      <p style={{ fontFamily: 'DM Sans', fontSize: '0.6rem', color: 'oklch(30% 0.02 264)', textAlign: 'center', marginTop: '0.5rem' }}>
+        © 2026 Amr Abdelazeem
+      </p>
     </div>
   );
 }

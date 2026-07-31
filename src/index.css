@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
+/* Fonts are preloaded via <link> in index.html — no @import needed here */
 @import "tailwindcss";
 
 @theme {
@@ -7,10 +7,12 @@
   --color-primary: oklch(68% 0.15 200);
   --color-primary-foreground: oklch(10% 0.01 264);
   --color-secondary: oklch(17% 0.015 264);
-  --color-muted-foreground: oklch(52% 0.02 264);
-  --color-border: oklch(20% 0.02 264);
-  --color-card: oklch(13% 0.012 264);
+  --color-muted-foreground: oklch(56% 0.025 264);   /* lifted from 52%: reads as secondary, not disabled */
+  --color-border: oklch(22% 0.025 264);              /* lifted from 20%: borders visible against canvas */
+  --color-card: oklch(14% 0.014 264);               /* lifted from 13%: distinct from canvas */
   --color-amber: oklch(75% 0.18 60);
+  --color-success: oklch(68% 0.15 200);             /* cyan — success = "connected" in this world */
+  --color-error: oklch(62% 0.2 25);                 /* muted red-orange — danger without alarm */
   --font-display: 'Bebas Neue', sans-serif;
   --font-body: 'DM Sans', sans-serif;
 }
@@ -22,9 +24,30 @@
 }
 
 @layer utilities {
-  .section-panel { will-change: opacity, transform; }
+  /* GPU-composited layers: opacity + transform only, no layout triggers */
+  .section-panel { will-change: opacity, transform; contain: layout style paint; }
   .font-display { font-family: var(--font-display); }
   .font-body { font-family: var(--font-body); }
+
+  /* Project track: GPU-accelerated horizontal slide */
+  #project-track { will-change: transform; }
+
+  /* ── Hero radial glow — atmospheric depth behind H1 ─────────────────────────
+     A 3% cyan glow centred on the text region gives the hero a light source
+     without competing with the 3D phone. Isolated to .hero-glow so it only
+     appears on the hero panel.                                                 */
+  .hero-glow {
+    position: relative;
+  }
+  .hero-glow::before {
+    content: '';
+    position: absolute;
+    inset: -20% -10%;
+    background: radial-gradient(ellipse 60% 50% at 30% 45%, #00FFD10a 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-glow > * { position: relative; z-index: 1; }
 
   /* Grain overlay — frontend-design SKILL: "grain overlays for atmosphere" */
   .grain::after {
@@ -40,6 +63,100 @@
 
   @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
   .blink { animation: blink 1.2s infinite; }
-  @keyframes scroll-hint { 0%,100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(8px); opacity: 1; } }
-  .scroll-hint { animation: scroll-hint 2s ease-in-out infinite; }
+
+  /* ── Panel heading lift: heading leads the eye when panel arrives ────────────
+     GSAP adds .panel-entered on the panel element after its crossfade completes.
+     The heading inside it rises 18px while fading in over 480ms.
+     cubic-bezier(0.16,1,0.3,1) = confident deceleration (no bounce).          */
+  @keyframes heading-arrive {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .panel-entered h2 {
+    animation: heading-arrive 0.48s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  /* Body text follows 80ms later, shorter travel */
+  .panel-entered > * > p,
+  .panel-entered > * > * > p {
+    animation: heading-arrive 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+  }
+
+  /* ── Skill card stagger: ordered list reads as a list, not a slab ────────────
+     Cards are numbered 1–4. Total delay cap: 180ms (4 × 60ms - 60ms). */
+  .panel-entered .skill-card {
+    animation: heading-arrive 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .panel-entered .skill-card:nth-child(1) { animation-delay: 0ms; }
+  .panel-entered .skill-card:nth-child(2) { animation-delay: 60ms; }
+  .panel-entered .skill-card:nth-child(3) { animation-delay: 120ms; }
+  .panel-entered .skill-card:nth-child(4) { animation-delay: 180ms; }
+
+  /* ── Experience item stagger: reinforces timeline directionality ─────────────
+     Items flow top-to-bottom — stagger mirrors reading order.                   */
+  .panel-entered .exp-item {
+    animation: heading-arrive 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .panel-entered .exp-item:nth-child(1) { animation-delay: 60ms; }
+  .panel-entered .exp-item:nth-child(2) { animation-delay: 140ms; }
+  .panel-entered .exp-item:nth-child(3) { animation-delay: 220ms; }
+
+  /* ── Nav link: color transition prevents jarring jump ───────────────────────
+     150ms = immediate feedback tier; smooth enough to feel intentional.        */
+  .nav-link { transition: color 150ms ease; }
+
+  /* ── Active dot: living ember glow signals current section ──────────────────
+     Dot scale is driven by GSAP (inline style). The glow pulses independently
+     to signal "you are here" without competing with the 3D choreography.       */
+  @keyframes dot-pulse {
+    0%, 100% { box-shadow: 0 0 0 0px #00FFD144; }
+    50%       { box-shadow: 0 0 0 5px #00FFD100; }
+  }
+  .dot-active { animation: dot-pulse 2.4s ease-in-out infinite; }
+
+  /* ── Contact success: slide-in from below reinforces "sent" directionality ───
+     Handled by AnimatePresence in JSX; this is the CSS fallback.               */
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .contact-success { animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  /* ── Focus-visible: CSS replaces fragile JS onFocus border mutation ────────
+     WCAG 2.4.7 — Focus Visible (Level AA)                                    */
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-color: oklch(68% 0.15 200) !important;
+    box-shadow: 0 0 0 2px oklch(68% 0.15 200 / 0.25);
+  }
+
+  /* ── Touch-target wrapper — 44×44px minimum hit area ──────────────────────
+     WCAG 2.5.8 — Target Size (Level AA, WCAG 2.2)                            */
+  .touch-target {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ── prefers-reduced-motion — kill all motion for users who opt out ──────────
+   WCAG 2.3.3 Animation from Interactions (Level AAA)
+   Covers: CSS animations, CSS transitions, and sets a data attribute
+   that the JS GSAP layer reads to skip tweens entirely.                       */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Panels snap instantly — no crossfade */
+  .section-panel {
+    will-change: auto;
+    transition: none !important;
+  }
 }

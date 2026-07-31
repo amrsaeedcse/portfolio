@@ -9,7 +9,7 @@ const BOOT_LINES = [
 ];
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap');
+  /* Fonts loaded via <link> preload in index.html — no @import needed */
 
   @keyframes fadeSlideIn {
     from { opacity: 0; transform: translateX(-12px); }

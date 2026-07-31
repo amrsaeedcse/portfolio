@@ -127,6 +127,7 @@ export const PhoneMockup = React.forwardRef(function PhoneMockup(props, ref) {
   // Expose outer group to GSAP via forwarded ref
   React.useImperativeHandle(ref, () => outerRef.current, []);
 
+  // VERCEL SKILL: rerender-lazy-state-init — create canvas once via useMemo
   const { texture, canvas, ctx } = useMemo(() => {
     const canvas = document.createElement('canvas');
     canvas.width = 512; canvas.height = 900;
@@ -134,24 +135,49 @@ export const PhoneMockup = React.forwardRef(function PhoneMockup(props, ref) {
     return { texture: new THREE.CanvasTexture(canvas), canvas, ctx };
   }, []);
 
+  // Track last rendered section & lampIntensity to skip redundant redraws
+  const lastSection = useRef(-1);
+  const lastLampIntensity = useRef(-1);
+  // Frame throttle: screen redraws at ~30fps instead of 60fps
+  const frameCount = useRef(0);
+
   useFrame((state) => {
     if (!floatRef.current) return;
     const t = state.clock.elapsedTime;
 
     // 3d-web-experience SKILL: smooth idle float on INNER group, isolated from GSAP
+    // Uses direct property assignment — no layout triggers, pure GPU
     floatRef.current.position.y = Math.sin(t * 1.1) * 0.14;
 
     const section = scrollState.logicalSection ?? scrollState.section;
-    const { width: w, height: h } = canvas;
-    ctx.clearRect(0, 0, w, h);
-    if (SCREENS[section]) {
-      SCREENS[section](ctx, w, h, t, scrollState.lampIntensity);
+    const lampIntensity = scrollState.lampIntensity;
+
+    // VERCEL SKILL: js-request-idle-callback concept applied to frames.
+    // Throttle canvas redraws to every 2nd frame (~30fps equivalent).
+    // Animations still look smooth because float runs at 60fps.
+    frameCount.current = (frameCount.current + 1) % 2;
+    const sectionChanged = section !== lastSection.current;
+    const lampChanged = Math.abs(lampIntensity - lastLampIntensity.current) > 0.01;
+
+    // Only redraw if section changed, lamp changed, OR on even frames for animated screens
+    // Screens 0 (hero) and 3 (projects) have subtle t-based animations worth refreshing
+    const isAnimatedScreen = section === 0 || section === 3;
+    const shouldRedraw = sectionChanged || lampChanged || (isAnimatedScreen && frameCount.current === 0);
+
+    if (shouldRedraw) {
+      const { width: w, height: h } = canvas;
+      ctx.clearRect(0, 0, w, h);
+      if (SCREENS[section]) {
+        SCREENS[section](ctx, w, h, t, lampIntensity);
+      }
+      drawStatusBar(ctx, w, t, section);
+      texture.needsUpdate = true;
+      lastSection.current = section;
+      lastLampIntensity.current = lampIntensity;
     }
-    drawStatusBar(ctx, w, t, section);
-    texture.needsUpdate = true;
 
     if (screenRef.current) {
-      screenRef.current.material.emissiveIntensity = 0.3 + scrollState.lampIntensity * 0.7;
+      screenRef.current.material.emissiveIntensity = 0.3 + lampIntensity * 0.7;
     }
   });
 

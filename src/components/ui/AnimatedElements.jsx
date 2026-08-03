@@ -14,8 +14,10 @@ export function useHasAnimated(isActive) {
   return hasAnimated;
 }
 
-// Global Reusable Variants
+// ── Global Reusable Variants ──────────────────────────────────────────────────
+
 export const VARIANTS = {
+  // Standard container with stagger
   container: {
     hidden: { opacity: 0 },
     visible: {
@@ -50,10 +52,120 @@ export const VARIANTS = {
       opacity: 1, y: 0, 
       transition: { type: 'tween', ease: [0.16, 1, 0.3, 1], duration: 0.6 }
     }
-  }
+  },
+
+  // ── WORLD-CLASS CARD FLIP — 3D rotateX face-down → face-up ──────────────────
+  // Parent container: staggers cards with 0.12s gap for a cascade domino effect
+  cardFlipContainer: {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.12, delayChildren: 0.15 }
+    }
+  },
+  // Each card: flips from face-down (rotateX 90deg) to face-up (0deg)
+  // Combined with a scale spring for extra physicality
+  cardFlip: {
+    hidden: {
+      opacity: 0,
+      rotateX: 88,
+      scale: 0.75,
+      y: 20,
+    },
+    visible: {
+      opacity: 1,
+      rotateX: 0,
+      scale: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 180,
+        damping: 18,
+        mass: 0.9,
+      }
+    }
+  },
+
+  // ── ABOUT PHOTO — card flip on the Y axis (like turning a photo over) ───────
+  photoFlip: {
+    hidden: { opacity: 0, rotateY: -70, scale: 0.88, x: -20 },
+    visible: {
+      opacity: 1,
+      rotateY: 0,
+      scale: 1,
+      x: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 140,
+        damping: 20,
+        mass: 1,
+      }
+    }
+  },
+
+  // ── STAT BOX — pops in with overshoot bounce ─────────────────────────────────
+  statPop: {
+    hidden: { opacity: 0, scale: 0.5, rotateZ: -8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      rotateZ: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 280,
+        damping: 16,
+        mass: 0.7,
+      }
+    }
+  },
+
+  // ── EXPERIENCE ITEM — grows from Y axis (timeline reveal) ──────────────────
+  timelineItem: {
+    hidden: { opacity: 0, x: -32, scaleX: 0.6 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scaleX: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 200,
+        damping: 22,
+      }
+    }
+  },
+
+  // ── PILL WIPE — clips in from left (used for skill pills) ────────────────────
+  pillWipe: {
+    hidden: { opacity: 0, clipPath: 'inset(0 100% 0 0 round 9999px)', scale: 0.9 },
+    visible: {
+      opacity: 1,
+      clipPath: 'inset(0 0% 0 0 round 9999px)',
+      scale: 1,
+      transition: {
+        type: 'tween',
+        ease: [0.16, 1, 0.3, 1],
+        duration: 0.45,
+      }
+    }
+  },
+
+  // ── CONTACT FIELD SLIDE — fields wipe in from right ─────────────────────────
+  fieldSlide: {
+    hidden: { opacity: 0, x: 40, clipPath: 'inset(0 0 0 100%)' },
+    visible: {
+      opacity: 1,
+      x: 0,
+      clipPath: 'inset(0 0 0 0%)',
+      transition: {
+        type: 'tween',
+        ease: [0.16, 1, 0.3, 1],
+        duration: 0.6,
+      }
+    }
+  },
 };
 
-// Character/Word Stagger Component
+// ── Character/Word Stagger Component ─────────────────────────────────────────
 export const AnimatedText = ({ text, style, className }) => {
   return (
     <motion.div
@@ -78,7 +190,7 @@ export const AnimatedText = ({ text, style, className }) => {
   );
 };
 
-// Counter Component (0 to N)
+// ── Counter Component (0 to N) ────────────────────────────────────────────────
 export const AnimatedCounter = ({ targetValue, isActive, format = (v) => Math.round(v) }) => {
   const nodeRef = useRef(null);
   const hasAnimated = useHasAnimated(isActive);

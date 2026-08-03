@@ -84,8 +84,8 @@ export const AboutPanel = memo(function AboutPanel({ panelRef, isActive }) {
         className="w-full max-w-[900px] flex flex-col md:grid gap-6 md:gap-16 items-center"
         style={{ gridTemplateColumns: '280px 1fr' }}>
 
-        {/* Photo */}
-        <motion.div variants={VARIANTS.fadeUp} id="about-photo" className="relative p-2 md:p-4 w-36 md:w-full mx-auto md:mx-0">
+        {/* Photo — Y-axis card flip: premium reveal */}
+        <motion.div variants={VARIANTS.photoFlip} id="about-photo" className="relative p-2 md:p-4 w-36 md:w-full mx-auto md:mx-0" style={{ perspective: '800px', transformStyle: 'preserve-3d' }}>
           {/* Viewfinder corner brackets */}
           {[0, 1, 2, 3].map((ci) => {
             const tops = [0, 0, 'auto', 'auto']; const lefts = [0, 'auto', 0, 'auto'];
@@ -110,10 +110,10 @@ export const AboutPanel = memo(function AboutPanel({ panelRef, isActive }) {
           <motion.p variants={VARIANTS.fadeUp} style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2vw, 1rem)', lineHeight: 1.6, color: 'oklch(62% 0.025 264)', marginBottom: '2rem', maxWidth: '38ch' }}>
             Clean Architecture across mobile, backend, and embedded. I don't just code — I <em style={{ color: '#00FFD1', fontStyle: 'normal' }}>engineer solutions</em>.
           </motion.p>
-          {/* Stats: 2-col above 360px, single-col below — numbers stay readable */}
-          <motion.div variants={VARIANTS.container} className="grid grid-cols-1 min-[360px]:grid-cols-2" style={{ gap: '0.75rem' }}>
+          {/* Stats: staggered bounce-pop entrance */}
+          <motion.div variants={VARIANTS.cardFlipContainer} className="grid grid-cols-1 min-[360px]:grid-cols-2" style={{ gap: '0.75rem', perspective: '600px' }}>
             {stats.map(([, label, numVal]) => (
-              <motion.div variants={VARIANTS.fadeUp} key={label} style={{ padding: '0.75rem 1rem', border: '1px solid #00FFD133', borderRadius: '0.75rem', background: '#00FFD114' }}>
+              <motion.div variants={VARIANTS.statPop} key={label} style={{ padding: '0.75rem 1rem', border: '1px solid #00FFD133', borderRadius: '0.75rem', background: '#00FFD114' }}>
                 <div style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(1.4rem, 4vw, 2rem)', color: '#00FFD1', lineHeight: 1 }}>
                   <AnimatedCounter targetValue={numVal} isActive={hasAnimated} />+
                 </div>
@@ -152,7 +152,8 @@ export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive }) {
           style={{ fontFamily: "'Bebas Neue'", textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
           <AnimatedText text="FULL-STACK THINKING." />
         </h2>
-        <motion.div variants={VARIANTS.container} className="grid gap-3 md:gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
+        {/* cardFlipContainer staggers each card 0.12s apart — domino cascade */}
+        <motion.div variants={VARIANTS.cardFlipContainer} className="grid gap-3 md:gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', perspective: '900px', transformStyle: 'preserve-3d' }}>
           {SKILL_GROUPS.map(({ cat, color, domain, items }, idx) => {
             const headingId = `skill-cat-${cat.toLowerCase()}`;
             // Insert a structural separator between DIGITAL (0,1) and SYSTEMS (2,3) groups
@@ -178,7 +179,7 @@ export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive }) {
                     <div style={lineStyle} />
                   </motion.div>
                 )}
-                <motion.div variants={VARIANTS.fadeUp}
+                <motion.div variants={VARIANTS.cardFlip}
                   role="group"
                   aria-labelledby={headingId}
                   className="skill-card p-3 md:p-6 rounded-xl md:rounded-2xl relative overflow-hidden"
@@ -201,9 +202,10 @@ export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive }) {
                     className="text-[1rem] md:text-[1.2rem] mb-2 md:mb-3 pl-3 md:pl-4 tracking-[0.08em]"
                     style={{ fontFamily: "'Bebas Neue'", color, fontWeight: 'normal' }}>{cat}</h3>
                   {/* Pills — fluid font floor prevents sub-11px rendering at narrow widths */}
+                  {/* Pills: clipPath wipe-in from left — sequential typewriter reveal */}
                   <motion.div variants={VARIANTS.fastContainer} className="flex flex-wrap gap-1.5 pl-3 md:pl-4">
                     {items.map((item) => (
-                      <motion.span variants={VARIANTS.fadeUp} key={item}
+                      <motion.span variants={VARIANTS.pillWipe} key={item}
                         style={{
                           fontFamily: 'DM Sans',
                           fontSize: 'clamp(0.68rem, 1.8vw, 0.75rem)',
@@ -213,6 +215,7 @@ export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive }) {
                           padding: '0.2rem 0.55rem',
                           borderRadius: '9999px',
                           lineHeight: 1.4,
+                          display: 'inline-block',
                         }}>
                         {item}
                       </motion.span>
@@ -403,7 +406,7 @@ export const ExperiencePanel = memo(function ExperiencePanel({ panelRef, isActiv
           <motion.div variants={VARIANTS.fadeUp} style={{ position: 'absolute', left: '8px', top: '6px', bottom: 0, width: '1px', background: 'oklch(30% 0.025 264)' }} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
             {EXP_ITEMS.map(({ date, title, org, desc, color }, i) => (
-              <motion.div variants={VARIANTS.fadeUp} key={i} className="exp-item" style={{ position: 'relative' }}>
+              <motion.div variants={VARIANTS.timelineItem} key={i} className="exp-item" style={{ position: 'relative', transformOrigin: 'left center' }}>
                 {/* Dot centred on the line: centre at 8px from container left */}
                 <div style={{
                   position: 'absolute', left: '-1.5rem', top: '0.3rem',

@@ -209,26 +209,54 @@ export default function App() {
         const from = panels[fromIdx];
         const to = panels[toIdx];
         if (!from || !to) return;
-        const offset = direction > 0 ? 1 : -1;
-        const variants = {
-          1: { x: 30, y: 16, rotate: 0.8, scale: 0.98 },
-          2: { x: 28, y: -12, rotate: 1.2, scale: 0.97 },
-          3: { x: 18, y: 0, rotate: 0, scale: 1 },
-          4: { x: 34, y: 0, rotate: 1.6, scale: 0.97 },
-          5: { x: 22, y: 22, rotate: 0, scale: 0.95 },
-          6: { x: 28, y: 0, rotate: -1.2, scale: 0.97 },
-          7: { x: 0, y: 24, rotate: 0, scale: 0.96 },
-        }[toIdx] || { x: 24, y: 0, rotate: 0, scale: 0.98 };
-        const enter = { x: variants.x * offset, y: variants.y * offset, rotate: variants.rotate * offset, scale: variants.scale };
         gsap.killTweensOf([from, to]);
+
         if (reducedMotion.current) {
           gsap.set(from, { autoAlpha: 0 });
-          gsap.set(to, { autoAlpha: 1, x: 0, y: 0, rotate: 0, scale: 1 });
+          gsap.set(to, { autoAlpha: 1, rotateY: 0, rotateX: 0, z: 0, scale: 1 });
           return;
         }
-        gsap.set(to, { autoAlpha: 1, ...enter });
-        gsap.to(from, { autoAlpha: 0, x: -enter.x * 0.65, y: -enter.y * 0.65, rotate: -enter.rotate, scale: 0.98, duration: 0.34, ease: 'power2.in' });
-        gsap.to(to, { autoAlpha: 1, x: 0, y: 0, rotate: 0, scale: 1, duration: 0.52, ease: 'power3.out', overwrite: 'auto' });
+
+        // ── True 3-D Cube Rotation ─────────────────────────────────────────────
+        // The pinned container has perspective set in CSS (.motion-stage).
+        // Exiting face rotates -90° (forward) or +90° (backward) on Y axis.
+        // Entering face starts at +90° (forward) or -90° (backward) and lands at 0°.
+        // A subtle Z push (-80px) and scale-down (0.88) sells depth on exit.
+        const fwdOut  = direction > 0 ? -88 : 88;
+        const fwdIn   = direction > 0 ?  88 : -88;
+
+        // Choose axis per transition pair for variety:
+        // Projects carousel (idx 3) keeps a horizontal slide — never cube-flipped.
+        const useXAxis = (fromIdx === 1 && toIdx === 2) || (fromIdx === 2 && toIdx === 1);
+        const rotateKey = useXAxis ? 'rotateX' : 'rotateY';
+
+        // Outgoing panel: spin off-screen
+        gsap.to(from, {
+          autoAlpha: 0,
+          [rotateKey]: fwdOut,
+          z: -120,
+          scale: 0.88,
+          duration: 0.42,
+          ease: 'power2.in',
+          overwrite: 'auto',
+        });
+
+        // Incoming panel: pre-position on opposite face, then spin to 0
+        gsap.set(to, { autoAlpha: 1, [rotateKey]: fwdIn, z: -120, scale: 0.88 });
+        gsap.to(to, {
+          [rotateKey]: 0,
+          z: 0,
+          scale: 1,
+          autoAlpha: 1,
+          duration: 0.56,
+          ease: 'power3.out',
+          delay: 0.06,
+          overwrite: 'auto',
+          onComplete: () => {
+            // Clean up transform state so panel is pristine for next transition
+            gsap.set(from, { rotateY: 0, rotateX: 0, z: 0, scale: 1 });
+          },
+        });
       }
 
 

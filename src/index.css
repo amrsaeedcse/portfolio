@@ -19,15 +19,81 @@
 
 @layer base {
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; overflow-x: hidden; background: oklch(10% 0.01 264); }
+  html, body { width: 100%; overflow-x: hidden; background: oklch(10% 0.01 264); scrollbar-width: none; -ms-overflow-style: none; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
   body { font-family: var(--font-body); color: oklch(96% 0.005 264); -webkit-font-smoothing: antialiased; }
 }
 
 @layer utilities {
   /* GPU-composited layers: opacity + transform only, no layout triggers */
-  .section-panel { will-change: opacity, transform; contain: layout style paint; }
+  .motion-stage { position: relative; isolation: isolate; overflow: hidden; }
+  .motion-stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(105deg, transparent 38%, #00FFD10d 48%, #00FFD14d 50%, #00FFD10d 52%, transparent 62%);
+    transform: translateX(-120%);
+  }
+  .motion-stage[data-active-panel="1"]::before,
+  .motion-stage[data-active-panel="2"]::before,
+  .motion-stage[data-active-panel="4"]::before,
+  .motion-stage[data-active-panel="5"]::before,
+  .motion-stage[data-active-panel="6"]::before,
+  .motion-stage[data-active-panel="7"]::before { animation: signal-sweep 0.62s cubic-bezier(0.16, 1, 0.3, 1); }
+  .section-panel { will-change: opacity, transform; contain: layout style paint; backface-visibility: hidden; transform-origin: 50% 50%; }
   .font-display { font-family: var(--font-display); }
   .font-body { font-family: var(--font-body); }
+
+  /* Non-project surfaces use a shared instrument-panel language instead of empty mockup space. */
+  .hero-system-visual,
+  .experience-orbit,
+  .contact-orbit { pointer-events: none; position: absolute; }
+  .hero-system-visual { width: min(46vw, 620px); aspect-ratio: 1; right: 2vw; top: 50%; transform: translateY(-50%); opacity: .78; }
+  .hero-system-visual::before { content: ''; position: absolute; inset: 18%; border: 1px solid #00FFD128; border-radius: 50%; box-shadow: 0 0 80px #00FFD112; }
+  .hero-orbit { position: absolute; border: 1px solid #00FFD14d; border-radius: 50%; transform: rotate(-28deg); }
+  .hero-orbit::after { content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #00FFD1; box-shadow: 0 0 18px #00FFD1; top: 50%; left: -3px; }
+  .hero-orbit-a { inset: 10%; border-right-color: transparent; }
+  .hero-orbit-b { inset: 28%; transform: rotate(56deg); border-left-color: transparent; opacity: .6; }
+  .hero-core { position: absolute; inset: 40%; display: grid; place-items: center; border: 1px solid #00FFD180; border-radius: 50%; color: #00FFD1; font: 700 .7rem/1 'DM Sans'; letter-spacing: .18em; box-shadow: inset 0 0 24px #00FFD116, 0 0 34px #00FFD11b; }
+  .hero-core i { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #f4f4f5; box-shadow: 0 0 10px #fff; }
+  .hero-readout { position: absolute; right: 4%; bottom: 19%; display: grid; gap: .35rem; color: #00FFD1; font: .58rem/1.2 'DM Sans'; letter-spacing: .16em; }
+  .hero-readout b { color: #f4f4f5aa; font-size: .58rem; font-weight: 500; }
+  .hero-axis { position: absolute; background: #00FFD12e; }
+  .hero-axis-x { width: 100%; height: 1px; top: 50%; }
+  .hero-axis-y { width: 1px; height: 100%; left: 50%; }
+  .motion-stage[data-active-panel="0"] .hero-orbit-a { animation: instrument-orbit 16s linear infinite; }
+  .motion-stage[data-active-panel="0"] .hero-orbit-b { animation: instrument-orbit-reverse 21s linear infinite; }
+  @keyframes instrument-orbit { to { transform: rotate(332deg); } }
+  @keyframes instrument-orbit-reverse { to { transform: rotate(-304deg); } }
+
+  .hero-panel > #hero-content { position: relative; z-index: 2; }
+  .about-panel > *:not(.about-spec-strip), .skills-panel > * { position: relative; z-index: 2; }
+  .about-spec-strip { display: flex; align-items: center; gap: .65rem; margin-top: 1.4rem; color: #00FFD1; font: .58rem/1 'DM Sans'; letter-spacing: .16em; }
+  .about-spec-strip strong { color: #f4f4f599; font-weight: 500; white-space: nowrap; }
+  .about-spec-strip i { display: block; width: 2rem; height: 1px; background: #00FFD177; }
+  .about-panel #about-photo { filter: drop-shadow(0 24px 42px #0008); }
+  .about-panel #about-photo::after { content: ''; position: absolute; inset: 1rem; border: 1px solid #00FFD155; border-radius: .75rem; transform: translate(9px, 9px); z-index: -1; }
+  .skills-panel::before { content: ''; position: absolute; width: 32rem; height: 32rem; right: -12rem; top: -8rem; border: 1px solid #00FFD11b; border-radius: 50%; box-shadow: 0 0 90px #00FFD10a; pointer-events: none; }
+  .skills-panel .skill-card { transition: transform 260ms cubic-bezier(.16,1,.3,1), border-color 260ms ease, background 260ms ease; }
+  .skills-panel .skill-card:hover { transform: translateY(-6px); background: #00FFD11c !important; border-color: #00FFD188 !important; }
+  .skills-panel .skill-card::after { content: ''; position: absolute; width: 8rem; height: 8rem; right: -4rem; bottom: -4rem; border: 1px solid currentColor; border-radius: 50%; opacity: .18; transition: transform 350ms ease; }
+  .skills-panel .skill-card:hover::after { transform: scale(1.35); }
+  .experience-panel::before { content: 'TIMELINE // ACTIVE'; position: absolute; right: 8vw; top: 22%; color: #00FFD155; font: .58rem/1 'DM Sans'; letter-spacing: .2em; writing-mode: vertical-rl; }
+  .experience-orbit { right: 10vw; bottom: 16%; width: 16rem; height: 16rem; border: 1px solid #00FFD126; border-radius: 50%; display: grid; place-items: center; color: #00FFD155; font: 4rem/1 'Bebas Neue'; }
+  .experience-orbit::before, .experience-orbit::after { content: ''; position: absolute; border: 1px solid #00FFD11c; border-radius: 50%; inset: 1.5rem; }
+  .experience-orbit::after { inset: 3.3rem; border-color: #d99b3d40; }
+  .experience-panel .exp-item { transition: transform 260ms ease; }
+  .experience-panel .exp-item:hover { transform: translateX(8px); }
+  .contact-panel::before { content: 'CHANNEL // 01'; position: absolute; right: 8vw; top: 25%; color: #00FFD155; font: .58rem/1 'DM Sans'; letter-spacing: .2em; writing-mode: vertical-rl; }
+  .contact-orbit { right: 4vw; top: 17%; width: 22rem; height: 22rem; border: 1px solid #00FFD126; border-radius: 50%; color: #00FFD155; display: grid; place-items: center; font: .62rem/1 'DM Sans'; letter-spacing: .22em; }
+  .contact-orbit::before { content: ''; position: absolute; inset: 2rem; border: 1px dashed #00FFD130; border-radius: 50%; }
+  .contact-orbit::after { content: ''; position: absolute; width: .55rem; height: .55rem; border-radius: 50%; background: #00FFD1; top: 10%; left: 35%; box-shadow: 0 0 20px #00FFD1; }
+  .contact-panel input, .contact-panel textarea { transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
+  .contact-panel input:hover, .contact-panel textarea:hover { border-color: #00FFD166 !important; }
+  .contact-panel input:focus, .contact-panel textarea:focus { transform: translateY(-2px); }
 
   /* Project track: GPU-accelerated horizontal slide */
   #project-track { will-change: transform; }
@@ -63,43 +129,20 @@
 
   @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
   .blink { animation: blink 1.2s infinite; }
+  @keyframes signal-sweep {
+    0% { opacity: 0; transform: translateX(-120%); }
+    25% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(120%); }
+  }
 
   /* ── Panel heading lift: heading leads the eye when panel arrives ────────────
      GSAP adds .panel-entered on the panel element after its crossfade completes.
      The heading inside it rises 18px while fading in over 480ms.
      cubic-bezier(0.16,1,0.3,1) = confident deceleration (no bounce).          */
-  @keyframes heading-arrive {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .panel-entered h2 {
-    animation: heading-arrive 0.48s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  /* Body text follows 80ms later, shorter travel */
-  .panel-entered > * > p,
-  .panel-entered > * > * > p {
-    animation: heading-arrive 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
-  }
-
   /* ── Skill card stagger: ordered list reads as a list, not a slab ────────────
      Cards are numbered 1–4. Total delay cap: 180ms (4 × 60ms - 60ms). */
-  .panel-entered .skill-card {
-    animation: heading-arrive 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  .panel-entered .skill-card:nth-child(1) { animation-delay: 0ms; }
-  .panel-entered .skill-card:nth-child(2) { animation-delay: 60ms; }
-  .panel-entered .skill-card:nth-child(3) { animation-delay: 120ms; }
-  .panel-entered .skill-card:nth-child(4) { animation-delay: 180ms; }
-
   /* ── Experience item stagger: reinforces timeline directionality ─────────────
      Items flow top-to-bottom — stagger mirrors reading order.                   */
-  .panel-entered .exp-item {
-    animation: heading-arrive 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  .panel-entered .exp-item:nth-child(1) { animation-delay: 60ms; }
-  .panel-entered .exp-item:nth-child(2) { animation-delay: 140ms; }
-  .panel-entered .exp-item:nth-child(3) { animation-delay: 220ms; }
-
   /* ── Nav link: color transition prevents jarring jump ───────────────────────
      150ms = immediate feedback tier; smooth enough to feel intentional.        */
   .nav-link { transition: color 150ms ease; }
@@ -146,6 +189,14 @@
    WCAG 2.3.3 Animation from Interactions (Level AAA)
    Covers: CSS animations, CSS transitions, and sets a data attribute
    that the JS GSAP layer reads to skip tweens entirely.                       */
+@media (max-width: 767px) {
+  .hero-system-visual { width: 92vw; right: -34vw; top: 18%; opacity: .28; }
+  .hero-readout { right: 3%; bottom: 18%; transform: scale(.8); transform-origin: right bottom; }
+  .about-spec-strip { margin-top: 1rem; font-size: .52rem; }
+  .experience-panel::before, .contact-panel::before, .experience-orbit, .contact-orbit { display: none; }
+  .skills-panel::before { width: 22rem; height: 22rem; right: -12rem; top: 8%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -159,4 +210,5 @@
     will-change: auto;
     transition: none !important;
   }
+  .motion-stage::before { display: none; }
 }

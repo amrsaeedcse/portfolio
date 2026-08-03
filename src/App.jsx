@@ -1,13 +1,12 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback, Suspense, lazy } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Observer } from 'gsap/Observer';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { AnimatePresence, motion } from 'framer-motion';
-import Scene from './components/canvas/Scene';
 import Loader from './components/Loader';
-import ProjectDetail from './components/sections/ProjectDetail';
-import ProjectArchive from './components/sections/ProjectArchive';
+const ProjectDetail = lazy(() => import('./components/sections/ProjectDetail'));
+const ProjectArchive = lazy(() => import('./components/sections/ProjectArchive'));
 import { scrollState } from './lib/scrollState';
 import {
   HeroPanel, AboutPanel, SkillsPanel,
@@ -19,25 +18,7 @@ import {
 
 gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
 
-// Per-stop phone choreography
-const getPhoneStates = (width) => {
-  const isMobile = width < 768;
-  if (isMobile) {
-    return Array.from({ length: 12 }, () => ({ x: 0, y: 0, rotY: 0, scale: 0.7 }));
-  }
-  return [
-    { x: 2.2, y: 0, rotY: 0, scale: 1.05 }, // 0 Hero
-    { x: 3.5, y: 0.15, rotY: 0.1, scale: 0.9 }, // 1 About (pushed right)
-    { x: 3.8, y: -0.1, rotY: -0.08, scale: 0.82 }, // 2 Skills (pushed right)
-    { x: 4.5, y: 0, rotY: 0.05, scale: 0.62 }, // 3 Proj1
-    { x: 4.5, y: -0.1, rotY: -0.05, scale: 0.62 }, // 4 Proj2
-    { x: 4.5, y: 0.1, rotY: 0.05, scale: 0.62 }, // 5 Proj3
-    { x: 4.5, y: 0, rotY: -0.05, scale: 0.62 }, // 6 Proj4
-    { x: 4.5, y: -0.1, rotY: 0.05, scale: 0.62 }, // 7 Proj5 (MIPS)
-    { x: 3.2, y: 0, rotY: 0, scale: 0.9 }, // 8 Experience
-    { x: 2.8, y: 0, rotY: 0, scale: 1.0 }, // 9 Contact
-  ];
-};
+
 
 // Map scroll stop → panel index
 function stopToPanel(stop, isMobile) {
@@ -58,17 +39,20 @@ function stopToPanel(stop, isMobile) {
 export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [loaderExiting, setLoaderExiting] = useState(false);
-  const [sceneReady, setSceneReady] = useState(false);
+  const [sceneReady] = useState(true);
+
   const [activeProject, setActiveProject] = useState(null);
+  const [activePanel, setActivePanel] = useState(0);
+  const activePanelRef = useRef(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pinnedRef = useRef(null);
-  const phoneRef = useRef(null);
   const panelRefs = useRef([]);
   const dotRefs = useRef([]);
   const tlRef = useRef(null);
   const currentStop = useRef(0);
   const isAnimating = useRef(false);
   const obsRef = useRef(null);
+  const goToStopRef = useRef(null);
   const reducedMotion = useRef(
     typeof window !== 'undefined'
       ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -90,7 +74,6 @@ export default function App() {
         if (window.innerWidth !== lastWidth) {
           lastWidth = window.innerWidth;
           setWindowWidth(window.innerWidth);
-          window.scrollTo(0, 0); // Reset to start only on true width resize
         }
       }, 300);
     };
@@ -105,10 +88,10 @@ export default function App() {
   useEffect(() => {
     if (activeProject) {
       document.body.style.overflow = 'hidden';
-      if (obsRef.current) obsRef.current.disable();
+      obsRef.current?.disable();
     } else {
       document.body.style.overflow = '';
-      if (obsRef.current) obsRef.current.enable();
+      obsRef.current?.enable();
     }
     return () => {
       document.body.style.overflow = '';
@@ -121,20 +104,20 @@ export default function App() {
   const SNAP_POINTS = Array.from({ length: STOPS + 1 }, (_, i) => i / STOPS);
 
   // Nav helper — maps logical section (0-5) to scroll stop
-  const SECTION_TO_STOP = isMobile ? [0, 1, 2, 3, 8, 10] : [0, 1, 2, 3, 8, 9];
   const scrollToSection = useCallback((sectionIdx) => {
-    const stop = SECTION_TO_STOP[sectionIdx] ?? sectionIdx;
-    const target = stop / STOPS;
-    window.scrollTo({ top: target * TOTAL_SCROLL, behavior: 'smooth' });
+    const sectionToStop = isMobile ? [0, 1, 2, 3, 8, 10] : [0, 1, 2, 3, 8, 9];
+    const stop = sectionToStop[sectionIdx] ?? sectionIdx;
+    if (goToStopRef.current) goToStopRef.current(stop);
+    else window.scrollTo({ top: (stop / STOPS) * TOTAL_SCROLL, behavior: 'smooth' });
     setMobileMenuOpen(false); // Close mobile menu on navigate
-  }, [SECTION_TO_STOP, STOPS, TOTAL_SCROLL]);
+  }, [isMobile, STOPS, TOTAL_SCROLL]);
 
   useEffect(() => {
     if (!loaded) return;
+    let disposeTimeline = null;
     const raf = requestAnimationFrame(() => requestAnimationFrame(buildTimeline));
 
     function buildTimeline() {
-      const PHONE_STATES = getPhoneStates(windowWidth);
       const panels = panelRefs.current.filter(Boolean);
       if (!pinnedRef.current || panels.length === 0) return;
 
@@ -162,59 +145,109 @@ export default function App() {
         ['s8', 3, 4],  // Projects → Experience (starts at s8)
         ['s9', 4, 5],   // Experience → Contact (starts at s9)
       ];
+      const transitionFor = (fromIdx, toIdx) => {
+        if (fromIdx === 0 && toIdx === 1) return {
+          out: { clipPath: 'inset(0 0 100% 0)' }, in: { clipPath: 'inset(100% 0 0 0)' },
+        };
+        if (fromIdx === 1 && toIdx === 2) return {
+          out: { rotateX: -38, yPercent: -8, scale: 0.96 }, in: { rotateX: 32, yPercent: 8, scale: 0.96 },
+        };
+        // The project carousel stays visually uninterrupted.
+        if (toIdx === 3 || fromIdx === 2) return { out: { xPercent: -8 }, in: { xPercent: 8 } };
+        // Experience lands like a precise technical sweep, never a cube flip.
+        if (fromIdx === 3 && toIdx === 4) return {
+          out: { xPercent: -18, rotateZ: -2.5, scale: 0.96 },
+          in: { xPercent: 18, rotateZ: 2.5, scale: 0.96 },
+        };
+        // The final sequence closes through an aperture, not another flip.
+        if (toIdx >= 6 || (!isMobile && toIdx === 5)) return {
+          out: { clipPath: 'inset(0 50% 0 50% round 50%)', scale: 0.9 },
+          in: { clipPath: 'inset(0 50% 0 50% round 50%)', scale: 0.9 },
+        };
+        return { out: { xPercent: -14, rotateZ: -1.5 }, in: { xPercent: 14, rotateZ: 1.5 } };
+      };
+
+      const scrubPanels = false;
       crossfades.forEach(([label, fromIdx, toIdx]) => {
-        // Offset so transition completes BY the label
-        tl.to(panels[fromIdx], {
-          autoAlpha: 0, y: -36, duration: 1 / STOPS,
-          onComplete: () => panels[fromIdx]?.classList.remove('panel-entered'),
-        }, `${label}-=${1 / STOPS}`);
+        // Panel transitions are handled discretely by navigateToStop below.
+        // Keeping them out of the scrubbed timeline makes reverse scrolling deterministic.
+        if (!scrubPanels) return;
+        const startAt = `${label}-=${1 / STOPS}`;
+        if (reducedMotion.current) {
+          tl.to(panels[fromIdx], { autoAlpha: 0, duration: 0.01 }, startAt);
+          tl.to(panels[toIdx], { autoAlpha: 1, duration: 0.01 }, startAt);
+          return;
+        }
+        const motion = transitionFor(fromIdx, toIdx);
+        tl.set(panels[toIdx], { autoAlpha: 1, y: 0, ...motion.in }, startAt);
+        tl.to(panels[fromIdx], { autoAlpha: 0, y: 0, ...motion.out, duration: 1 / STOPS }, startAt);
         tl.to(panels[toIdx], {
-          autoAlpha: 1, y: 0, duration: 1 / STOPS,
-          onComplete: () => {
-            // Remove then re-add to replay animation on every entry
-            panels[toIdx]?.classList.remove('panel-entered');
-            requestAnimationFrame(() => panels[toIdx]?.classList.add('panel-entered'));
-          },
-        }, `${label}-=${1 / STOPS}`);
+          autoAlpha: 1, xPercent: 0, yPercent: 0, rotateX: 0, rotateY: 0,
+          rotateZ: 0, z: 0, scale: 1, clipPath: 'inset(0 0 0 0)', duration: 1 / STOPS,
+        }, startAt);
       });
 
       // ── PROJECT CAROUSEL (xPercent of #project-track) ─────────────────────
-      const projStart = 's3';
-      const p1 = 's4';
-      const p2 = 's5';
-      const p3 = 's6';
-      const pEnd = 's8';
-      
-      tl.set('#project-track', { xPercent: 0 }, projStart);
-      tl.to('#project-track', { xPercent: -20, duration: 1 / STOPS }, projStart);
-      tl.to('#project-track', { xPercent: -40, duration: 1 / STOPS }, p1);
-      tl.to('#project-track', { xPercent: -60, duration: 1 / STOPS }, p2);
-      tl.to('#project-track', { xPercent: -80, duration: 1 / STOPS }, p3);
-      tl.set('#project-track', { xPercent: 0 }, pEnd);
+      // Projects stays a discrete, deterministic carousel. It is driven only
+      // at completed stops so a wheel event cannot strand the track mid-card.
+      const syncProjectTrack = (stopIdx, duration = 0.5) => {
+        const card = Math.max(0, Math.min(4, stopIdx - 3));
+        gsap.to('#project-track', {
+          xPercent: -card * 20,
+          duration: reducedMotion.current ? 0 : duration,
+          ease: 'power3.out',
+          overwrite: 'auto',
+        });
+      };
+      gsap.set('#project-track', { xPercent: 0 });
 
-      // ── PHONE CHOREOGRAPHY (per stop) ─────────────────────────────────────
-      for (let i = 1; i <= STOPS; i++) {
-        if (!phoneRef.current) break;
-        const ps = PHONE_STATES[i];
-        const prevLabel = LABELS[i - 1]; // tween from previous label to this label
-        tl.to(phoneRef.current.position, { x: ps.x, y: ps.y, duration: 1 / STOPS }, prevLabel);
-        tl.to(phoneRef.current.rotation, { y: ps.rotY, duration: 1 / STOPS }, prevLabel);
-        tl.to(phoneRef.current.scale, { x: ps.scale, y: ps.scale, z: ps.scale, duration: 1 / STOPS }, prevLabel);
+      gsap.set(panels, { autoAlpha: 0, x: 0, y: 0, xPercent: 0, yPercent: 0, rotate: 0, scale: 1 });
+      gsap.set(panels[activePanelRef.current], { autoAlpha: 1 });
+
+      function animatePanelTransition(fromIdx, toIdx, direction) {
+        if (fromIdx === toIdx) return;
+        const from = panels[fromIdx];
+        const to = panels[toIdx];
+        if (!from || !to) return;
+        const offset = direction > 0 ? 1 : -1;
+        const variants = {
+          1: { x: 30, y: 16, rotate: 0.8, scale: 0.98 },
+          2: { x: 28, y: -12, rotate: 1.2, scale: 0.97 },
+          3: { x: 18, y: 0, rotate: 0, scale: 1 },
+          4: { x: 34, y: 0, rotate: 1.6, scale: 0.97 },
+          5: { x: 22, y: 22, rotate: 0, scale: 0.95 },
+          6: { x: 28, y: 0, rotate: -1.2, scale: 0.97 },
+          7: { x: 0, y: 24, rotate: 0, scale: 0.96 },
+        }[toIdx] || { x: 24, y: 0, rotate: 0, scale: 0.98 };
+        const enter = { x: variants.x * offset, y: variants.y * offset, rotate: variants.rotate * offset, scale: variants.scale };
+        gsap.killTweensOf([from, to]);
+        if (reducedMotion.current) {
+          gsap.set(from, { autoAlpha: 0 });
+          gsap.set(to, { autoAlpha: 1, x: 0, y: 0, rotate: 0, scale: 1 });
+          return;
+        }
+        gsap.set(to, { autoAlpha: 1, ...enter });
+        gsap.to(from, { autoAlpha: 0, x: -enter.x * 0.65, y: -enter.y * 0.65, rotate: -enter.rotate, scale: 0.98, duration: 0.34, ease: 'power2.in' });
+        gsap.to(to, { autoAlpha: 1, x: 0, y: 0, rotate: 0, scale: 1, duration: 0.52, ease: 'power3.out', overwrite: 'auto' });
       }
+
 
       // ── SCROLL TRIGGER — snap to exact stop positions ─────────────────────
       // ── SCROLL TRIGGER — fallback snap for native scrollbar dragging ────────
-      ScrollTrigger.create({
+      const scrollTrigger = ScrollTrigger.create({
         trigger: pinnedRef.current,
         start: 'top top',
         end: `+=${TOTAL_SCROLL}`,
         pin: true,
         anticipatePin: 1,
+        fastScrollEnd: false,
+        invalidateOnRefresh: true,
         animation: tl,
         // VERCEL SKILL: Use scrub: 0.5 instead of true.
         // scrub:true = instant (causes jank when scroll jumps).
         // scrub:0.5 = 500ms lerp — eliminates perceived lag while staying smooth.
-        scrub: 0.5,
+        scrub: reducedMotion.current ? false : 0.1,
+        snap: false,
         onUpdate(self) {
           scrollState.progress = self.progress;
           const stop = Math.min(STOPS, Math.round(self.progress * STOPS));
@@ -222,7 +255,7 @@ export default function App() {
           scrollState.section = panelIdx;
           
           // Compute logical section for the Phone Mockup screens (0 to 5)
-          let logicalSection = panelIdx;
+          let logicalSection;
           if (isMobile) {
             if (stop <= 7) logicalSection = Math.min(3, stop);
             else if (stop <= 9) logicalSection = 4;
@@ -235,32 +268,37 @@ export default function App() {
           scrollState.logicalSection = logicalSection;
 
           // Sync pointer-events
-          panels.forEach((p, i) => { p.style.pointerEvents = i === panelIdx ? 'auto' : 'none'; });
+          panels.forEach((p, i) => { p.style.pointerEvents = i === activePanelRef.current ? 'auto' : 'none'; });
 
           // Sync dots — add .dot-active for ember glow, CSS handles the pulse
           dotRefs.current.forEach((d, i) => {
             if (!d) return;
             const inner = d.firstElementChild;
-            d.style.transform = i === stop ? 'scale(1.8)' : 'scale(1)';
-            d.style.opacity = i === stop ? '1' : '0.3';
+            d.style.transform = i === currentStop.current ? 'scale(1.8)' : 'scale(1)';
+            d.style.opacity = i === currentStop.current ? '1' : '0.3';
             if (inner) {
-              inner.classList.toggle('dot-active', i === stop);
+              inner.classList.toggle('dot-active', i === currentStop.current);
             }
           });
-          currentStop.current = stop;
+          if (!isAnimating.current) currentStop.current = stop;
         },
       });
 
+      // Presentation scrolling: one intentional wheel or swipe equals one stop.
+      // Observer owns the gesture; ScrollTrigger owns the visual timeline.
+      if (!reducedMotion.current) {
+        obsRef.current = Observer.create({
+          target: window,
+          type: 'wheel,touch',
+          preventDefault: true,
+          wheelSpeed: -1,
+          tolerance: 38,
+          onUp: () => snapToStop(Math.min(STOPS, currentStop.current + 1)),
+          onDown: () => snapToStop(Math.max(0, currentStop.current - 1)),
+        });
+      }
+
       // ── OBSERVER — Intercept Wheel/Touch for Strict Presentation Snapping ───
-      obsRef.current = Observer.create({
-        target: window,
-        type: 'wheel,touch',
-        preventDefault: true,
-        wheelSpeed: -1,            // FIX 3: Prevent native scroll wheel from jumping over sections
-        tolerance: 10,
-        onUp: () => gotoNext(),    // FIX 3: swiped up / wheel down -> MORE content
-        onDown: () => gotoPrev(),  // FIX 3: swiped down / wheel up -> PREV content
-      });
 
       // ── KEYBOARD NAVIGATION — WCAG 2.1.1 Keyboard (Level A) ─────────────────
       // Pause observer when a form field has focus so typing doesn't nav sections.
@@ -276,12 +314,12 @@ export default function App() {
           case 'PageDown':
           case ' ':              // Space
             e.preventDefault();
-            gotoNext();
+            snapToStop(Math.min(STOPS, currentStop.current + 1));
             break;
           case 'ArrowUp':
           case 'PageUp':
             e.preventDefault();
-            gotoPrev();
+            snapToStop(Math.max(0, currentStop.current - 1));
             break;
           case 'Home':
             e.preventDefault();
@@ -297,57 +335,47 @@ export default function App() {
       };
       window.addEventListener('keydown', handleKeyDown);
 
-      function gotoNext() {
-        if (isAnimating.current) return;
-        const nextStop = Math.min(STOPS, currentStop.current + 1);
-        if (nextStop !== currentStop.current) {
-          snapToStop(nextStop);
-        }
-      }
-
-      function gotoPrev() {
-        if (isAnimating.current) return;
-        const prevStop = Math.max(0, currentStop.current - 1);
-        if (prevStop !== currentStop.current) {
-          snapToStop(prevStop);
-        }
-      }
-
       function snapToStop(stopIdx) {
+        if (isAnimating.current || stopIdx === currentStop.current) return;
         isAnimating.current = true;
-        const targetScroll = (stopIdx / STOPS) * TOTAL_SCROLL;
+        const fromPanel = activePanelRef.current;
+        const toPanel = stopToPanel(stopIdx, isMobile);
+        activePanelRef.current = toPanel;
+        setActivePanel(toPanel);
+        pinnedRef.current?.setAttribute('data-active-panel', String(toPanel));
+        animatePanelTransition(fromPanel, toPanel, stopIdx > currentStop.current ? 1 : -1);
+        currentStop.current = stopIdx;
+        syncProjectTrack(stopIdx);
+        const targetScroll = scrollTrigger.start + (stopIdx / STOPS) * TOTAL_SCROLL;
         gsap.to(window, {
           scrollTo: targetScroll,
-          duration: 0.6,
-          ease: 'power3.inOut',
+          duration: reducedMotion.current ? 0 : 0.58,
+          ease: 'power3.out',
+          overwrite: 'auto',
           onComplete: () => {
             isAnimating.current = false;
-          }
+          },
+          onInterrupt: () => { isAnimating.current = false; },
         });
       }
+      goToStopRef.current = snapToStop;
 
       // ── ENTRANCE ANIMATION — phone swoops in after loader ─────────────────
       // Skipped entirely under prefers-reduced-motion — phone appears at rest position
-      if (phoneRef.current && !reducedMotion.current) {
-        gsap.set(phoneRef.current.position, { x: 7 });
-        gsap.set(phoneRef.current.scale, { x: 0.5, y: 0.5, z: 0.5 });
-        gsap.timeline({ delay: 0.15 })
-          .to(phoneRef.current.position, { x: PHONE_STATES[0].x, duration: 1.0, ease: 'power3.out' })
-          .to(phoneRef.current.scale, { x: PHONE_STATES[0].scale, y: PHONE_STATES[0].scale, z: PHONE_STATES[0].scale, duration: 0.9, ease: 'back.out(1.2)' }, 0.1);
-      } else if (phoneRef.current) {
-        // Reduced motion: place phone instantly at its rest position
-        gsap.set(phoneRef.current.position, { x: PHONE_STATES[0].x, y: PHONE_STATES[0].y });
-        gsap.set(phoneRef.current.scale, { x: PHONE_STATES[0].scale, y: PHONE_STATES[0].scale, z: PHONE_STATES[0].scale });
-      }
+      ScrollTrigger.refresh();
+      disposeTimeline = () => {
+        obsRef.current?.kill();
+        goToStopRef.current = null;
+        scrollTrigger.kill();
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     }
 
     return () => {
       cancelAnimationFrame(raf);
-      if (obsRef.current) obsRef.current.kill();
-      ScrollTrigger.getAll().forEach(st => st.kill());
-      window.removeEventListener('keydown', handleKeyDown);
+      disposeTimeline?.();
     };
-  }, [loaded, windowWidth]);
+  }, [loaded, windowWidth, STOPS, TOTAL_SCROLL, isMobile]);
 
   return (
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
@@ -357,17 +385,17 @@ export default function App() {
       </AnimatePresence>
 
       {/* Point 4: Canvas is ALWAYS mounted at top level — never unmounts on project open */}
-      <AnimatePresence mode="wait">
-        {activeProject === 'ARCHIVE' ? (
-          <ProjectArchive key="archive" onClose={() => setActiveProject(null)} onOpenProject={setActiveProject} />
-        ) : activeProject ? (
-          <ProjectDetail key="project-modal" project={activeProject} onClose={() => setActiveProject(null)} />
-        ) : null}
-      </AnimatePresence>
+      <Suspense fallback={null}>
+        <AnimatePresence mode="wait">
+          {activeProject === 'ARCHIVE' ? (
+            <ProjectArchive key="archive" onClose={() => setActiveProject(null)} onOpenProject={setActiveProject} />
+          ) : activeProject ? (
+            <ProjectDetail key="project-modal" project={activeProject} onClose={() => setActiveProject(null)} />
+          ) : null}
+        </AnimatePresence>
+      </Suspense>
 
       <div className="fixed inset-0" style={{ zIndex: 0 }}>
-        <Scene phoneRef={phoneRef} onLoaded={() => setSceneReady(true)} />
-
       </div>
 
       {/* ── NAV ─────────────────────────────────────────────────────────────── */}
@@ -467,8 +495,8 @@ export default function App() {
             role="button"
             tabIndex={0}
             aria-label={`Go to section ${i + 1}`}
-            onClick={() => window.scrollTo({ top: (i / STOPS) * TOTAL_SCROLL, behavior: 'smooth' })}
-            onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && window.scrollTo({ top: (i / STOPS) * TOTAL_SCROLL, behavior: 'smooth' })}>
+            onClick={() => goToStopRef.current?.(i)}
+            onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && goToStopRef.current?.(i)}>
             <div style={{
               width: i === 0 ? 7 : [3, 6].includes(i) ? 5 : 6,
               height: i === 0 ? 7 : [3, 6].includes(i) ? 5 : 6,
@@ -491,25 +519,26 @@ export default function App() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: (loaderExiting || loaded) ? 1 : 0, scale: (loaderExiting || loaded) ? 1 : 0.95 }}
         transition={{ duration: 1.2, ease: [0.85, 0, 0.15, 1], delay: 0.1 }}
+        className="motion-stage"
         style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 10 }}>
-        <HeroPanel panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} />
+        <HeroPanel panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} isActive={activePanel === 0} />
         {isMobile ? (
           <>
-            <AboutPanel panelRef={el => panelRefs.current[1] = el} />
-            <SkillsPanel panelRef={el => panelRefs.current[2] = el} />
-            <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} />
-            <ExperiencePanelMobile1 panelRef={el => panelRefs.current[4] = el} />
-            <ExperiencePanelMobile2 panelRef={el => panelRefs.current[5] = el} />
-            <ContactPanelMobile1 panelRef={el => panelRefs.current[6] = el} />
-            <ContactPanelMobile2 panelRef={el => panelRefs.current[7] = el} />
+            <AboutPanel panelRef={el => panelRefs.current[1] = el} isActive={activePanel === 1} />
+            <SkillsPanel panelRef={el => panelRefs.current[2] = el} isActive={activePanel === 2} />
+            <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} isActive={activePanel === 3} />
+            <ExperiencePanelMobile1 panelRef={el => panelRefs.current[4] = el} isActive={activePanel === 4} />
+            <ExperiencePanelMobile2 panelRef={el => panelRefs.current[5] = el} isActive={activePanel === 5} />
+            <ContactPanelMobile1 panelRef={el => panelRefs.current[6] = el} isActive={activePanel === 6} />
+            <ContactPanelMobile2 panelRef={el => panelRefs.current[7] = el} isActive={activePanel === 7} />
           </>
         ) : (
           <>
-            <AboutPanel panelRef={el => panelRefs.current[1] = el} />
-            <SkillsPanel panelRef={el => panelRefs.current[2] = el} />
-            <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} />
-            <ExperiencePanel panelRef={el => panelRefs.current[4] = el} />
-            <ContactPanel panelRef={el => panelRefs.current[5] = el} />
+            <AboutPanel panelRef={el => panelRefs.current[1] = el} isActive={activePanel === 1} />
+            <SkillsPanel panelRef={el => panelRefs.current[2] = el} isActive={activePanel === 2} />
+            <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} isActive={activePanel === 3} />
+            <ExperiencePanel panelRef={el => panelRefs.current[4] = el} isActive={activePanel === 4} />
+            <ContactPanel panelRef={el => panelRefs.current[5] = el} isActive={activePanel === 5} />
           </>
         )}
       </motion.div>

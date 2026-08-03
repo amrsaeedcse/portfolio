@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { PROJECTS_DATA } from './ProjectDetail';
+import { PROJECTS_DATA } from '../../data/projects';
 
 const containerVariants = {
   hidden: { opacity: 0 },

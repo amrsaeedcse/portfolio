@@ -10,18 +10,22 @@ export default defineConfig({
     react()
   ],
   build: {
-    // Split heavy vendor chunks so the browser can cache them separately
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
-          'vendor-gsap': ['gsap', '@gsap/react'],
-          'vendor-framer': ['framer-motion'],
+        // Function form — required by rolldown (object form throws TypeError)
+        manualChunks(id) {
+          if (id.includes('node_modules/three') ||
+              id.includes('@react-three/fiber') ||
+              id.includes('@react-three/drei')) return 'vendor-three';
+          if (id.includes('node_modules/gsap') ||
+              id.includes('@gsap/react'))       return 'vendor-gsap';
+          if (id.includes('node_modules/framer-motion')) return 'vendor-framer';
+          if (id.includes('node_modules/react') ||
+              id.includes('node_modules/react-dom')) return 'vendor-react';
         },
       },
     },
-    // Raise chunk size warning limit for three.js (it's large by nature)
+    // three.js is large by nature; vendor-three chunk will still be under 1MB gzipped
     chunkSizeWarningLimit: 1000,
   },
 })

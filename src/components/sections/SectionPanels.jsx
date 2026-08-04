@@ -17,13 +17,7 @@ export const HeroPanel = memo(function HeroPanel({ panelRef, scrollToSection, is
   return (
     <div ref={panelRef} className="section-panel hero-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 1, pointerEvents: 'auto' }}>
-      <div className="hero-system-visual" aria-hidden="true">
-        <div className="hero-orbit hero-orbit-a" />
-        <div className="hero-orbit hero-orbit-b" />
-        <div className="hero-core"><span>AMR</span><i /></div>
-        <div className="hero-readout"><span>FIELD / 01</span><b>SOFTWARE × SYSTEMS</b></div>
-        <div className="hero-axis hero-axis-x" /><div className="hero-axis hero-axis-y" />
-      </div>
+
       <motion.div id="hero-content" className="w-full max-w-5xl mx-auto hero-glow"
         variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"}>
         {/* Giant name — heading carries its own weight, no eyebrow needed */}
@@ -94,7 +88,7 @@ export const AboutPanel = memo(function AboutPanel({ panelRef, isActive }) {
             const bLeft = ci % 2 === 0 ? '2px solid #00FFD1' : 'none'; const bRight = ci % 2 === 1 ? '2px solid #00FFD1' : 'none';
             return <div key={ci} style={{ position: 'absolute', top: tops[ci], left: lefts[ci], right: rights[ci], bottom: bottoms[ci], width: '20px', height: '20px', borderTop: bTop, borderBottom: bBot, borderLeft: bLeft, borderRight: bRight, zIndex: 2 }} className="md:w-[32px] md:h-[32px]" />;
           })}
-          <div style={{ position: 'relative', borderRadius: '1rem', overflow: 'hidden', aspectRatio: '4/5', border: '1px solid #00FFD122' }}>
+          <div id="photo-frame-border" style={{ position: 'relative', borderRadius: '1rem', overflow: 'hidden', aspectRatio: '4/5', border: '1px solid #00FFD122' }}>
             <img src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
               alt="Amr Abdelazeem" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, oklch(10% 0.01 264) 0%, transparent 55%)' }} />
@@ -403,7 +397,7 @@ export const ExperiencePanel = memo(function ExperiencePanel({ panelRef, isActiv
         </h2>
         {/* Timeline — line at left:8px; dot centred on line via left:-8px + marginLeft:8px on content */}
         <motion.div variants={VARIANTS.container} style={{ position: 'relative', paddingLeft: '2rem' }}>
-          <motion.div variants={VARIANTS.fadeUp} style={{ position: 'absolute', left: '8px', top: '6px', bottom: 0, width: '1px', background: 'oklch(30% 0.025 264)' }} />
+          <motion.div data-exp-timeline variants={VARIANTS.fadeUp} style={{ position: 'absolute', left: '8px', top: '6px', bottom: 0, width: '1px', background: 'oklch(30% 0.025 264)' }} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
             {EXP_ITEMS.map(({ date, title, org, desc, color }, i) => (
               <motion.div variants={VARIANTS.timelineItem} key={i} className="exp-item" style={{ position: 'relative', transformOrigin: 'left center' }}>

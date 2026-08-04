@@ -30,9 +30,8 @@
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    /* 3D cube rotation: perspective gives depth, preserve-3d propagates to children */
+    /* perspective gives depth for 3D cube-rotation transitions */
     perspective: 1100px;
-    transform-style: preserve-3d;
   }
   .motion-stage::before {
     content: '';
@@ -50,7 +49,7 @@
   .motion-stage[data-active-panel="5"]::before,
   .motion-stage[data-active-panel="6"]::before,
   .motion-stage[data-active-panel="7"]::before { animation: signal-sweep 0.62s cubic-bezier(0.16, 1, 0.3, 1); }
-  .section-panel { will-change: opacity, transform; contain: style paint; backface-visibility: hidden; transform-origin: 50% 50%; transform-style: preserve-3d; }
+  .section-panel { will-change: opacity, transform; contain: layout style paint; backface-visibility: hidden; transform-origin: 50% 50%; }
   .font-display { font-family: var(--font-display); }
   .font-body { font-family: var(--font-body); }
 
@@ -58,23 +57,9 @@
   .hero-system-visual,
   .experience-orbit,
   .contact-orbit { pointer-events: none; position: absolute; }
-  .hero-system-visual { width: min(46vw, 620px); aspect-ratio: 1; right: 2vw; top: 50%; transform: translateY(-50%); opacity: .78; }
-  .hero-system-visual::before { content: ''; position: absolute; inset: 18%; border: 1px solid #00FFD128; border-radius: 50%; box-shadow: 0 0 80px #00FFD112; }
-  .hero-orbit { position: absolute; border: 1px solid #00FFD14d; border-radius: 50%; transform: rotate(-28deg); }
-  .hero-orbit::after { content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #00FFD1; box-shadow: 0 0 18px #00FFD1; top: 50%; left: -3px; }
-  .hero-orbit-a { inset: 10%; border-right-color: transparent; }
-  .hero-orbit-b { inset: 28%; transform: rotate(56deg); border-left-color: transparent; opacity: .6; }
-  .hero-core { position: absolute; inset: 40%; display: grid; place-items: center; border: 1px solid #00FFD180; border-radius: 50%; color: #00FFD1; font: 700 .7rem/1 'DM Sans'; letter-spacing: .18em; box-shadow: inset 0 0 24px #00FFD116, 0 0 34px #00FFD11b; }
-  .hero-core i { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #f4f4f5; box-shadow: 0 0 10px #fff; }
-  .hero-readout { position: absolute; right: 4%; bottom: 19%; display: grid; gap: .35rem; color: #00FFD1; font: .58rem/1.2 'DM Sans'; letter-spacing: .16em; }
-  .hero-readout b { color: #f4f4f5aa; font-size: .58rem; font-weight: 500; }
-  .hero-axis { position: absolute; background: #00FFD12e; }
-  .hero-axis-x { width: 100%; height: 1px; top: 50%; }
-  .hero-axis-y { width: 1px; height: 100%; left: 50%; }
-  .motion-stage[data-active-panel="0"] .hero-orbit-a { animation: instrument-orbit 16s linear infinite; }
-  .motion-stage[data-active-panel="0"] .hero-orbit-b { animation: instrument-orbit-reverse 21s linear infinite; }
-  @keyframes instrument-orbit { to { transform: rotate(332deg); } }
-  @keyframes instrument-orbit-reverse { to { transform: rotate(-304deg); } }
+  /* hero-system-visual: positions the particle canvas on the right of the hero */
+  .hero-system-visual { width: min(44vw, 420px); aspect-ratio: 1; right: 2vw; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; opacity: 0.88; }
+  .motion-stage[data-active-panel="0"] .hero-system-visual { opacity: 0.88; }
 
   .hero-panel > #hero-content { position: relative; z-index: 2; }
   .about-panel > *:not(.about-spec-strip), .skills-panel > * { position: relative; z-index: 2; }
@@ -197,8 +182,7 @@
    Covers: CSS animations, CSS transitions, and sets a data attribute
    that the JS GSAP layer reads to skip tweens entirely.                       */
 @media (max-width: 767px) {
-  .hero-system-visual { width: 92vw; right: -34vw; top: 18%; opacity: .28; }
-  .hero-readout { right: 3%; bottom: 18%; transform: scale(.8); transform-origin: right bottom; }
+  .hero-system-visual { width: 260px; height: 260px; right: -60px; top: 20%; opacity: .22; }
   .about-spec-strip { margin-top: 1rem; font-size: .52rem; }
   .experience-panel::before, .contact-panel::before, .experience-orbit, .contact-orbit { display: none; }
   .skills-panel::before { width: 22rem; height: 22rem; right: -12rem; top: 8%; }

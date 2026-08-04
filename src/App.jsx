@@ -191,6 +191,24 @@ export default function App() {
       // ── PROJECT CAROUSEL (xPercent of #project-track) ─────────────────────
       // Projects stays a discrete, deterministic carousel. It is driven only
       // at completed stops so a wheel event cannot strand the track mid-card.
+      const updateScrollDots = (activeIdx) => {
+        dotRefs.current.forEach((d, i) => {
+          if (!d) return;
+          const inner = d.firstElementChild;
+          if (!inner) return;
+          const isActive = i === activeIdx;
+          gsap.to(inner, {
+            height: isActive ? 24 : 6,
+            backgroundColor: isActive ? '#00FFD1' : '#f4f4f5',
+            boxShadow: isActive ? '0 0 12px rgba(0,255,209,0.8)' : '0 0 0px transparent',
+            opacity: isActive ? 1 : 0.25,
+            duration: 0.35,
+            ease: 'back.out(1.7)',
+            overwrite: 'auto',
+          });
+        });
+      };
+
       const syncProjectTrack = (stopIdx, duration = 0.5) => {
         const card = Math.max(0, Math.min(4, stopIdx - 3));
         gsap.to('#project-track', {
@@ -198,6 +216,17 @@ export default function App() {
           duration: reducedMotion.current ? 0 : duration,
           ease: 'power3.out',
           overwrite: 'auto',
+        });
+        // Animate the bottom indicator dots in Projects section!
+        [0, 1, 2, 3, 4].forEach(i => {
+          gsap.to(`.proj-dot-${i}`, {
+            width: i === card ? 28 : 8,
+            backgroundColor: i === card ? '#00FFD1' : 'rgba(255, 255, 255, 0.22)',
+            boxShadow: i === card ? '0 0 10px rgba(0,255,209,0.7)' : 'none',
+            duration: reducedMotion.current ? 0 : 0.35,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          });
         });
       };
       gsap.set('#project-track', { xPercent: 0 });
@@ -299,17 +328,12 @@ export default function App() {
           // Sync pointer-events
           panels.forEach((p, i) => { p.style.pointerEvents = i === activePanelRef.current ? 'auto' : 'none'; });
 
-          // Sync dots — add .dot-active for ember glow, CSS handles the pulse
-          dotRefs.current.forEach((d, i) => {
-            if (!d) return;
-            const inner = d.firstElementChild;
-            d.style.transform = i === currentStop.current ? 'scale(1.8)' : 'scale(1)';
-            d.style.opacity = i === currentStop.current ? '1' : '0.3';
-            if (inner) {
-              inner.classList.toggle('dot-active', i === currentStop.current);
-            }
-          });
-          if (!isAnimating.current) currentStop.current = stop;
+          // Sync project carousel & scroll dots with smooth GSAP animations
+          if (!isAnimating.current) {
+            currentStop.current = stop;
+            syncProjectTrack(stop, 0.2);
+            updateScrollDots(stop);
+          }
         },
       });
 
@@ -375,6 +399,7 @@ export default function App() {
         animatePanelTransition(fromPanel, toPanel, stopIdx > currentStop.current ? 1 : -1);
         currentStop.current = stopIdx;
         syncProjectTrack(stopIdx);
+        updateScrollDots(stopIdx);
         const targetScroll = scrollTrigger.start + (stopIdx / STOPS) * TOTAL_SCROLL;
         gsap.to(window, {
           scrollTo: targetScroll,
@@ -514,11 +539,12 @@ export default function App() {
           color: 'oklch(32% 0.02 264)'
         }}>AMRSAEEDCSE · 2026</div>
 
-      {/* Progress dots — each wrapped in a 44px touch-target: WCAG 2.5.8 */}
-      <div className="fixed right-5 top-1/2 flex flex-col"
+      {/* Progress dots — each wrapped in a touch-target: WCAG 2.5.8 */}
+      <div className="fixed right-5 top-1/2 flex flex-col gap-2"
         style={{ zIndex: 50, transform: 'translateY(-50%)' }}>
         {SNAP_POINTS.map((_, i) => (
-          <div key={i} className="touch-target"
+          <div key={i} className="touch-target flex items-center justify-center cursor-pointer"
+            style={{ width: 28, height: 28 }}
             ref={el => dotRefs.current[i] = el}
             role="button"
             tabIndex={0}
@@ -526,11 +552,13 @@ export default function App() {
             onClick={() => goToStopRef.current?.(i)}
             onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && goToStopRef.current?.(i)}>
             <div style={{
-              width: i === 0 ? 7 : [3, 6].includes(i) ? 5 : 6,
-              height: i === 0 ? 7 : [3, 6].includes(i) ? 5 : 6,
-              borderRadius: '50%', background: '#f4f4f5',
-              opacity: i === 0 ? 1 : 0.25, transform: i === 0 ? 'scale(1.8)' : 'scale(1)',
-              transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+              width: 6,
+              height: i === 0 ? 24 : 6,
+              borderRadius: 999,
+              background: i === 0 ? '#00FFD1' : '#f4f4f5',
+              opacity: i === 0 ? 1 : 0.25,
+              boxShadow: i === 0 ? '0 0 12px rgba(0,255,209,0.8)' : '0 0 0px transparent',
+              transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
             }} />
           </div>
         ))}

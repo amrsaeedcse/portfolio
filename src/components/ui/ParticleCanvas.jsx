@@ -1,9 +1,9 @@
 import { useEffect, useRef, memo } from 'react';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const N           = 380;
-const SCATTER_MS  = 420;  // longer scatter = more dramatic explosion
-const ASSEMBLE_MS = 1500; // slower convergence = more visual drama
+const N           = 480;
+const SCATTER_MS  = 550;  // balanced scatter burst
+const ASSEMBLE_MS = 1050; // smooth, readable convergence
 const MOUSE_R     = 72;
 const MOUSE_STR   = 1100;
 const easeOutExpo = t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
@@ -97,13 +97,16 @@ function buildTargets(section, isMobile) {
       ambient: true,
     }));
 
-  // Always reserve ~60 ambient background particles + fill remaining with ambient
+  // Guarantee ~110 particles stay scattered in the background as floating stars!
   const pad = (pts) => {
-    const AMBIENT_COUNT = 60;
+    const AMBIENT_COUNT = 110;
+    const shapeCount = Math.max(0, N - AMBIENT_COUNT); // 370 full particles dedicated to tracing borders!
+    const shapePts = pts.slice(0, shapeCount);
     const bg = ambient(AMBIENT_COUNT);
-    const combined = [...pts, ...bg];
+    const combined = [...shapePts, ...bg];
     while (combined.length < N) combined.push(ambient(1)[0]);
-    return combined.slice(0, N);
+    // Randomize order so any random third of particles become floating background stars
+    return combined.sort(() => Math.random() - 0.5);
   };
 
   // Projects: invisible
@@ -220,8 +223,8 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
         return {
           cx: sx, cy: sy, prevCx: sx, prevCy: sy,
           sx, sy, qx, qy, tx: tg.x, ty: tg.y,
-          delay: Math.random() * 440,
-          dur:   ASSEMBLE_MS + Math.random() * 200,
+          delay: Math.random() * 280,
+          dur:   ASSEMBLE_MS + Math.random() * 180,
           done: false, rx: 0, ry: 0,
           opacity: 0, tOpacity: (tg.ambient || tg.dim) ? (tg.dim ? 0.32 : 0.15) : 0.9,
           size: 2.0,
@@ -245,32 +248,23 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
 
       stateRef.current.hidden = false;
 
-      // 25% stay behind (don't move, just dim), 75% scatter out
-      particles.forEach((p, i) => {
-        const stays = Math.random() < 0.25;
-        if (stays) {
-          // Stay in place — just dim down
-          p.done         = true;
-          p.tOpacity     = 0.06;
-          p.finalOpacity = 0.06;
-        } else {
-          // Scatter to random viewport position
-          const tx2 = 40 + Math.random() * (vw - 80);
-          const ty2 = 40 + Math.random() * (vh - 80);
-          const { qx, qy } = ctrlPt(p.cx, p.cy, tx2, ty2);
-          p.sx=p.cx; p.sy=p.cy; p.qx=qx; p.qy=qy; p.tx=tx2; p.ty=ty2;
-          p.delay        = Math.random() * 200;
-          p.dur          = 700 + Math.random() * 300;
-          p.done         = false;
-          p.tOpacity     = 0.08;
-          p.finalOpacity = 0.08;
-        }
+      // 100% scatter out on section scroll! No particle stays frozen in its old shape.
+      particles.forEach((p) => {
+        const tx2 = 40 + Math.random() * (vw - 80);
+        const ty2 = 40 + Math.random() * (vh - 80);
+        const { qx, qy } = ctrlPt(p.cx, p.cy, tx2, ty2);
+        p.sx=p.cx; p.sy=p.cy; p.qx=qx; p.qy=qy; p.tx=tx2; p.ty=ty2;
+        p.delay        = Math.random() * 110;
+        p.dur          = 550 + Math.random() * 200;
+        p.done         = false;
+        p.tOpacity     = 0.08;
+        p.finalOpacity = 0.08;
       });
       stateRef.current.morphStart = performance.now();
       stateRef.current.phase      = 'scatter';
 
-      // ── DELAYED: query DOM and assemble ───────────────────────────────────
-      const delay = section === 0 ? 80 : 1200;
+      // ── DELAYED: query DOM and assemble (balanced timing) ─────────────────
+      const delay = section === 0 ? 60 : 650;
       timerRef.current = setTimeout(() => {
         const targets = buildTargets(section, isMobile);
         if (!targets) {
@@ -292,8 +286,8 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
           // Fix 1: store final brightness; keep dim while traveling
           const fo = (tg.ambient || tg.dim) ? (tg.dim ? 0.42 : 0.15) : 0.9;
           p.sx=p.cx; p.sy=p.cy; p.qx=qx; p.qy=qy; p.tx=tg.x; p.ty=tg.y;
-          p.delay        = (1 - dists[i]/maxD) * 280 + Math.random() * 120;
-          p.dur          = ASSEMBLE_MS + Math.random() * 220;
+          p.delay        = (1 - dists[i]/maxD) * 190 + Math.random() * 80;
+          p.dur          = ASSEMBLE_MS + Math.random() * 180;
           p.done         = false;
           p.tOpacity     = 0.08;  // stays dim while traveling
           p.finalOpacity = fo;    // brightens ONLY on arrival
@@ -339,8 +333,8 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
             if (lT >= 1) {
               p.done = true;
             }
-            // Snap brightness instantly when they *visually* settle
-            if (st.phase === 'assemble' && lT > 0.65 && p.finalOpacity !== undefined) {
+            // Snap brightness instantly when they *visually* settle (at 55%)
+            if (st.phase === 'assemble' && lT > 0.55 && p.finalOpacity !== undefined) {
               p.tOpacity = p.finalOpacity;
               p.opacity  = p.finalOpacity;
             }

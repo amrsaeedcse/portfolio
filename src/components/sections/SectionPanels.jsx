@@ -15,25 +15,26 @@ const SOCIAL_LINKS = [
 export const HeroPanel = memo(function HeroPanel({ panelRef, scrollToSection, isActive }) {
   const hasAnimated = useHasAnimated(isActive);
   return (
-    <div ref={panelRef} className="section-panel hero-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
+    <div ref={panelRef} className="section-panel hero-panel absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 1, pointerEvents: 'auto' }}>
 
-      <motion.div id="hero-content" className="w-full max-w-5xl mx-auto hero-glow"
+      <motion.div id="hero-content" className="w-full max-w-2xl hero-glow"
+        style={{ textAlign: 'center' }}
         variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"}>
         {/* Giant name — heading carries its own weight, no eyebrow needed */}
-        <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(4.5rem, 15vw, 11rem)', lineHeight: 0.9, letterSpacing: '0.02em', color: 'oklch(96% 0.005 264)', marginBottom: '0.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
+        <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(5rem, 16vw, 12rem)', lineHeight: 0.88, letterSpacing: '0.02em', color: 'oklch(96% 0.005 264)', marginBottom: '1rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
           <AnimatedText text="HI, I'M" style={{ display: 'block' }} />
           <AnimatedText text="AMR." style={{ color: 'oklch(68% 0.15 200)' }} />
         </h1>
 
         <motion.p variants={VARIANTS.fadeUp}
-          style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)', color: 'oklch(56% 0.025 264)', maxWidth: '42ch', lineHeight: 1.7, marginBottom: '2.5rem' }}>
+          style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.95rem, 1.8vw, 1.05rem)', color: 'oklch(56% 0.025 264)', lineHeight: 1.7, marginBottom: '2.5rem' }}>
           Flutter & Hardware Engineer. I bridge mobile software and embedded systems.
         </motion.p>
 
         {/* CTAs */}
         <motion.div variants={VARIANTS.container}
-          style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
           <motion.button onClick={() => scrollToSection(3)}
             variants={VARIANTS.scaleUp} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
@@ -49,7 +50,7 @@ export const HeroPanel = memo(function HeroPanel({ panelRef, scrollToSection, is
 
         {/* Social links — DM Sans, not monospace costume */}
         <motion.div variants={VARIANTS.container}
-          style={{ marginTop: '2.5rem', display: 'flex', gap: '1.5rem' }}>
+          style={{ marginTop: '2.5rem', display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
           {SOCIAL_LINKS.map(({ label, abbr, href }) => (
             <motion.a key={abbr} href={href} target="_blank" rel="noreferrer"
               variants={VARIANTS.fadeUp}
@@ -71,15 +72,14 @@ export const AboutPanel = memo(function AboutPanel({ panelRef, isActive }) {
   const hasAnimated = useHasAnimated(isActive);
   return (
     <section ref={panelRef} aria-labelledby="about-heading"
-      className="section-panel about-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
+      className="section-panel about-panel absolute inset-0 flex items-center justify-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      {/* Photo column min-width prevents collapse; 1fr text column fills remaining space */}
       <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"}
-        className="w-full max-w-[900px] flex flex-col md:grid gap-6 md:gap-16 items-center"
-        style={{ gridTemplateColumns: '280px 1fr' }}>
+        className="w-full max-w-[900px] mx-auto flex flex-col md:grid gap-8 md:gap-16 items-center"
+        style={{ gridTemplateColumns: '300px 1fr' }}>
 
         {/* Photo — Y-axis card flip: premium reveal */}
-        <motion.div variants={VARIANTS.photoFlip} id="about-photo" className="relative p-2 md:p-4 w-36 md:w-full mx-auto md:mx-0" style={{ perspective: '800px', transformStyle: 'preserve-3d' }}>
+        <motion.div variants={VARIANTS.photoFlip} id="about-photo" className="relative p-3 md:p-4 w-56 md:w-full mx-auto md:mx-0" style={{ perspective: '800px', transformStyle: 'preserve-3d' }}>
           {/* Viewfinder corner brackets */}
           {[0, 1, 2, 3].map((ci) => {
             const tops = [0, 0, 'auto', 'auto']; const lefts = [0, 'auto', 0, 'auto'];
@@ -128,88 +128,56 @@ export const AboutPanel = memo(function AboutPanel({ panelRef, isActive }) {
 // Two semantic tones only: cyan (digital) and amber (hardware) — from brand palette
 // domain: 'digital' = cyan, 'systems' = amber — used as non-colour secondary cue (WCAG 1.4.1)
 const SKILL_GROUPS = [
-  { cat: 'Mobile',   color: '#00FFD1',           domain: 'DIGITAL',  items: ['Flutter', 'Dart', 'Bloc/Cubit', 'Clean Arch', 'Firebase'] },
-  { cat: 'Web',      color: '#00FFD1',           domain: 'DIGITAL',  items: ['React', 'JavaScript', 'Tailwind', 'REST APIs', 'Vite'] },
-  { cat: 'Embedded', color: 'oklch(75% 0.18 60)', domain: 'SYSTEMS', items: ['C / C++', 'ESP32', 'Arduino', 'VHDL', 'Sensors'] },
-  { cat: 'DevOps',   color: 'oklch(75% 0.18 60)', domain: 'SYSTEMS', items: ['Git & GitHub', 'Vercel', 'Postman', 'Figma', 'Linux'] },
+  { cat: 'Mobile',   items: ['Flutter', 'Dart', 'Bloc/Cubit', 'Clean Arch', 'Firebase'] },
+  { cat: 'Web',      items: ['React', 'JavaScript', 'Tailwind', 'REST APIs', 'Vite'] },
+  { cat: 'Embedded', items: ['C / C++', 'ESP32', 'Arduino', 'VHDL', 'Sensors'] },
+  { cat: 'DevOps',   items: ['Git & GitHub', 'Vercel', 'Postman', 'Figma', 'Linux'] },
 ];
 
 export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive }) {
   const hasAnimated = useHasAnimated(isActive);
   return (
     <section ref={panelRef} aria-labelledby="skills-heading"
-      className="section-panel skills-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
+      className="section-panel skills-panel absolute inset-0 flex items-center justify-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} className="w-full max-w-[900px]">
+      <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} className="w-full max-w-[900px] mx-auto">
         <h2 id="skills-heading"
           className="text-[clamp(2.5rem,12vw,5.5rem)] leading-[0.95] text-[oklch(96%_0.005_264)] mb-6 md:mb-10"
           style={{ fontFamily: "'Bebas Neue'", textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
           <AnimatedText text="FULL-STACK THINKING." />
         </h2>
-        {/* cardFlipContainer staggers each card 0.12s apart — domino cascade */}
-        <motion.div variants={VARIANTS.cardFlipContainer} className="grid gap-3 md:gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', perspective: '900px', transformStyle: 'preserve-3d' }}>
-          {SKILL_GROUPS.map(({ cat, color, domain, items }, idx) => {
+        <motion.div variants={VARIANTS.cardFlipContainer} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" style={{ perspective: '900px', transformStyle: 'preserve-3d' }}>
+          {SKILL_GROUPS.map(({ cat, items }) => {
             const headingId = `skill-cat-${cat.toLowerCase()}`;
-            // Insert a structural separator between DIGITAL (0,1) and SYSTEMS (2,3) groups
-            // The separator spans the full grid width to act as a visual section break
-            const isFirstSystems = idx === 2;
-            const isFirstDigital  = idx === 0;
-            const separatorStyle  = { gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.25rem 0' };
-            const lineStyle       = { flex: 1, height: '1px', background: 'oklch(22% 0.025 264)' };
-            const labelStyle      = { fontFamily: 'DM Sans', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'oklch(38% 0.025 264)' };
             return (
               <React.Fragment key={cat}>
-                {isFirstDigital && (
-                  <motion.div variants={VARIANTS.fadeUp} style={separatorStyle}>
-                    <div style={lineStyle} />
-                    <span style={labelStyle}>Digital</span>
-                    <div style={lineStyle} />
-                  </motion.div>
-                )}
-                {isFirstSystems && (
-                  <motion.div variants={VARIANTS.fadeUp} style={separatorStyle}>
-                    <div style={lineStyle} />
-                    <span style={labelStyle}>Systems</span>
-                    <div style={lineStyle} />
-                  </motion.div>
-                )}
                 <motion.div variants={VARIANTS.cardFlip}
                   role="group"
                   aria-labelledby={headingId}
-                  className="skill-card p-3 md:p-6 rounded-xl md:rounded-2xl relative overflow-hidden"
+                  className="skill-card p-5 md:p-7 rounded-2xl relative overflow-hidden flex flex-col justify-center"
                   style={{
-                    border: `1px solid ${color}55`,
-                    background: `${color}14`,
-                    boxShadow: `0 0 24px ${color}18, inset 0 0 24px ${color}0a`,
+                    border: '1px solid rgba(0,255,209,0.12)',
+                    background: 'linear-gradient(135deg, rgba(8,8,14,0.85) 0%, rgba(12,12,20,0.95) 100%)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
                   }}>
-                  {/* Colored glow left border */}
-                  <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: `linear-gradient(to bottom, ${color}, ${color}44)`, boxShadow: `2px 0 12px ${color}88` }} />
-                  {/* Domain badge — non-colour secondary cue (WCAG 1.4.1) */}
-                  <div style={{
-                    position: 'absolute', top: '0.6rem', right: '0.6rem',
-                    fontFamily: 'DM Sans', fontSize: '0.55rem', letterSpacing: '0.12em',
-                    color: `${color}99`, border: `1px solid ${color}33`,
-                    padding: '0.15rem 0.4rem', borderRadius: '9999px',
-                  }}>{domain}</div>
-                  {/* Category heading — pl-3/pl-4 gives deliberate breathing room from left border */}
+                  {/* Subtle top glow */}
+                  <div style={{ position: 'absolute', top: 0, left: '10%', width: '80%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(0,255,209,0.5), transparent)' }} />
+                  {/* Category heading */}
                   <h3 id={headingId}
-                    className="text-[1rem] md:text-[1.2rem] mb-2 md:mb-3 pl-3 md:pl-4 tracking-[0.08em]"
-                    style={{ fontFamily: "'Bebas Neue'", color, fontWeight: 'normal' }}>{cat}</h3>
-                  {/* Pills — fluid font floor prevents sub-11px rendering at narrow widths */}
-                  {/* Pills: clipPath wipe-in from left — sequential typewriter reveal */}
-                  <motion.div variants={VARIANTS.fastContainer} className="flex flex-wrap gap-1.5 pl-3 md:pl-4">
+                    className="text-[1.2rem] md:text-[1.5rem] mb-4 tracking-[0.08em] text-center"
+                    style={{ fontFamily: "'Bebas Neue'", color: '#00FFD1', fontWeight: 'normal' }}>{cat}</h3>
+                  {/* Pills */}
+                  <motion.div variants={VARIANTS.fastContainer} className="flex flex-wrap justify-center gap-2">
                     {items.map((item) => (
                       <motion.span variants={VARIANTS.pillWipe} key={item}
                         style={{
                           fontFamily: 'DM Sans',
-                          fontSize: 'clamp(0.68rem, 1.8vw, 0.75rem)',
-                          color: 'oklch(88% 0.005 264)',
-                          background: `${color}18`,
-                          border: `1px solid ${color}44`,
-                          padding: '0.2rem 0.55rem',
+                          fontSize: 'clamp(0.7rem, 2vw, 0.8rem)',
+                          color: 'rgba(255,255,255,0.85)',
+                          background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          padding: '0.25rem 0.75rem',
                           borderRadius: '9999px',
-                          lineHeight: 1.4,
-                          display: 'inline-block',
                         }}>
                         {item}
                       </motion.span>
@@ -233,7 +201,7 @@ export const ProjectsPanel = memo(function ProjectsPanel({ panelRef, onProjectCl
   const [hovered, setHovered] = useState(null);
 
   return (
-    <div ref={panelRef} className="section-panel absolute inset-0 backdrop-blur-md md:backdrop-blur-none bg-[#0a0a0f]/40 md:bg-transparent"
+    <div ref={panelRef} className="section-panel absolute inset-0 bg-[#0a0a0f]/60 md:bg-transparent"
       style={{ opacity: 0, pointerEvents: 'none', overflow: 'hidden' }}>
 
       <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} style={{ width: '100%', height: '100%' }}>
@@ -387,10 +355,10 @@ export const ExperiencePanel = memo(function ExperiencePanel({ panelRef, isActiv
   const hasAnimated = useHasAnimated(isActive);
   return (
     <section ref={panelRef} aria-labelledby="experience-heading"
-      className="section-panel experience-panel absolute inset-0 flex items-center px-10 md:px-20"
+      className="section-panel experience-panel absolute inset-0 flex items-center justify-center px-10 md:px-20"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
       <div className="experience-orbit" aria-hidden="true"><span>03</span></div>
-      <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} style={{ width: '100%', maxWidth: '720px' }}>
+      <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} style={{ width: '100%', maxWidth: '720px', marginLeft: 'auto', marginRight: 'auto' }}>
         <h2 id="experience-heading" style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2.5rem' }}>
           <AnimatedText text="GROWING" style={{ display: 'block' }} />
           <AnimatedText text="EVERY DAY." />
@@ -511,10 +479,10 @@ export function ContactPanel({ panelRef, isActive }) {
 
   return (
     <section ref={panelRef} aria-labelledby="contact-heading"
-      className="section-panel contact-panel absolute inset-0 flex items-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
+      className="section-panel contact-panel absolute inset-0 flex items-center justify-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
       <div className="contact-orbit" aria-hidden="true"><span>OPEN</span></div>
-      <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} className="w-full max-w-[820px] flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+      <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} className="w-full max-w-[820px] mx-auto flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-16 items-center">
         {/* Left */}
         <motion.div variants={VARIANTS.container}>
           <h2 id="contact-heading" style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 6vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem' }}>

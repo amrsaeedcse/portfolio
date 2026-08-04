@@ -431,8 +431,7 @@ export default function App() {
       <nav className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6 md:px-16 py-5"
         style={{
           zIndex: 50,
-          background: 'linear-gradient(to bottom, oklch(10% 0.01 264 / 0.85) 0%, transparent 100%)',
-          backdropFilter: 'blur(2px)',
+          background: 'linear-gradient(to bottom, rgba(8, 8, 14, 0.95) 0%, transparent 100%)',
         }}>
         <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.5rem', letterSpacing: '0.06em', cursor: 'pointer' }}
           onClick={() => scrollToSection(0)}>
@@ -477,7 +476,7 @@ export default function App() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 flex flex-col items-center justify-center backdrop-blur-2xl bg-[#0a0a0f]/90"
+            className="fixed inset-0 flex flex-col items-center justify-center bg-[#0a0a0f]/98"
             style={{ zIndex: 60 }}
           >
             <button className="absolute top-6 right-6 p-2" onClick={() => setMobileMenuOpen(false)}

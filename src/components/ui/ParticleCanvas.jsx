@@ -1,9 +1,11 @@
 import { useEffect, useRef, memo } from 'react';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const N           = 480;
-const SCATTER_MS  = 550;  // balanced scatter burst
-const ASSEMBLE_MS = 1050; // smooth, readable convergence
+const N           = 400;
+const SHAPE_N     = 320;  // exact count of points for unbroken closed perimeters
+const AMBIENT_N   = 80;   // exact count of floating ambient stars
+const SCATTER_MS  = 780;  // gentle, readable scatter burst
+const ASSEMBLE_MS = 1650; // smooth, unobtrusive convergence
 const MOUSE_R     = 72;
 const MOUSE_STR   = 1100;
 const easeOutExpo = t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
@@ -97,16 +99,13 @@ function buildTargets(section, isMobile) {
       ambient: true,
     }));
 
-  // Guarantee ~110 particles stay scattered in the background as floating stars!
+  // Guarantee exactly AMBIENT_N stars floating while preserving 100% of shape points!
   const pad = (pts) => {
-    const AMBIENT_COUNT = 110;
-    const shapeCount = Math.max(0, N - AMBIENT_COUNT); // 370 full particles dedicated to tracing borders!
-    const shapePts = pts.slice(0, shapeCount);
-    const bg = ambient(AMBIENT_COUNT);
-    const combined = [...shapePts, ...bg];
+    const bg = ambient(AMBIENT_N);
+    const combined = [...pts, ...bg];
     while (combined.length < N) combined.push(ambient(1)[0]);
-    // Randomize order so any random third of particles become floating background stars
-    return combined.sort(() => Math.random() - 0.5);
+    // Randomize which particles stay behind vs move into shape without leaving any gaps
+    return combined.slice(0, N).sort(() => Math.random() - 0.5);
   };
 
   // Projects: invisible
@@ -114,23 +113,23 @@ function buildTargets(section, isMobile) {
 
   // ── HERO: "SCROLL" hint near bottom of viewport ─────────────────────────────
   if (section === 0) {
-    const pts = sampleWord('SCROLL', N, cx, vh * 0.94, 0.55);
+    const pts = sampleWord('SCROLL', SHAPE_N, cx, vh * 0.94, 0.55);
     return pad(pts.map(p => ({ ...p, dim: true })));
   }
 
   // ── ABOUT: trace photo frame perimeter ────────────────────────────────────
   if (section === 1) {
     const photo = document.querySelector('#photo-frame-border');
-    if (photo) return pad(rectPts(photo.getBoundingClientRect(), N));
-    return pad(ambient(N));
+    if (photo) return pad(rectPts(photo.getBoundingClientRect(), SHAPE_N));
+    return pad(ambient(SHAPE_N));
   }
 
   // ── SKILLS: trace each skill card's border ────────────────────────────────
   if (section === 2) {
     // One big rect around the whole grid — clean single perimeter
     const grid = document.querySelector('.skills-panel [style*="grid-template"], .skills-panel .grid');
-    if (grid) return pad(rectPts(grid.getBoundingClientRect(), N, 14));
-    return pad(ambient(N));
+    if (grid) return pad(rectPts(grid.getBoundingClientRect(), SHAPE_N, 14));
+    return pad(ambient(SHAPE_N));
   }
 
   // ── EXPERIENCE: flow along timeline vertical line ─────────────────────────
@@ -139,17 +138,17 @@ function buildTargets(section, isMobile) {
     const timelineLine = document.querySelector('[data-exp-timeline]');
     if (timelineLine) {
       const r = timelineLine.getBoundingClientRect();
-      return pad(linePts(r.left + r.width/2, r.top, r.left + r.width/2, r.bottom, N));
+      return pad(linePts(r.left + r.width/2, r.top, r.left + r.width/2, r.bottom, SHAPE_N));
     }
-    return pad(linePts(cx, vh * 0.18, cx, vh * 0.82, N));
+    return pad(linePts(cx, vh * 0.18, cx, vh * 0.82, SHAPE_N));
   }
 
   // ── CONTACT: trace form inputs + button borders ────────────────────────────
   const fields = [...document.querySelectorAll(
     '.contact-panel input, .contact-panel textarea, .contact-panel button[type="submit"]'
   )];
-  if (fields.length) return pad(multiRectPts(fields.map(f => f.getBoundingClientRect()), N));
-  return pad(ambient(N));
+  if (fields.length) return pad(multiRectPts(fields.map(f => f.getBoundingClientRect()), SHAPE_N));
+  return pad(ambient(SHAPE_N));
 }
 
 // Bezier control point — bigger arc (40-70% of path length) for visible curve
@@ -223,11 +222,11 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
         return {
           cx: sx, cy: sy, prevCx: sx, prevCy: sy,
           sx, sy, qx, qy, tx: tg.x, ty: tg.y,
-          delay: Math.random() * 280,
-          dur:   ASSEMBLE_MS + Math.random() * 180,
+          delay: Math.random() * 320,
+          dur:   ASSEMBLE_MS + Math.random() * 260,
           done: false, rx: 0, ry: 0,
-          opacity: 0, tOpacity: (tg.ambient || tg.dim) ? (tg.dim ? 0.32 : 0.15) : 0.9,
-          size: 2.0,
+          opacity: 0.18, tOpacity: (tg.ambient || tg.dim) ? (tg.dim ? 0.35 : 0.18) : 0.70,
+          size: 1.2 + Math.random() * 0.8, // thin, elegant, unobtrusive embers (1.2 to 2.0px)
         };
       });
       stateRef.current = { section, particles, morphStart: performance.now(), phase: 'assemble', hidden: false };
@@ -254,17 +253,17 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
         const ty2 = 40 + Math.random() * (vh - 80);
         const { qx, qy } = ctrlPt(p.cx, p.cy, tx2, ty2);
         p.sx=p.cx; p.sy=p.cy; p.qx=qx; p.qy=qy; p.tx=tx2; p.ty=ty2;
-        p.delay        = Math.random() * 110;
-        p.dur          = 550 + Math.random() * 200;
+        p.delay        = Math.random() * 160;
+        p.dur          = 650 + Math.random() * 250;
         p.done         = false;
-        p.tOpacity     = 0.08;
-        p.finalOpacity = 0.08;
+        p.tOpacity     = 0.18; // Subtle, non-intrusive visibility while moving
+        p.finalOpacity = 0.18;
       });
       stateRef.current.morphStart = performance.now();
       stateRef.current.phase      = 'scatter';
 
-      // ── DELAYED: query DOM and assemble (balanced timing) ─────────────────
-      const delay = section === 0 ? 60 : 650;
+      // ── DELAYED: query DOM and assemble (graceful timing) ─────────────────
+      const delay = section === 0 ? 100 : 850;
       timerRef.current = setTimeout(() => {
         const targets = buildTargets(section, isMobile);
         if (!targets) {
@@ -283,14 +282,13 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
         st.particles.forEach((p, i) => {
           const tg = targets[i] || targets[targets.length-1];
           const { qx, qy } = ctrlPt(p.cx, p.cy, tg.x, tg.y);
-          // Fix 1: store final brightness; keep dim while traveling
-          const fo = (tg.ambient || tg.dim) ? (tg.dim ? 0.42 : 0.15) : 0.9;
+          const fo = (tg.ambient || tg.dim) ? (tg.dim ? 0.35 : 0.18) : 0.70;
           p.sx=p.cx; p.sy=p.cy; p.qx=qx; p.qy=qy; p.tx=tg.x; p.ty=tg.y;
-          p.delay        = (1 - dists[i]/maxD) * 190 + Math.random() * 80;
-          p.dur          = ASSEMBLE_MS + Math.random() * 180;
+          p.delay        = (1 - dists[i]/maxD) * 260 + Math.random() * 120;
+          p.dur          = ASSEMBLE_MS + Math.random() * 200;
           p.done         = false;
-          p.tOpacity     = 0.08;  // stays dim while traveling
-          p.finalOpacity = fo;    // brightens ONLY on arrival
+          p.tOpacity     = 0.18;  // soft visibility while gliding
+          p.finalOpacity = fo;    // intensifies slightly upon arrival
         });
         st.morphStart = performance.now();
         st.phase      = 'assemble';
@@ -333,8 +331,8 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
             if (lT >= 1) {
               p.done = true;
             }
-            // Snap brightness instantly when they *visually* settle (at 55%)
-            if (st.phase === 'assemble' && lT > 0.55 && p.finalOpacity !== undefined) {
+            // Snap brightness to full intensity upon arriving near goal (60%)
+            if (st.phase === 'assemble' && lT > 0.60 && p.finalOpacity !== undefined) {
               p.tOpacity = p.finalOpacity;
               p.opacity  = p.finalOpacity;
             }
@@ -444,7 +442,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
         position:      'fixed',
         top:           0, left: 0,
         pointerEvents: 'none',
-        zIndex:        200,
+        zIndex:        5, // Always underneath the content elements and cards (zIndex 10+)
         willChange:    'transform, opacity',
         transform:     'translateZ(0)',
       }}

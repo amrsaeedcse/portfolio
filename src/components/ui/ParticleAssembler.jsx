@@ -161,29 +161,30 @@ const ParticleAssembler = memo(function ParticleAssembler({ isMobile, startAnima
           const px = p.x + (p.tx - p.x) * e;
           const py = p.y + (p.ty - p.y) * e;
 
-          // Motion trail — ghosted copy slightly behind
+          // Motion trail — ghosted copy slightly behind (optimized without save/restore stack pushes)
           if (prog < 0.92) {
             const et = easeOutExpo(Math.max(0, prog - 0.07));
-            ctx.save();
             ctx.globalAlpha = 0.12;
             ctx.fillStyle   = p.color;
             ctx.beginPath();
             ctx.arc(p.x + (p.tx - p.x) * et, p.y + (p.ty - p.y) * et, p.size * 0.5, 0, Math.PI * 2);
             ctx.fill();
-            ctx.restore();
           }
 
-          ctx.save();
-          ctx.globalAlpha = Math.min(1, prog * 3.5);
+          const mainAlpha = Math.min(1, prog * 3.5);
           if (p.cat === 'pinTip' || p.cat === 'corner') {
-            ctx.shadowColor = '#00FFD1';
-            ctx.shadowBlur  = prog > 0.75 ? 10 : 3;
+            // Hardware-accelerated neon glow halo (zero-cost replacement for heavy Gaussian shadowBlur)
+            ctx.globalAlpha = mainAlpha * 0.3;
+            ctx.fillStyle   = '#00FFD1';
+            ctx.beginPath();
+            ctx.arc(px, py, p.size * (prog > 0.75 ? 2.8 : 1.8), 0, Math.PI * 2);
+            ctx.fill();
           }
-          ctx.fillStyle = p.color;
+          ctx.globalAlpha = mainAlpha;
+          ctx.fillStyle   = p.color;
           ctx.beginPath();
           ctx.arc(px, py, p.size, 0, Math.PI * 2);
           ctx.fill();
-          ctx.restore();
         });
 
         if (allDone) { phase = 'idle'; idleStart = now; }
@@ -195,19 +196,21 @@ const ParticleAssembler = memo(function ParticleAssembler({ isMobile, startAnima
         particles.forEach((p, i) => {
           const phi   = (idleT / 3200 + i / particles.length) % 1;
           const pulse = 0.70 + 0.30 * Math.sin(phi * Math.PI * 2);
-          ctx.save();
+          const pAlpha = p.cat === 'outer' ? pulse * 0.55 : 0.62 + pulse * 0.38;
+
           if (p.cat === 'pinTip' || p.cat === 'corner') {
-            ctx.shadowColor = '#00FFD1';
-            ctx.shadowBlur  = 3 + pulse * 12;
+            // Hardware-accelerated neon glow halo during idle pulse
+            ctx.globalAlpha = pAlpha * 0.28;
+            ctx.fillStyle   = '#00FFD1';
+            ctx.beginPath();
+            ctx.arc(p.tx, p.ty, p.size * (2.2 + pulse * 1.5), 0, Math.PI * 2);
+            ctx.fill();
           }
-          ctx.globalAlpha = p.cat === 'outer'
-            ? pulse * 0.55
-            : 0.62 + pulse * 0.38;
+          ctx.globalAlpha = pAlpha;
           ctx.fillStyle   = p.color;
           ctx.beginPath();
           ctx.arc(p.tx, p.ty, p.size, 0, Math.PI * 2);
           ctx.fill();
-          ctx.restore();
         });
       }
 

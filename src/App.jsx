@@ -12,7 +12,7 @@ import {
   HeroPanel, AboutPanel, SkillsPanel,
   ProjectsPanel, ExperiencePanel, ContactPanel,
   ContactPanelMobile1, ContactPanelMobile2,
-  ExperiencePanelMobile1, ExperiencePanelMobile2
+  ExperiencePanelMobile
 } from './components/sections/SectionPanels';
 import ParticleCanvas from './components/ui/ParticleCanvas';
 
@@ -30,10 +30,9 @@ function stopToPanel(stop, isMobile) {
   } else {
     if (stop <= 2) return stop; // 0 Hero, 1 About, 2 Skills
     if (stop <= 7) return 3; // projects 3,4,5,6,7
-    if (stop === 8) return 4; // Exp1
-    if (stop === 9) return 5; // Exp2
-    if (stop === 10) return 6; // Contact1
-    return 7; // Contact2
+    if (stop === 8) return 4; // Exp (single mobile screen)
+    if (stop === 9) return 5; // Contact1
+    return 6; // Contact2 (stop 10)
   }
 }
 
@@ -100,13 +99,13 @@ export default function App() {
   }, [activeProject]);
 
   const isMobile = windowWidth < 768;
-  const STOPS = isMobile ? 11 : 9;
-  const TOTAL_SCROLL = isMobile ? 2800 : 2400;
+  const STOPS = isMobile ? 10 : 9;
+  const TOTAL_SCROLL = isMobile ? 2600 : 2400;
   const SNAP_POINTS = Array.from({ length: STOPS + 1 }, (_, i) => i / STOPS);
 
   // Nav helper — maps logical section (0-5) to scroll stop
   const scrollToSection = useCallback((sectionIdx) => {
-    const sectionToStop = isMobile ? [0, 1, 2, 3, 8, 10] : [0, 1, 2, 3, 8, 9];
+    const sectionToStop = isMobile ? [0, 1, 2, 3, 8, 9] : [0, 1, 2, 3, 8, 9];
     const stop = sectionToStop[sectionIdx] ?? sectionIdx;
     if (goToStopRef.current) goToStopRef.current(stop);
     else window.scrollTo({ top: (stop / STOPS) * TOTAL_SCROLL, behavior: 'smooth' });
@@ -135,10 +134,9 @@ export default function App() {
         ['s1', 0, 1], // Hero -> About (at stop 1)
         ['s2', 1, 2], // About -> Skills (at stop 2)
         ['s3', 2, 3], // Skills -> Proj (at stop 3)
-        ['s8', 3, 4], // Proj -> Exp1 (at stop 8)
-        ['s9', 4, 5], // Exp1 -> Exp2 (at stop 9)
-        ['s10', 5, 6], // Exp2 -> Contact1 (at stop 10)
-        ['s11', 6, 7], // Contact1 -> Contact2 (at stop 11)
+        ['s8', 3, 4], // Proj -> Exp (at stop 8)
+        ['s9', 4, 5], // Exp -> Contact1 (at stop 9)
+        ['s10', 5, 6], // Contact1 -> Contact2 (at stop 10)
       ] : [
         ['s1', 0, 1],   // Hero → About (starts at s1)
         ['s2', 1, 2],   // About → Skills (starts at s2)
@@ -198,7 +196,8 @@ export default function App() {
           if (!inner) return;
           const isActive = i === activeIdx;
           gsap.to(inner, {
-            height: isActive ? 24 : 6,
+            height: isActive ? (isMobile ? 14 : 24) : (isMobile ? 4 : 6),
+            width: isMobile ? 3 : 6,
             backgroundColor: isActive ? '#00FFD1' : '#f4f4f5',
             boxShadow: isActive ? '0 0 12px rgba(0,255,209,0.8)' : '0 0 0px transparent',
             opacity: isActive ? 1 : 0.25,
@@ -314,15 +313,9 @@ export default function App() {
           
           // Compute logical section for the Phone Mockup screens (0 to 5)
           let logicalSection;
-          if (isMobile) {
-            if (stop <= 7) logicalSection = Math.min(3, stop);
-            else if (stop <= 9) logicalSection = 4;
-            else logicalSection = 5;
-          } else {
-            if (stop <= 7) logicalSection = Math.min(3, stop);
-            else if (stop === 8) logicalSection = 4;
-            else logicalSection = 5;
-          }
+          if (stop <= 7) logicalSection = Math.min(3, stop);
+          else if (stop === 8) logicalSection = 4;
+          else logicalSection = 5;
           scrollState.logicalSection = logicalSection;
 
           // Sync pointer-events
@@ -539,12 +532,12 @@ export default function App() {
           color: 'oklch(32% 0.02 264)'
         }}>AMRSAEEDCSE · 2026</div>
 
-      {/* Progress dots — each wrapped in a touch-target: WCAG 2.5.8 */}
-      <div className="fixed right-5 top-1/2 flex flex-col gap-2"
+      {/* Progress dots — sleek compact indicator on mobile, standard on desktop */}
+      <div className={`fixed ${isMobile ? 'right-2 gap-[4px]' : 'right-5 gap-2'} top-1/2 flex flex-col`}
         style={{ zIndex: 50, transform: 'translateY(-50%)' }}>
         {SNAP_POINTS.map((_, i) => (
           <div key={i} className="touch-target flex items-center justify-center cursor-pointer"
-            style={{ width: 28, height: 28 }}
+            style={{ width: isMobile ? 18 : 28, height: isMobile ? 14 : 28 }}
             ref={el => dotRefs.current[i] = el}
             role="button"
             tabIndex={0}
@@ -552,8 +545,8 @@ export default function App() {
             onClick={() => goToStopRef.current?.(i)}
             onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && goToStopRef.current?.(i)}>
             <div style={{
-              width: 6,
-              height: i === 0 ? 24 : 6,
+              width: isMobile ? 3 : 6,
+              height: i === 0 ? (isMobile ? 14 : 24) : (isMobile ? 4 : 6),
               borderRadius: 999,
               background: i === 0 ? '#00FFD1' : '#f4f4f5',
               opacity: i === 0 ? 1 : 0.25,
@@ -583,13 +576,12 @@ export default function App() {
         <HeroPanel panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} isActive={activePanel === 0} isMobile={isMobile} />
         {isMobile ? (
           <>
-            <AboutPanel panelRef={el => panelRefs.current[1] = el} isActive={activePanel === 1} />
-            <SkillsPanel panelRef={el => panelRefs.current[2] = el} isActive={activePanel === 2} />
+            <AboutPanel panelRef={el => panelRefs.current[1] = el} isActive={activePanel === 1} isMobile={true} />
+            <SkillsPanel panelRef={el => panelRefs.current[2] = el} isActive={activePanel === 2} isMobile={true} />
             <ProjectsPanel panelRef={el => panelRefs.current[3] = el} onProjectClick={setActiveProject} isActive={activePanel === 3} />
-            <ExperiencePanelMobile1 panelRef={el => panelRefs.current[4] = el} isActive={activePanel === 4} />
-            <ExperiencePanelMobile2 panelRef={el => panelRefs.current[5] = el} isActive={activePanel === 5} />
-            <ContactPanelMobile1 panelRef={el => panelRefs.current[6] = el} isActive={activePanel === 6} />
-            <ContactPanelMobile2 panelRef={el => panelRefs.current[7] = el} isActive={activePanel === 7} />
+            <ExperiencePanelMobile panelRef={el => panelRefs.current[4] = el} isActive={activePanel === 4} />
+            <ContactPanelMobile1 panelRef={el => panelRefs.current[5] = el} isActive={activePanel === 5} />
+            <ContactPanelMobile2 panelRef={el => panelRefs.current[6] = el} isActive={activePanel === 6} />
           </>
         ) : (
           <>

@@ -67,19 +67,19 @@ export const HeroPanel = memo(function HeroPanel({ panelRef, scrollToSection, is
 });
 
 // ── ABOUT PANEL ───────────────────────────────────────────────────────────────
-export const AboutPanel = memo(function AboutPanel({ panelRef, isActive }) {
+export const AboutPanel = memo(function AboutPanel({ panelRef, isActive, isMobile }) {
   const stats = [['3+', 'Years Coding', 3], ['10+', 'Projects', 10], ['2', 'Trainings', 2], ['1', 'University', 1]];
   const hasAnimated = useHasAnimated(isActive);
   return (
     <section ref={panelRef} aria-labelledby="about-heading"
-      className="section-panel about-panel absolute inset-0 flex items-center justify-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
+      className={`section-panel about-panel absolute inset-0 flex items-center justify-center px-6 md:px-20 ${isMobile ? 'pt-32 pb-16' : 'pt-24 pb-8'} md:pt-0 md:pb-0`}
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
       <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"}
-        className="w-full max-w-[900px] mx-auto flex flex-col md:grid gap-8 md:gap-16 items-center"
+        className="w-full max-w-[900px] mx-auto flex flex-col md:grid gap-4 md:gap-16 items-center"
         style={{ gridTemplateColumns: '300px 1fr' }}>
 
         {/* Photo — Y-axis card flip: premium reveal */}
-        <motion.div variants={VARIANTS.photoFlip} id="about-photo" className="relative p-3 md:p-4 w-56 md:w-full mx-auto md:mx-0" style={{ perspective: '800px', transformStyle: 'preserve-3d' }}>
+        <motion.div variants={VARIANTS.photoFlip} id="about-photo" className={`relative p-2 md:p-4 ${isMobile ? 'w-40 mb-1' : 'w-56'} md:w-full mx-auto md:mx-0`} style={{ perspective: '800px', transformStyle: 'preserve-3d' }}>
           {/* Viewfinder corner brackets */}
           {[0, 1, 2, 3].map((ci) => {
             const tops = [0, 0, 'auto', 'auto']; const lefts = [0, 'auto', 0, 'auto'];
@@ -88,7 +88,7 @@ export const AboutPanel = memo(function AboutPanel({ panelRef, isActive }) {
             const bLeft = ci % 2 === 0 ? '2px solid #00FFD1' : 'none'; const bRight = ci % 2 === 1 ? '2px solid #00FFD1' : 'none';
             return <div key={ci} style={{ position: 'absolute', top: tops[ci], left: lefts[ci], right: rights[ci], bottom: bottoms[ci], width: '20px', height: '20px', borderTop: bTop, borderBottom: bBot, borderLeft: bLeft, borderRight: bRight, zIndex: 2 }} className="md:w-[32px] md:h-[32px]" />;
           })}
-          <div id="photo-frame-border" style={{ position: 'relative', borderRadius: '1rem', overflow: 'hidden', aspectRatio: '4/5', border: '1px solid #00FFD122' }}>
+          <div id="photo-frame-border" style={{ position: 'relative', borderRadius: '0.75rem md:1rem', overflow: 'hidden', aspectRatio: '4/5', border: '1px solid #00FFD122' }}>
             <img src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
               alt="Amr Abdelazeem" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, oklch(10% 0.01 264) 0%, transparent 55%)' }} />
@@ -96,22 +96,22 @@ export const AboutPanel = memo(function AboutPanel({ panelRef, isActive }) {
         </motion.div>
 
         {/* Text */}
-        <motion.div id="about-text-content" variants={VARIANTS.container}>
-          <h2 id="about-heading" style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(2.5rem, 8vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
+        <motion.div id="about-text-content" variants={VARIANTS.container} style={{ width: '100%' }}>
+          <h2 id="about-heading" style={{ fontFamily: "'Bebas Neue'", fontSize: isMobile ? '2.4rem' : 'clamp(2.5rem, 8vw, 5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: isMobile ? '0.75rem' : '1.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
             <AnimatedText text="ENGINEER" style={{ display: 'block' }} />
             <AnimatedText text="AT HEART." />
           </h2>
-          <motion.p variants={VARIANTS.fadeUp} style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2vw, 1rem)', lineHeight: 1.6, color: 'oklch(62% 0.025 264)', marginBottom: '2rem', maxWidth: '38ch' }}>
+          <motion.p variants={VARIANTS.fadeUp} style={{ fontFamily: 'DM Sans', fontSize: isMobile ? '0.82rem' : 'clamp(0.85rem, 2vw, 1rem)', lineHeight: 1.5, color: 'oklch(62% 0.025 264)', marginBottom: isMobile ? '1.25rem' : '2rem', maxWidth: '38ch' }}>
             Clean Architecture across mobile, backend, and embedded. I don't just code — I <em style={{ color: '#00FFD1', fontStyle: 'normal' }}>engineer solutions</em>.
           </motion.p>
           {/* Stats: staggered bounce-pop entrance */}
-          <motion.div variants={VARIANTS.cardFlipContainer} className="grid grid-cols-1 min-[360px]:grid-cols-2" style={{ gap: '0.75rem', perspective: '600px' }}>
+          <motion.div variants={VARIANTS.cardFlipContainer} className="grid grid-cols-2" style={{ gap: isMobile ? '0.5rem' : '0.75rem', perspective: '600px', marginBottom: isMobile ? '0.75rem' : '1.5rem' }}>
             {stats.map(([, label, numVal]) => (
-              <motion.div variants={VARIANTS.statPop} key={label} style={{ padding: '0.75rem 1rem', border: '1px solid #00FFD133', borderRadius: '0.75rem', background: '#00FFD114' }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(1.4rem, 4vw, 2rem)', color: '#00FFD1', lineHeight: 1 }}>
+              <motion.div variants={VARIANTS.statPop} key={label} style={{ padding: isMobile ? '0.5rem 0.75rem' : '0.75rem 1rem', border: '1px solid #00FFD133', borderRadius: '0.75rem', background: '#00FFD114' }}>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: isMobile ? '1.3rem' : 'clamp(1.4rem, 4vw, 2rem)', color: '#00FFD1', lineHeight: 1 }}>
                   <AnimatedCounter targetValue={numVal} isActive={hasAnimated} />+
                 </div>
-                <div style={{ fontFamily: 'DM Sans', fontSize: '0.68rem', color: 'oklch(60% 0.02 264)', letterSpacing: '0.1em', marginTop: '0.25rem' }}>{label}</div>
+                <div style={{ fontFamily: 'DM Sans', fontSize: isMobile ? '0.62rem' : '0.68rem', color: 'oklch(60% 0.02 264)', letterSpacing: '0.08em', marginTop: '0.15rem' }}>{label}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -134,19 +134,19 @@ const SKILL_GROUPS = [
   { cat: 'Tools & Ecosystem', items: ['Git & GitHub', 'Linux / Bash', 'Vercel Cloud', 'Postman API', 'Figma Design'] },
 ];
 
-export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive }) {
+export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive, isMobile }) {
   const hasAnimated = useHasAnimated(isActive);
   return (
     <section ref={panelRef} aria-labelledby="skills-heading"
-      className="section-panel skills-panel absolute inset-0 flex items-center justify-center px-6 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0"
+      className={`section-panel skills-panel absolute inset-0 flex items-center justify-center ${isMobile ? 'px-7 pt-20 pb-8' : 'px-4 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0'}`}
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
-      <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} className="w-full max-w-[900px] mx-auto">
+      <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} className={`w-full ${isMobile ? 'max-w-[325px]' : 'max-w-[900px]'} mx-auto`}>
         <h2 id="skills-heading"
-          className="text-[clamp(2.5rem,12vw,5.5rem)] leading-[0.95] text-[oklch(96%_0.005_264)] mb-6 md:mb-10"
+          className="text-[clamp(2.2rem,10vw,5.5rem)] leading-[0.95] text-[oklch(96%_0.005_264)] mb-4 md:mb-10 text-left md:text-center"
           style={{ fontFamily: "'Bebas Neue'", textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
           <AnimatedText text="FULL-STACK THINKING." />
         </h2>
-        <motion.div variants={VARIANTS.cardFlipContainer} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" style={{ perspective: '900px', transformStyle: 'preserve-3d' }}>
+        <motion.div variants={VARIANTS.cardFlipContainer} className={`grid ${isMobile ? 'grid-cols-1 gap-3.5' : 'grid-cols-2 gap-2 md:gap-6'}`} style={{ perspective: '900px', transformStyle: 'preserve-3d' }}>
           {SKILL_GROUPS.map(({ cat, items }) => {
             const headingId = `skill-cat-${cat.toLowerCase()}`;
             return (
@@ -154,29 +154,34 @@ export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive }) {
                 <motion.div variants={VARIANTS.cardFlip}
                   role="group"
                   aria-labelledby={headingId}
-                  className="skill-card p-5 md:p-7 rounded-2xl relative overflow-hidden flex flex-col justify-center"
+                  className={`skill-card ${isMobile ? 'py-3 px-4 rounded-xl' : 'p-5 md:p-7 rounded-2xl'} relative overflow-hidden flex flex-col justify-center`}
                   style={{
-                    border: '1px solid rgba(0,255,209,0.12)',
-                    background: 'linear-gradient(135deg, rgba(8,8,14,0.85) 0%, rgba(12,12,20,0.95) 100%)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                    border: isMobile ? '1px solid rgba(0, 255, 209, 0.25)' : '1px solid rgba(0,255,209,0.12)',
+                    background: isMobile
+                      ? 'linear-gradient(135deg, rgba(10,12,22,0.95) 0%, rgba(16,20,35,0.98) 100%)'
+                      : 'linear-gradient(135deg, rgba(8,8,14,0.85) 0%, rgba(12,12,20,0.95) 100%)',
+                    boxShadow: isMobile ? '0 4px 20px rgba(0,255,209,0.07)' : '0 8px 32px rgba(0,0,0,0.5)',
                   }}>
                   {/* Subtle top glow */}
                   <div style={{ position: 'absolute', top: 0, left: '10%', width: '80%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(0,255,209,0.5), transparent)' }} />
                   {/* Category heading */}
                   <h3 id={headingId}
-                    className="text-[1.2rem] md:text-[1.5rem] mb-4 tracking-[0.08em] text-center"
-                    style={{ fontFamily: "'Bebas Neue'", color: '#00FFD1', fontWeight: 'normal' }}>{cat}</h3>
+                    className={`${isMobile ? 'text-[1.05rem] mb-2 text-left flex items-center gap-2' : 'text-[1.2rem] md:text-[1.5rem] mb-4 text-center'} tracking-[0.06em]`}
+                    style={{ fontFamily: "'Bebas Neue'", color: '#00FFD1', fontWeight: 'normal' }}>
+                    {isMobile && <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#00FFD1', boxShadow: '0 0 8px #00FFD1' }} />}
+                    {cat}
+                  </h3>
                   {/* Pills */}
-                  <motion.div variants={VARIANTS.fastContainer} className="flex flex-wrap justify-center gap-2">
+                  <motion.div variants={VARIANTS.fastContainer} className={`flex flex-wrap ${isMobile ? 'justify-start gap-1.5' : 'justify-center gap-2'}`}>
                     {items.map((item) => (
                       <motion.span variants={VARIANTS.pillWipe} key={item}
                         style={{
                           fontFamily: 'DM Sans',
-                          fontSize: 'clamp(0.7rem, 2vw, 0.8rem)',
-                          color: 'rgba(255,255,255,0.85)',
-                          background: 'rgba(255,255,255,0.05)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          padding: '0.25rem 0.75rem',
+                          fontSize: isMobile ? '0.7rem' : 'clamp(0.7rem, 2vw, 0.8rem)',
+                          color: isMobile ? '#e2e8f0' : 'rgba(255,255,255,0.85)',
+                          background: isMobile ? 'rgba(0, 255, 209, 0.08)' : 'rgba(255,255,255,0.05)',
+                          border: isMobile ? '1px solid rgba(0, 255, 209, 0.22)' : '1px solid rgba(255,255,255,0.1)',
+                          padding: isMobile ? '0.2rem 0.6rem' : '0.25rem 0.75rem',
                           borderRadius: '9999px',
                         }}>
                         {item}
@@ -389,31 +394,24 @@ export const ExperiencePanel = memo(function ExperiencePanel({ panelRef, isActiv
   );
 });
 
-// ── EXPERIENCE MOBILE PANEL — shared parameterized component ─────────────────
-function ExpMobilePanel({ panelRef, items, showHeading, isActive }) {
+// ── EXPERIENCE MOBILE PANEL ──────────────────────────────────────────────────
+export const ExperiencePanelMobile = memo(function ExperiencePanelMobile({ panelRef, isActive }) {
   const hasAnimated = useHasAnimated(isActive);
   return (
     <div ref={panelRef} className="section-panel experience-panel experience-panel-mobile absolute inset-0 flex items-center px-6 pt-24 pb-8"
       style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
       <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} className="w-full">
-        {showHeading && (
-          <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 12vw, 5.5rem)', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '2.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
-            <AnimatedText text="GROWING" style={{ display: 'block' }} />
-            <AnimatedText text="EVERY DAY." />
-          </h2>
-        )}
-        <motion.div variants={VARIANTS.container} style={{ position: 'relative' }}>
-          <motion.div variants={VARIANTS.fadeUp} style={{ position: 'absolute', left: '7px', top: 0, bottom: 0, width: '1px', background: 'oklch(20% 0.02 264)' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {items.map(({ date, title, org, desc, color }, i) => (
-              <motion.div variants={VARIANTS.fadeUp} key={i} style={{ display: 'flex', gap: '1.5rem', paddingLeft: '1rem', position: 'relative' }}>
-                <div style={{ position: 'absolute', left: 0, top: '0.35rem', width: 15, height: 15, borderRadius: '50%', background: color, border: '3px solid oklch(10% 0.01 264)', flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontFamily: 'DM Sans', fontSize: '0.68rem', letterSpacing: '0.05em', color, marginBottom: '0.3rem' }}>{date}</div>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.3rem', letterSpacing: '0.04em', color: 'oklch(94% 0.005 264)', lineHeight: 1.1 }}>{title}</div>
-                  <div style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color, marginTop: '0.2rem', marginBottom: '0.4rem' }}>{org}</div>
-                  <div style={{ fontFamily: 'DM Sans', fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'oklch(65% 0.02 264)', lineHeight: 1.6 }}>{desc}</div>
-                </div>
+        <h2 id="exp-mobile-heading" style={{ fontFamily: "'Bebas Neue'", fontSize: '2.5rem', lineHeight: 0.95, color: 'oklch(96% 0.005 264)', marginBottom: '1.5rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
+          <AnimatedText text="GROWING EVERY DAY." />
+        </h2>
+        <motion.div variants={VARIANTS.container}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {EXP_ITEMS.map(({ date, title, org, desc, color }, i) => (
+              <motion.div variants={VARIANTS.fadeUp} key={i}>
+                <div style={{ fontFamily: 'DM Sans', fontSize: '0.68rem', letterSpacing: '0.08em', color, marginBottom: '0.15rem', fontWeight: 600 }}>{date}</div>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: '1.35rem', letterSpacing: '0.04em', color: 'oklch(96% 0.005 264)', lineHeight: 1.1 }}>{title}</div>
+                <div style={{ fontFamily: 'DM Sans', fontSize: '0.78rem', color, marginTop: '0.1rem', marginBottom: '0.35rem', fontWeight: 500 }}>{org}</div>
+                <div style={{ fontFamily: 'DM Sans', fontSize: '0.82rem', color: 'oklch(68% 0.02 264)', lineHeight: 1.5 }}>{desc}</div>
               </motion.div>
             ))}
           </div>
@@ -421,14 +419,6 @@ function ExpMobilePanel({ panelRef, items, showHeading, isActive }) {
       </motion.div>
     </div>
   );
-}
-
-export const ExperiencePanelMobile1 = memo(function ExperiencePanelMobile1({ panelRef, isActive }) {
-  return <ExpMobilePanel panelRef={panelRef} items={EXP_ITEMS.slice(0, 2)} showHeading isActive={isActive} />;
-});
-
-export const ExperiencePanelMobile2 = memo(function ExperiencePanelMobile2({ panelRef, isActive }) {
-  return <ExpMobilePanel panelRef={panelRef} items={EXP_ITEMS.slice(2)} showHeading={false} isActive={isActive} />;
 });
 
 // ── CONTACT PANEL ─────────────────────────────────────────────────────────────

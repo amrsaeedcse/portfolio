@@ -132,9 +132,18 @@ function buildTargets(section, isMobile) {
     return pad(ambient(SHAPE_N));
   }
 
-  // ── EXPERIENCE: flow along timeline vertical line ─────────────────────────
-  const isExp = section === 4 || (isMobile && section === 5);
-  if (isExp) {
+  // ── EXPERIENCE ────────────────────────────────────────────────────────────
+  if (section === 4) {
+    if (isMobile) {
+      // Mobile Experience: assemble into a sharp, professional glowing laser underline directly beneath the main heading!
+      const heading = document.querySelector('#exp-mobile-heading');
+      if (heading) {
+        const r = heading.getBoundingClientRect();
+        return pad(linePts(r.left + 4, r.bottom + 10, r.right - 4, r.bottom + 10, SHAPE_N));
+      }
+      return pad(linePts(vw * 0.15, vh * 0.25, vw * 0.85, vh * 0.25, SHAPE_N));
+    }
+    // Desktop Experience: flow along timeline vertical line
     const timelineLine = document.querySelector('[data-exp-timeline]');
     if (timelineLine) {
       const r = timelineLine.getBoundingClientRect();
@@ -143,7 +152,17 @@ function buildTargets(section, isMobile) {
     return pad(linePts(cx, vh * 0.18, cx, vh * 0.82, SHAPE_N));
   }
 
-  // ── CONTACT: trace form inputs + button borders ────────────────────────────
+  // ── MOBILE CONTACT INTRO (Section 5 on mobile) ─────────────────────────────
+  if (isMobile && section === 5) {
+    // Form a compact, sleek downward-pointing arrow near bottom of viewport to prompt scrolling!
+    const tipX = cx, tipY = vh * 0.88;
+    const shaft = linePts(cx, vh * 0.81, tipX, tipY, 130);
+    const leftWing = linePts(cx - 26, vh * 0.845, tipX, tipY, 95);
+    const rightWing = linePts(cx + 26, vh * 0.845, tipX, tipY, 95);
+    return pad([...shaft, ...leftWing, ...rightWing]);
+  }
+
+  // ── CONTACT FORM: trace form inputs + button borders ───────────────────────
   const fields = [...document.querySelectorAll(
     '.contact-panel input, .contact-panel textarea, .contact-panel button[type="submit"]'
   )];

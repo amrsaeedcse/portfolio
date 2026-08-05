@@ -201,7 +201,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
       const w = window.innerWidth, h = window.innerHeight;
       c.width = w * dpr; c.height = h * dpr;
       c.style.width = `${w}px`; c.style.height = `${h}px`;
-      c.getContext('2d').scale(dpr, dpr);
+      c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
     window.addEventListener('resize', resize);
@@ -254,17 +254,23 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
       stateRef.current.section = section;
       const { particles } = stateRef.current;
 
-      // Projects — no scatter, just fade out smoothly
+      // Projects — no scatter, just fade out smoothly and halt rendering to eliminate lag
       if (section === 3) {
         particles.forEach(p => {
           p.tOpacity = 0;
           p.finalOpacity = 0;
           p.done = true; // stop all movement immediately
         });
+        timerRef.current = setTimeout(() => {
+          if (stateRef.current && stateRef.current.section === 3) {
+            stateRef.current.hidden = true;
+          }
+        }, 350);
         return;
       }
 
       stateRef.current.hidden = false;
+      stateRef.current.cleared = false;
 
       // 100% scatter out on section scroll! No particle stays frozen in its old shape.
       particles.forEach((p) => {
@@ -319,13 +325,17 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
       function tick(now) {
         const st = stateRef.current; if (!st) return;
         if (st.hidden) {
-          ctx.clearRect(0, 0, vw, vh);
+          if (!st.cleared) {
+            ctx.clearRect(0, 0, c.width, c.height);
+            st.cleared = true;
+          }
           rafRef.current = requestAnimationFrame(tick);
           return;
         }
+        st.cleared = false;
 
         const elapsed = now - st.morphStart;
-        ctx.clearRect(0, 0, vw, vh);
+        ctx.clearRect(0, 0, c.width, c.height);
 
         const { x: mx, y: my } = mouseRef.current;
         let allDone = true;

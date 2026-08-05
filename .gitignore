@@ -42,3 +42,6 @@ PRODUCT.md
 .env
 .env.*
 !.env.example
+
+TASKS.md
+MEMORY.md

@@ -271,6 +271,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
 
       stateRef.current.hidden = false;
       stateRef.current.cleared = false;
+      if (canvasRef.current) canvasRef.current.style.visibility = 'visible';
 
       // 100% scatter out on section scroll! No particle stays frozen in its old shape.
       particles.forEach((p) => {
@@ -328,11 +329,13 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
           if (!st.cleared) {
             ctx.clearRect(0, 0, c.width, c.height);
             st.cleared = true;
+            c.style.visibility = 'hidden'; // Remove from browser paint & GPU compositing layers!
           }
-          rafRef.current = requestAnimationFrame(tick);
+          rafRef.current = null; // Halt animation loop completely (0% CPU/GPU overhead)
           return;
         }
         st.cleared = false;
+        c.style.visibility = 'visible';
 
         const elapsed = now - st.morphStart;
         ctx.clearRect(0, 0, c.width, c.height);

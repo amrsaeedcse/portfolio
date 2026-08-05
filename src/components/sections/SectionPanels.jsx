@@ -128,10 +128,10 @@ export const AboutPanel = memo(function AboutPanel({ panelRef, isActive }) {
 // Two semantic tones only: cyan (digital) and amber (hardware) — from brand palette
 // domain: 'digital' = cyan, 'systems' = amber — used as non-colour secondary cue (WCAG 1.4.1)
 const SKILL_GROUPS = [
-  { cat: 'Mobile',   items: ['Flutter', 'Dart', 'Bloc/Cubit', 'Clean Arch', 'Firebase'] },
-  { cat: 'Web',      items: ['React', 'JavaScript', 'Tailwind', 'REST APIs', 'Vite'] },
-  { cat: 'Embedded', items: ['C / C++', 'ESP32', 'Arduino', 'VHDL', 'Sensors'] },
-  { cat: 'DevOps',   items: ['Git & GitHub', 'Vercel', 'Postman', 'Figma', 'Linux'] },
+  { cat: 'Mobile Apps',       items: ['Flutter', 'React Native', 'Dart', 'Clean Arch', 'Bloc / Cubit', 'Firebase'] },
+  { cat: 'Web & Backend',     items: ['React', 'Node.js & MongoDB', 'Express', 'JavaScript', 'CSS3 & Flexbox', 'Vite'] },
+  { cat: 'Hardware & IoT',    items: ['RTOS', 'C / C++', 'ESP32', 'VHDL & FPGA', 'Sensors & Arduino'] },
+  { cat: 'Tools & Ecosystem', items: ['Git & GitHub', 'Linux / Bash', 'Vercel Cloud', 'Postman API', 'Figma Design'] },
 ];
 
 export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive }) {
@@ -528,7 +528,7 @@ export function ContactPanel({ panelRef, isActive }) {
           ) : (
           <motion.form variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {/* Web3Forms access key — public key, safe to commit */}
-            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY" />
+            <input type="hidden" name="access_key" value={import.meta.env.VITE_WEB3FORMS_KEY} />
             <input type="hidden" name="subject" value="Portfolio contact form submission" />
             <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
 
@@ -679,7 +679,7 @@ export function ContactPanelMobile2({ panelRef, isActive }) {
           </motion.div>
         ) : (
           <motion.form variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
-            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY" />
+            <input type="hidden" name="access_key" value={import.meta.env.VITE_WEB3FORMS_KEY} />
             <input type="hidden" name="subject" value="Portfolio contact (mobile)" />
             <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
             {[['Name', 'name', 'text', 'Your name'], ['Email', 'email', 'email', 'your@email.com']].map(([lbl, name, type, ph]) => (

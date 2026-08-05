@@ -22,3 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Legacy & non-React files
+/portfolio-RN/
+/old_files/
+*.backup.*
+*-details.html
+batrina.html
+
+# AI & Agentic tools
+.agents/
+.impeccable/
+.codex/
+skills-lock.json
+PRODUCT.md
+
+# Environment variables & Secrets
+.env
+.env.*
+!.env.example

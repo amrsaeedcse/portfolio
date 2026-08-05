@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 
 export default function Skills() {
   const skills = [
-    { title: "Mobile App Dev", desc: "Flutter, Dart, Bloc, Clean Architecture" },
-    { title: "Web Dev", desc: "HTML5, CSS3, JavaScript, React, Tailwind" },
-    { title: "Embedded / IoT", desc: "C/C++, Arduino, ESP32, Sensors" },
-    { title: "Tools & Cloud", desc: "Git, Firebase, Postman, Figma" }
+    { title: "Mobile Apps", desc: "Flutter, React Native, Dart, Bloc, Clean Arch" },
+    { title: "Web & Backend", desc: "React, Node.js, MongoDB, Express, CSS3 & Flexbox" },
+    { title: "Hardware & IoT", desc: "RTOS, C/C++, ESP32, VHDL, Sensors" },
+    { title: "Tools & Ecosystem", desc: "Git, Linux, Vercel, Postman, Figma" }
   ];
 
   const containerVariants = {

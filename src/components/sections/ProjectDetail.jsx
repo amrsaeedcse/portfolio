@@ -11,7 +11,7 @@ const overlayVariants = {
 
 // Point 4: React.memo prevents re-render when parent App state changes (Canvas stays fast)
 const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
-  const { title, subtitle, tag, color, img, year, status, description, tech, features, github, screenshots } = project;
+  const { title, subtitle, tag, color, img, year, status, description, tech, features, github, screenshots, demos = [] } = project;
 
   return (
     <motion.div
@@ -79,16 +79,32 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
               </div>
             ))}
 
-            {/* GitHub CTA */}
-            <motion.a href={github} target="_blank" rel="noreferrer"
-              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-              transition={{ type:'spring', stiffness:400, damping:17 }}
-              style={{ display:'inline-flex', alignItems:'center', gap:'0.6rem',
-                marginTop:'1.5rem', padding:'0.85rem 2rem', borderRadius:'9999px',
-                background: color, color:'#0a0a0f', fontFamily:'DM Sans', fontWeight:700,
-                fontSize:'0.88rem', textDecoration:'none', letterSpacing:'0.04em' }}>
-              View on GitHub ↗
-            </motion.a>
+            {/* CTAs */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '1.5rem' }}>
+              <motion.a href={github} target="_blank" rel="noreferrer"
+                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                transition={{ type:'spring', stiffness:400, damping:17 }}
+                style={{ display:'inline-flex', alignItems:'center', gap:'0.6rem',
+                  padding:'0.85rem 2rem', borderRadius:'9999px',
+                  background: color, color:'#0a0a0f', fontFamily:'DM Sans', fontWeight:700,
+                  fontSize:'0.88rem', textDecoration:'none', letterSpacing:'0.04em',
+                  boxShadow: `0 0 20px ${color}44` }}>
+                View on GitHub ↗
+              </motion.a>
+
+              {demos.map((d, i) => (
+                <motion.a key={i} href={d.url} target="_blank" rel="noreferrer"
+                  whileHover={{ scale: 1.03, background: `${color}25` }} whileTap={{ scale: 0.97 }}
+                  transition={{ type:'spring', stiffness:400, damping:17 }}
+                  style={{ display:'inline-flex', alignItems:'center', gap:'0.6rem',
+                    padding:'0.85rem 1.75rem', borderRadius:'9999px',
+                    background: '#ffffff12', color: '#f4f4f5', border: `1px solid ${color}66`,
+                    fontFamily:'DM Sans', fontWeight:600, fontSize:'0.88rem', textDecoration:'none',
+                    letterSpacing:'0.03em', backdropFilter:'blur(8px)' }}>
+                  {d.label} ↗
+                </motion.a>
+              ))}
+            </div>
           </div>
 
           {/* Right — Tech stack + Features */}

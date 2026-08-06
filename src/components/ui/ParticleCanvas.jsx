@@ -20,6 +20,24 @@ const AMBER_SPEED_COLORS = Array.from({ length: 20 }, (_, i) => {
 });
 let hasSkillsTractorRun = false; // Tracks if the kinetic tractor sequence has already executed this session
 
+// Deterministic pseudo-random seeds for ambient particles (prevents teleporting/respawning across DOM updates)
+const AMBIENT_SEEDS = Array.from({ length: 150 }, (_, i) => {
+  const rx = ((Math.sin(i * 12.9898 + 78.233) * 43758.5453) % 1 + 1) % 1;
+  const ry = ((Math.sin(i * 68.233 + 12.9898) * 43758.5453) % 1 + 1) % 1;
+  return { rx: 0.04 + rx * 0.92, ry: 0.04 + ry * 0.92 };
+});
+
+// Helper to acquire pure, un-rotated bounding boxes without GSAP 3D transformation distortion
+function getFlatRect(element) {
+  if (!element) return null;
+  const panel = element.closest('.section-panel') || document.querySelector('.skills-panel');
+  const oldTransform = panel ? panel.style.transform : '';
+  if (panel) panel.style.transform = 'translate3d(0, 0, 0)';
+  const rect = element.getBoundingClientRect();
+  if (panel) panel.style.transform = oldTransform;
+  return rect;
+}
+
 // ── Distribute N points evenly around a rect perimeter ───────────────────────
 function rectPts(rect, n, inflate = 0) {
   const x = rect.left - inflate, y = rect.top - inflate;
@@ -96,11 +114,11 @@ function buildTargets(section, isMobile) {
   const vw = window.innerWidth, vh = window.innerHeight;
   const cx = vw / 2, cy = vh / 2;
 
-  // Ambient filler: random dots across FULL viewport (background stars)
+  // Ambient filler: deterministic coordinates across FULL viewport (prevents respawn flickering)
   const ambient = (count) =>
-    Array.from({ length: count }, () => ({
-      x: 20 + Math.random() * (vw - 40),
-      y: 20 + Math.random() * (vh - 40),
+    Array.from({ length: count }, (_, i) => ({
+      x: 20 + (AMBIENT_SEEDS[i % AMBIENT_SEEDS.length].rx) * (vw - 40),
+      y: 20 + (AMBIENT_SEEDS[i % AMBIENT_SEEDS.length].ry) * (vh - 40),
       ambient: true,
     }));
 
@@ -109,8 +127,8 @@ function buildTargets(section, isMobile) {
     const bg = ambient(AMBIENT_N);
     const combined = [...pts, ...bg];
     while (combined.length < N) combined.push(ambient(1)[0]);
-    // Randomize which particles stay behind vs move into shape without leaving any gaps
-    return combined.slice(0, N).sort(() => Math.random() - 0.5);
+    // Preserve deterministic array order so particles never teleport or respawn across targets during real-time DOM retargeting!
+    return combined.slice(0, N);
   };
 
   // Projects: invisible
@@ -125,7 +143,10 @@ function buildTargets(section, isMobile) {
   // ── ABOUT: trace photo frame perimeter ────────────────────────────────────
   if (section === 1) {
     const photo = document.querySelector('#photo-frame-border');
-    if (photo) return pad(rectPts(photo.getBoundingClientRect(), SHAPE_N));
+    if (photo) {
+      const r = getFlatRect(photo) || photo.getBoundingClientRect();
+      return pad(rectPts(r, SHAPE_N));
+    }
     return pad(ambient(SHAPE_N));
   }
 
@@ -133,13 +154,20 @@ function buildTargets(section, isMobile) {
   if (section === 2) {
     const cards = [...document.querySelectorAll('[data-skill-card]')];
     if (cards.length) {
+      // Temporarily clear GSAP 3D transforms on parent panel so getBoundingClientRect returns true flat coordinates!
+      const panel = cards[0]?.closest('.section-panel') || document.querySelector('.skills-panel');
+      const oldTransform = panel ? panel.style.transform : '';
+      if (panel) panel.style.transform = 'translate3d(0, 0, 0)';
+
       const perims = cards.map(c => c.getBoundingClientRect());
+      if (panel) panel.style.transform = oldTransform;
+
       const totalPerim = perims.reduce((acc, r) => acc + 2 * (r.width + r.height), 0);
       const allPts = [];
       
       cards.forEach((c, idx) => {
         const r = perims[idx];
-        const count = Math.max(12, Math.round((2 * (r.width + r.height) / totalPerim) * SHAPE_N));
+        const count = Math.max(12, Math.round((2 * (r.width + r.height) / (totalPerim || 1)) * SHAPE_N));
         const pts = rectPts(r, count, 1);
         const domain = c.getAttribute('data-domain') || (idx > 1 ? 'systems' : 'digital');
         const side   = c.getAttribute('data-side')   || (idx % 2 === 0 ? 'left' : 'right');
@@ -161,7 +189,7 @@ function buildTargets(section, isMobile) {
       // Mobile Experience: assemble into a sharp, professional glowing laser underline directly beneath the main heading!
       const heading = document.querySelector('#exp-mobile-heading');
       if (heading) {
-        const r = heading.getBoundingClientRect();
+        const r = getFlatRect(heading) || heading.getBoundingClientRect();
         return pad(linePts(r.left + 4, r.bottom + 10, r.right - 4, r.bottom + 10, SHAPE_N));
       }
       return pad(linePts(vw * 0.15, vh * 0.25, vw * 0.85, vh * 0.25, SHAPE_N));
@@ -169,7 +197,7 @@ function buildTargets(section, isMobile) {
     // Desktop Experience: flow along timeline vertical line
     const timelineLine = document.querySelector('[data-exp-timeline]');
     if (timelineLine) {
-      const r = timelineLine.getBoundingClientRect();
+      const r = getFlatRect(timelineLine) || timelineLine.getBoundingClientRect();
       return pad(linePts(r.left + r.width/2, r.top, r.left + r.width/2, r.bottom, SHAPE_N));
     }
     return pad(linePts(cx, vh * 0.18, cx, vh * 0.82, SHAPE_N));
@@ -189,7 +217,14 @@ function buildTargets(section, isMobile) {
   const fields = [...document.querySelectorAll(
     '.contact-panel input, .contact-panel textarea, .contact-panel button[type="submit"]'
   )];
-  if (fields.length) return pad(multiRectPts(fields.map(f => f.getBoundingClientRect()), SHAPE_N));
+  if (fields.length) {
+    const panel = fields[0]?.closest('.section-panel') || document.querySelector('.contact-panel');
+    const oldTransform = panel ? panel.style.transform : '';
+    if (panel) panel.style.transform = 'translate3d(0, 0, 0)';
+    const rects = fields.map(f => f.getBoundingClientRect());
+    if (panel) panel.style.transform = oldTransform;
+    return pad(multiRectPts(rects, SHAPE_N));
+  }
   return pad(ambient(SHAPE_N));
 }
 
@@ -315,7 +350,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
       stateRef.current.phase      = 'scatter';
 
       // ── DELAYED: query DOM and assemble (graceful timing) ─────────────────
-      const delay = section === 2 ? 150 : (section === 0 ? 100 : 850);
+      const delay = section === 2 ? 30 : (section === 0 ? 100 : 850);
       timerRef.current = setTimeout(() => {
         const targets = buildTargets(section, isMobile);
         if (!targets) {
@@ -328,6 +363,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
         const st = stateRef.current; if (!st) return;
         st.retargetedSpin   = false;
         st.retargetedImpact = false;
+        const isFirstSkillsVisit = (section === 2 && !hasSkillsTractorRun);
         const dists = st.particles.map((p, i) => {
           const tg = targets[i] || targets[targets.length-1];
           return Math.sqrt((tg.x-p.cx)**2 + (tg.y-p.cy)**2);
@@ -335,14 +371,18 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
         const maxD = Math.max(...dists, 1);
         st.particles.forEach((p, i) => {
           const tg = targets[i] || targets[targets.length-1];
-          const { qx, qy } = ctrlPt(p.cx, p.cy, tg.x, tg.y);
+          const initialTargetX = (isFirstSkillsVisit && tg.side)
+            ? tg.x + (tg.side === 'left' ? -(isMobile ? 65 : 280) : (isMobile ? 65 : 280))
+            : tg.x;
+          const { qx, qy } = ctrlPt(p.cx, p.cy, initialTargetX, tg.y);
           const fo = (tg.ambient || tg.dim) ? (tg.dim ? 0.35 : 0.18) : 0.70;
           p.sx=p.cx; p.sy=p.cy; p.qx=qx; p.qy=qy; p.tx=tg.x; p.ty=tg.y;
           p.domain       = tg.domain;
           p.side         = tg.side;
           p.shocked      = false;
-          p.delay        = (1 - dists[i]/maxD) * 260 + Math.random() * 120;
-          p.dur          = ASSEMBLE_MS + Math.random() * 200;
+          // Ensure 100% of particles reach outer perimeter BEFORE 650ms so they never meet cards halfway!
+          p.delay        = (section === 2) ? Math.random() * 80 : ((1 - dists[i]/maxD) * 260 + Math.random() * 120);
+          p.dur          = isFirstSkillsVisit ? (400 + Math.random() * 90) : (section === 2 ? (580 + Math.random() * 140) : (ASSEMBLE_MS + Math.random() * 200));
           p.done         = false;
           p.tOpacity     = 0.18;  // soft visibility while gliding
           p.finalOpacity = fo;    // intensifies slightly upon arrival
@@ -383,37 +423,8 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
         const invN = (Math.PI * 2) / N;
 
         const isSkillsAssemble = (st.section === 2 && st.phase === 'assemble' && !hasSkillsTractorRun);
-        
-        // ── Stage 1 Retargeting: Post-GSAP Cube Transition (650ms after section change) ──
-        // GSAP's 3D panel rotation takes ~620ms. During the spin, DOM rects are rotated & distorted.
-        // At 650ms, the panel is flat and stable, allowing pixel-perfect target coordinates on EVERY visit.
-        if (st.section === 2 && st.phase === 'assemble' && !st.retargetedSpin && elapsed >= 650) {
-          st.retargetedSpin = true;
-          const cleanTargets = buildTargets(2, isMobile);
-          if (cleanTargets) {
-            st.particles.forEach((p, idx) => {
-              const tg = cleanTargets[idx] || cleanTargets[cleanTargets.length - 1];
-              p.tx = tg.x;
-              p.ty = tg.y;
-            });
-          }
-        }
 
-        // ── Stage 2 Retargeting: Post-Tractor Collision (1650ms during first visit) ──
-        // Locks particles immediately onto final settled card boundaries upon magnetic slam impact.
-        if (isSkillsAssemble && !st.retargetedImpact && elapsed >= 1650) {
-          st.retargetedImpact = true;
-          const impactTargets = buildTargets(2, isMobile);
-          if (impactTargets) {
-            st.particles.forEach((p, idx) => {
-              const tg = impactTargets[idx] || impactTargets[impactTargets.length - 1];
-              p.tx = tg.x;
-              p.ty = tg.y;
-            });
-          }
-        }
-
-        if (isSkillsAssemble && elapsed >= 1800) {
+        if (isSkillsAssemble && elapsed >= 1300) {
           hasSkillsTractorRun = true;
         }
 
@@ -422,7 +433,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
           // ── Bezier progress & Kinetic Tractor Beam ────────────────────────
           if (!p.done) {
             const lT = Math.max(0, (elapsed - p.delay) / p.dur);
-            if (lT < 1 || (isSkillsAssemble && elapsed < 1650)) allDone = false;
+            if (lT < 1 || (isSkillsAssemble && elapsed < 1300)) allDone = false;
             const e = easeOutExpo(Math.min(1, lT));
             
             p.prevCx = p.cx; 
@@ -432,18 +443,18 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
             let curTx = p.tx, curTy = p.ty;
             if (isSkillsAssemble && p.side) {
               const maxOffset = isMobile ? 65 : 280;
-              const WRAP_DUR = 1000; // Real-time 150ms to 1150ms: orbit outer cards
-              const PULL_DUR = 650;  // Real-time 1150ms to 1800ms: magnetic slam toward center
+              const WRAP_DUR = 650; // 0ms to 650ms: fluid flight out to intercept cards in continuous motion!
+              const PULL_DUR = 650; // 650ms to 1300ms: immediate magnetic pull toward center synchronously with DOM cards
               
               if (elapsed < WRAP_DUR) {
-                // Stage 1: Particles swarm out and orbit around stationary outer card boundaries
+                // Stage 1: Particles sweep out to outer card boundary without any static waiting pause
                 curTx += (p.side === 'left' ? -maxOffset : maxOffset);
-                const orbitAngle = (now * 0.012) + (i * 0.35);
-                const orbitRadius = (1 - (elapsed / WRAP_DUR) * 0.4) * (isMobile ? 18 : 32);
+                const orbitAngle = (now * 0.015) + (i * 0.35);
+                const orbitRadius = Math.max(0, (1 - (elapsed / WRAP_DUR)) * (isMobile ? 12 : 22));
                 curTx += Math.cos(orbitAngle) * orbitRadius;
                 curTy += Math.sin(orbitAngle) * orbitRadius;
               } else if (elapsed < WRAP_DUR + PULL_DUR) {
-                // Stage 2: Electromagnetic traction! Particles pull cards rapidly toward center
+                // Stage 2: Electromagnetic traction! Particles & DOM cards sweep inward seamlessly
                 const pullProgress = (elapsed - WRAP_DUR) / PULL_DUR;
                 const ePull = easeOutExpo(Math.min(1, pullProgress));
                 const currentOffset = (1 - ePull) * maxOffset;
@@ -456,7 +467,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
             p.cx = u * u * p.sx + 2 * u * e * p.qx + e * e * curTx;
             p.cy = u * u * p.sy + 2 * u * e * p.qy + e * e * curTy;
 
-            if (lT >= 1 && (!isSkillsAssemble || elapsed >= 1650)) {
+            if (lT >= 1 && (!isSkillsAssemble || elapsed >= 1300)) {
               p.done = true;
             }
             // Snap brightness to full intensity upon arriving near goal (60%)
@@ -466,15 +477,16 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
             }
           }
 
-          // ── High-Voltage Collision Shockwave upon Magnetic Slam (at ~1800ms real time) ─
-          if (isSkillsAssemble && !p.shocked && elapsed >= 1650 && elapsed < 1800) {
+          // ── Refined Executive Micro-Pulse upon Magnetic Slam (at ~1280ms real time) ─
+          if (isSkillsAssemble && !p.shocked && elapsed >= 1280 && elapsed < 1420) {
             p.shocked = true;
             const dx = p.cx - logCx, dy = p.cy - logCy;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const burstForce = Math.min(36, 520 / (dist * 0.10 + 1));
-            p.rx += (dx / dist) * burstForce * (p.domain === 'systems' ? 1.4 : 1.2);
-            p.ry += (dy / dist) * burstForce * (p.domain === 'systems' ? 1.4 : 1.2);
-            p.opacity = 1; // maximum plasma intensity on impact
+            // Subtle mechanical harmonic dampening (2-3px tension snap instead of chaotic explosion)
+            const burstForce = Math.min(2.2, 25 / (dist * 0.08 + 1));
+            p.rx += (dx / dist) * burstForce;
+            p.ry += (dy / dist) * burstForce;
+            p.opacity = 1; // subtle intensity spike on lock-in
           }
 
           // Opacity lerp — ALWAYS runs. 0.25 = ultra-fast brightening if not snapped

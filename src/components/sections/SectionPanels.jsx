@@ -152,38 +152,10 @@ export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive, isMob
         </h2>
         
         <div className={`grid relative ${isMobile ? 'grid-cols-1 gap-3.5' : 'grid-cols-2 gap-2 md:gap-6'}`} style={{ perspective: '1000px' }}>
-          {/* Central High-Voltage Collision Shockwave upon Magnetic Slam (~1300ms total elapsed) */}
-          {hasAnimated && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.2 }}
-              animate={{ 
-                opacity: [0, 0.95, 0.45, 0], 
-                scale: [0.3, 1.6, 2.8], 
-                filter: ['brightness(1)', 'brightness(3)', 'brightness(1)'] 
-              }}
-              transition={{ duration: 0.85, delay: 1.80, ease: "easeOut" }}
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                width: isMobile ? '130px' : '260px',
-                height: isMobile ? '130px' : '260px',
-                marginLeft: isMobile ? '-65px' : '-130px',
-                marginTop: isMobile ? '-65px' : '-130px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(0,255,209,0.7) 40%, rgba(255,184,0,0.4) 75%, transparent 100%)',
-                boxShadow: '0 0 60px rgba(0,255,209,0.8), 0 0 100px rgba(255,184,0,0.6)',
-                pointerEvents: 'none',
-                zIndex: 25,
-                willChange: 'transform, opacity',
-              }}
-            />
-          )}
-
           {SKILL_GROUPS.map(({ cat, domain, color, items }, idx) => {
             const headingId = `skill-cat-${cat.toLowerCase()}`;
             const isLeft = idx % 2 === 0;
-            // Cards wait at outer boundary while particles orbit & lock on during the first ~750ms
+            // Cards wait invisibly at outer boundary while particles fly out to wrap them during the first 650ms
             const slamOffset = isMobile ? (isLeft ? -65 : 65) : (isLeft ? -280 : 280);
             
             return (
@@ -197,10 +169,11 @@ export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive, isMob
                     filter: 'brightness(1)',
                   } : { opacity: 0, x: slamOffset, scale: 1, filter: 'brightness(0.3)' }}
                   transition={{
-                    opacity: { duration: 0.6, delay: 0.15 + (idx * 0.05) },
-                    filter: { duration: 0.65, delay: 1.15 },
-                    // At exactly 1.15s, particles and cards lock together and pull inward to collide at 1.80s!
-                    x: { duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 1.15 }
+                    // Cards stay hidden until ~520ms right as particle swarm arrives and wraps around them, creating a seamless reveal!
+                    opacity: { duration: 0.25, delay: 0.52 + (idx * 0.03) },
+                    filter: { duration: 0.65, delay: 0.65 },
+                    // At exactly 0.65s, particles and cards lock together and pull smoothly inward!
+                    x: { duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.65 }
                   }}
                   role="group"
                   aria-labelledby={headingId}

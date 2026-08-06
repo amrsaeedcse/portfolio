@@ -5,9 +5,9 @@ import { useHasAnimated, AnimatedText, AnimatedCounter, HexDecodedText, VARIANTS
 
 // ── Shared social link data ───────────────────────────────────────────────────
 const SOCIAL_LINKS = [
-  { label: 'GitHub',    abbr: 'GH', href: 'https://github.com/amrsaeedcse' },
-  { label: 'LinkedIn',  abbr: 'LI', href: 'https://linkedin.com/in/amrsaeed-cse' },
-  { label: 'WhatsApp',  abbr: 'WA', href: 'https://wa.me/201121153059' },
+  { label: 'GitHub', abbr: 'GH', href: 'https://github.com/amrsaeedcse' },
+  { label: 'LinkedIn', abbr: 'LI', href: 'https://linkedin.com/in/amrsaeed-cse' },
+  { label: 'WhatsApp', abbr: 'WA', href: 'https://wa.me/201121153059' },
 ];
 
 // ── HERO PANEL ────────────────────────────────────────────────────────────────
@@ -23,7 +23,7 @@ export const HeroPanel = memo(function HeroPanel({ panelRef, scrollToSection, is
         variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"}>
         {/* Cybernetic hardware status tag */}
         <motion.div variants={VARIANTS.fadeUp} style={{ fontFamily: 'monospace', fontSize: '0.72rem', color: '#00FFD199', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>
-          <HexDecodedText text="[ SYSTEMS ARCHITECTURE // MOBILE & EMBEDDED ]" active={hasAnimated} speed={18} delay={220} />
+          <HexDecodedText text="[ SYS_ONLINE // KERNEL v3.0 ]" active={hasAnimated} speed={18} delay={220} />
         </motion.div>
         {/* Giant name with hardware decoding reveal */}
         <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(5rem, 16vw, 12rem)', lineHeight: 0.88, letterSpacing: '0.02em', color: 'oklch(96% 0.005 264)', marginBottom: '1rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
@@ -132,10 +132,10 @@ export const AboutPanel = memo(function AboutPanel({ panelRef, isActive, isMobil
 // Two semantic tones only: cyan (digital) and amber (hardware) — from brand palette
 // domain: 'digital' = cyan, 'systems' = amber — used as non-colour secondary cue (WCAG 1.4.1)
 const SKILL_GROUPS = [
-  { cat: 'Mobile Apps',       items: ['Flutter', 'React Native', 'Dart', 'Clean Arch', 'Bloc / Cubit', 'Firebase'] },
-  { cat: 'Web & Backend',     items: ['React', 'Node.js & MongoDB', 'Express', 'JavaScript', 'CSS3 & Flexbox', 'Vite'] },
-  { cat: 'Hardware & IoT',    items: ['RTOS', 'C / C++', 'ESP32', 'VHDL & FPGA', 'Sensors & Arduino'] },
-  { cat: 'Tools & Ecosystem', items: ['Git & GitHub', 'Linux / Bash', 'Vercel Cloud', 'Postman API', 'Figma Design'] },
+  { cat: 'Mobile Apps', domain: 'digital', color: '#00FFD1', items: ['Flutter', 'React Native', 'Dart', 'Clean Arch', 'Bloc / Cubit', 'Firebase'] },
+  { cat: 'Web & Backend', domain: 'digital', color: '#00FFD1', items: ['React', 'Node.js & MongoDB', 'Express', 'JavaScript', 'CSS3 & Flexbox', 'Vite'] },
+  { cat: 'Hardware & IoT', domain: 'systems', color: '#FFB800', items: ['RTOS', 'C / C++', 'ESP32', 'VHDL & FPGA', 'Sensors & Arduino'] },
+  { cat: 'Tools & Ecosystem', domain: 'systems', color: '#FFB800', items: ['Git & GitHub', 'Linux / Bash', 'Vercel Cloud', 'Postman API', 'Figma Design'] },
 ];
 
 export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive, isMobile }) {
@@ -143,60 +143,131 @@ export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive, isMob
   return (
     <section ref={panelRef} aria-labelledby="skills-heading"
       className={`section-panel skills-panel absolute inset-0 flex items-center justify-center ${isMobile ? 'px-7 pt-20 pb-8' : 'px-4 md:px-20 pt-24 pb-8 md:pt-0 md:pb-0'}`}
-      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none' }}>
+      style={{ opacity: 0, transform: 'translateY(40px)', pointerEvents: 'none', overflow: 'hidden' }}>
       <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} className={`w-full ${isMobile ? 'max-w-[325px]' : 'max-w-[900px]'} mx-auto`}>
         <h2 id="skills-heading"
           className="text-[clamp(2.2rem,10vw,5.5rem)] leading-[0.95] text-[oklch(96%_0.005_264)] mb-4 md:mb-10 text-left md:text-center"
           style={{ fontFamily: "'Bebas Neue'", textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
           <AnimatedText text="FULL-STACK THINKING." />
         </h2>
-        <motion.div variants={VARIANTS.cardFlipContainer} className={`grid ${isMobile ? 'grid-cols-1 gap-3.5' : 'grid-cols-2 gap-2 md:gap-6'}`} style={{ perspective: '900px', transformStyle: 'preserve-3d' }}>
-          {SKILL_GROUPS.map(({ cat, items }) => {
+        
+        <div className={`grid relative ${isMobile ? 'grid-cols-1 gap-3.5' : 'grid-cols-2 gap-2 md:gap-6'}`} style={{ perspective: '1000px' }}>
+          {/* Central High-Voltage Collision Shockwave upon Magnetic Slam (~1300ms total elapsed) */}
+          {hasAnimated && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.2 }}
+              animate={{ 
+                opacity: [0, 0.95, 0.45, 0], 
+                scale: [0.3, 1.6, 2.8], 
+                filter: ['brightness(1)', 'brightness(3)', 'brightness(1)'] 
+              }}
+              transition={{ duration: 0.85, delay: 1.80, ease: "easeOut" }}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                width: isMobile ? '130px' : '260px',
+                height: isMobile ? '130px' : '260px',
+                marginLeft: isMobile ? '-65px' : '-130px',
+                marginTop: isMobile ? '-65px' : '-130px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(0,255,209,0.7) 40%, rgba(255,184,0,0.4) 75%, transparent 100%)',
+                boxShadow: '0 0 60px rgba(0,255,209,0.8), 0 0 100px rgba(255,184,0,0.6)',
+                pointerEvents: 'none',
+                zIndex: 25,
+                willChange: 'transform, opacity',
+              }}
+            />
+          )}
+
+          {SKILL_GROUPS.map(({ cat, domain, color, items }, idx) => {
             const headingId = `skill-cat-${cat.toLowerCase()}`;
+            const isLeft = idx % 2 === 0;
+            // Cards wait at outer boundary while particles orbit & lock on during the first ~750ms
+            const slamOffset = isMobile ? (isLeft ? -65 : 65) : (isLeft ? -280 : 280);
+            
             return (
-              <React.Fragment key={cat}>
-                <motion.div variants={VARIANTS.cardFlip}
+              <div key={cat} data-skill-card data-domain={domain} data-side={isLeft ? 'left' : 'right'} className="relative w-full h-full">
+                <motion.div
+                  initial={{ opacity: 0, x: slamOffset, scale: 1, filter: 'brightness(0.3)' }}
+                  animate={hasAnimated ? { 
+                    opacity: 1, 
+                    x: 0, 
+                    scale: 1,
+                    filter: 'brightness(1)',
+                  } : { opacity: 0, x: slamOffset, scale: 1, filter: 'brightness(0.3)' }}
+                  transition={{
+                    opacity: { duration: 0.6, delay: 0.15 + (idx * 0.05) },
+                    filter: { duration: 0.65, delay: 1.15 },
+                    // At exactly 1.15s, particles and cards lock together and pull inward to collide at 1.80s!
+                    x: { duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 1.15 }
+                  }}
                   role="group"
                   aria-labelledby={headingId}
-                  className={`skill-card ${isMobile ? 'py-3 px-4 rounded-xl' : 'p-5 md:p-7 rounded-2xl'} relative overflow-hidden flex flex-col justify-center`}
+                  className={`skill-card w-full h-full ${isMobile ? 'py-3 px-4 rounded-xl' : 'p-5 md:p-7 rounded-2xl'} relative overflow-hidden flex flex-col justify-center`}
                   style={{
-                    border: isMobile ? '1px solid rgba(0, 255, 209, 0.25)' : '1px solid rgba(0,255,209,0.12)',
+                    border: isMobile ? `1px solid ${color}40` : `1px solid ${color}25`,
                     background: isMobile
                       ? 'linear-gradient(135deg, rgba(10,12,22,0.95) 0%, rgba(16,20,35,0.98) 100%)'
-                      : 'linear-gradient(135deg, rgba(8,8,14,0.85) 0%, rgba(12,12,20,0.95) 100%)',
-                    boxShadow: isMobile ? '0 4px 20px rgba(0,255,209,0.07)' : '0 8px 32px rgba(0,0,0,0.5)',
+                      : 'linear-gradient(135deg, rgba(8,8,14,0.88) 0%, rgba(12,12,20,0.96) 100%)',
+                    boxShadow: isMobile ? `0 4px 20px ${color}14` : `0 8px 32px rgba(0,0,0,0.6), 0 0 25px ${color}12`,
+                    willChange: 'transform, opacity, filter',
                   }}>
-                  {/* Subtle top glow */}
-                  <div style={{ position: 'absolute', top: 0, left: '10%', width: '80%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(0,255,209,0.5), transparent)' }} />
-                  {/* Category heading */}
-                  <h3 id={headingId}
-                    className={`${isMobile ? 'text-[1.05rem] mb-2 text-left flex items-center gap-2' : 'text-[1.2rem] md:text-[1.5rem] mb-4 text-center'} tracking-[0.06em]`}
-                    style={{ fontFamily: "'Bebas Neue'", color: '#00FFD1', fontWeight: 'normal' }}>
-                    {isMobile && <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#00FFD1', boxShadow: '0 0 8px #00FFD1' }} />}
-                    {cat}
-                  </h3>
-                  {/* Pills */}
-                  <motion.div variants={VARIANTS.fastContainer} className={`flex flex-wrap ${isMobile ? 'justify-start gap-1.5' : 'justify-center gap-2'}`}>
-                    {items.map((item) => (
-                      <motion.span variants={VARIANTS.pillWipe} key={item}
+                  {/* Cybernetic top laser bar glow */}
+                  <div style={{ position: 'absolute', top: 0, left: '5%', width: '90%', height: '2px', background: `linear-gradient(90deg, transparent, ${color}88, transparent)` }} />
+                  
+                  {/* Domain tag & category heading */}
+                  <div className="flex items-center justify-between mb-3 md:mb-4">
+                    <h3 id={headingId}
+                      className={`${isMobile ? 'text-[1.05rem]' : 'text-[1.2rem] md:text-[1.45rem]'} tracking-[0.06em] flex items-center gap-2.5`}
+                      style={{ fontFamily: "'Bebas Neue'", color: color, fontWeight: 'normal', textShadow: `0 0 12px ${color}66` }}>
+                      <span style={{ display: 'inline-block', width: 7, height: 7, borderRadius: '50%', background: color, boxShadow: `0 0 10px ${color}` }} />
+                      {cat}
+                    </h3>
+                    <span
+                      style={{
+                        fontFamily: 'SF Mono, Fira Code, monospace',
+                        fontSize: isMobile ? '0.62rem' : '0.68rem',
+                        color: `${color}cc`,
+                        border: `1px solid ${color}40`,
+                        background: `${color}10`,
+                        padding: isMobile ? '0.15rem 0.45rem' : '0.2rem 0.6rem',
+                        borderRadius: '4px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.08em',
+                        boxShadow: `0 0 8px ${color}14`,
+                      }}>
+                      [{domain === 'digital' ? 'SW // CORE' : 'HW // SYS'}]
+                    </span>
+                  </div>
+
+                  {/* Skills tags grid */}
+                  <div className={`flex flex-wrap ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
+                    {items.map(item => (
+                      <span
+                        key={item}
+                        className="inline-flex items-center"
                         style={{
                           fontFamily: 'DM Sans',
-                          fontSize: isMobile ? '0.7rem' : 'clamp(0.7rem, 2vw, 0.8rem)',
-                          color: isMobile ? '#e2e8f0' : 'rgba(255,255,255,0.85)',
-                          background: isMobile ? 'rgba(0, 255, 209, 0.08)' : 'rgba(255,255,255,0.05)',
-                          border: isMobile ? '1px solid rgba(0, 255, 209, 0.22)' : '1px solid rgba(255,255,255,0.1)',
-                          padding: isMobile ? '0.2rem 0.6rem' : '0.25rem 0.75rem',
+                          fontSize: isMobile ? '0.72rem' : 'clamp(0.75rem, 1.8vw, 0.82rem)',
+                          fontWeight: 500,
+                          color: isMobile ? '#e2e8f0' : 'rgba(255,255,255,0.9)',
+                          background: `${color}10`,
+                          border: `1px solid ${color}35`,
+                          padding: isMobile ? '0.2rem 0.65rem' : '0.28rem 0.8rem',
                           borderRadius: '9999px',
+                          boxShadow: `0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 ${color}22`,
+                          transition: 'all 0.2s ease',
                         }}>
                         {item}
-                      </motion.span>
+                      </span>
                     ))}
-                  </motion.div>
+                  </div>
                 </motion.div>
-              </React.Fragment>
+              </div>
             );
           })}
-        </motion.div>
+        </div>
       </motion.div>
     </section>
   );
@@ -214,139 +285,139 @@ export const ProjectsPanel = memo(function ProjectsPanel({ panelRef, onProjectCl
       style={{ opacity: 0, pointerEvents: 'none', overflow: 'hidden' }}>
 
       <motion.div variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} style={{ width: '100%', height: '100%' }}>
-      {/* Section label — top-left, always visible in Projects */}
-      <motion.div className="project-label" variants={VARIANTS.fadeUp} style={{
-        position: 'absolute', top: '5rem', left: '8vw', zIndex: 4,
-        fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em',
-        textTransform: 'uppercase', color: '#00FFD1', filter: 'none', backdropFilter: 'none', transform: 'translateZ(0)'
-      }}>Featured Work</motion.div>
+        {/* Section label — top-left, always visible in Projects */}
+        <motion.div className="project-label" variants={VARIANTS.fadeUp} style={{
+          position: 'absolute', top: '5rem', left: '8vw', zIndex: 4,
+          fontFamily: 'DM Sans', fontSize: '0.7rem', letterSpacing: '0.3em',
+          textTransform: 'uppercase', color: '#00FFD1', filter: 'none', backdropFilter: 'none', transform: 'translateZ(0)'
+        }}>Featured Work</motion.div>
 
-      {/* Progress indicator — which card of 4 */}
-      <motion.div variants={VARIANTS.fadeUp} style={{
-        position: 'absolute', bottom: '2.5rem', left: '8vw', zIndex: 4,
-        display: 'flex', gap: '0.5rem', alignItems: 'center'
-      }}>
-        {[0, 1, 2, 3, 4].map((_, i) => (
-          <div key={i} className={`proj-dot-${i}`}
-            style={{
-              width: i === 0 ? 28 : 8, height: 2, borderRadius: 999,
-              background: i === 0 ? '#00FFD1' : '#ffffff22', transition: 'all 0.35s ease'
-            }} />
-        ))}
-      </motion.div>
-
-      {/* The 400vw horizontal track — GSAP targets this element */}
-      <div id="project-track"
-        style={{ display: 'flex', width: '500%', height: '100%', willChange: 'transform' }}>
-
-        {PROJECTS_DATA.slice(0, 4).map((proj, idx) => (
-          /* Each card = exactly 20% of 500% track = 100vw */
-          <div key={proj.id} style={{
-            flex: '0 0 20%', position: 'relative',
-            display: 'flex', alignItems: 'center', overflow: 'hidden'
-          }}>
-
-            {/* Full-bleed background image — right 55% */}
-            <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '58%', overflow: 'hidden' }}>
-              <motion.img src={proj.img} alt={proj.title}
-                animate={{ scale: hovered === idx ? 1.06 : 1 }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-                style={{
-                  width: '100%', height: '100%', objectFit: 'cover',
-                  display: 'block', filter: 'brightness(0.55)'
-                }} />
-              {/* Left-to-right gradient masks image edge */}
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: `linear-gradient(to right, #0a0a0f 0%, ${proj.color}18 50%, transparent 100%)`
+        {/* Progress indicator — which card of 4 */}
+        <motion.div variants={VARIANTS.fadeUp} style={{
+          position: 'absolute', bottom: '2.5rem', left: '8vw', zIndex: 4,
+          display: 'flex', gap: '0.5rem', alignItems: 'center'
+        }}>
+          {[0, 1, 2, 3, 4].map((_, i) => (
+            <div key={i} className={`proj-dot-${i}`}
+              style={{
+                width: i === 0 ? 28 : 8, height: 2, borderRadius: 999,
+                background: i === 0 ? '#00FFD1' : '#ffffff22', transition: 'all 0.35s ease'
               }} />
-            </div>
+          ))}
+        </motion.div>
 
-            {/* Left content panel */}
-            <motion.div variants={VARIANTS.container} style={{
-              position: 'relative', zIndex: 2, padding: '0 8vw',
-              maxWidth: '55%', width: '100%'
-            }}
-              onMouseEnter={() => setHovered(idx)}
-              onMouseLeave={() => setHovered(null)}>
+        {/* The 400vw horizontal track — GSAP targets this element */}
+        <div id="project-track"
+          style={{ display: 'flex', width: '500%', height: '100%', willChange: 'transform' }}>
 
-              {/* Giant index number */}
-              <motion.div variants={VARIANTS.fadeUp} style={{
-                fontFamily: "'Bebas Neue'", fontSize: 'clamp(7rem,16vw,13rem)',
-                lineHeight: 0.85, color: '#ffffff04', marginBottom: '-1rem',
-                userSelect: 'none'
-              }}>0{idx + 1}</motion.div>
+          {PROJECTS_DATA.slice(0, 4).map((proj, idx) => (
+            /* Each card = exactly 20% of 500% track = 100vw */
+            <div key={proj.id} style={{
+              flex: '0 0 20%', position: 'relative',
+              display: 'flex', alignItems: 'center', overflow: 'hidden'
+            }}>
 
-              {/* Tech tag */}
-              <motion.div variants={VARIANTS.fadeUp} style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                padding: '0.3rem 0.8rem', background: `${proj.color}22`,
-                border: `1px solid ${proj.color}55`, borderRadius: '9999px',
-                fontFamily: 'DM Sans', fontSize: '0.7rem', color: proj.color,
-                letterSpacing: '0.1em', marginBottom: '1rem'
-              }}>
-                {proj.tag}
+              {/* Full-bleed background image — right 55% */}
+              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '58%', overflow: 'hidden' }}>
+                <motion.img src={proj.img} alt={proj.title}
+                  animate={{ scale: hovered === idx ? 1.06 : 1 }}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                  style={{
+                    width: '100%', height: '100%', objectFit: 'cover',
+                    display: 'block', filter: 'brightness(0.55)'
+                  }} />
+                {/* Left-to-right gradient masks image edge */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: `linear-gradient(to right, #0a0a0f 0%, ${proj.color}18 50%, transparent 100%)`
+                }} />
+              </div>
+
+              {/* Left content panel */}
+              <motion.div variants={VARIANTS.container} style={{
+                position: 'relative', zIndex: 2, padding: '0 8vw',
+                maxWidth: '55%', width: '100%'
+              }}
+                onMouseEnter={() => setHovered(idx)}
+                onMouseLeave={() => setHovered(null)}>
+
+                {/* Giant index number */}
+                <motion.div variants={VARIANTS.fadeUp} style={{
+                  fontFamily: "'Bebas Neue'", fontSize: 'clamp(7rem,16vw,13rem)',
+                  lineHeight: 0.85, color: '#ffffff04', marginBottom: '-1rem',
+                  userSelect: 'none'
+                }}>0{idx + 1}</motion.div>
+
+                {/* Tech tag */}
+                <motion.div variants={VARIANTS.fadeUp} style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                  padding: '0.3rem 0.8rem', background: `${proj.color}22`,
+                  border: `1px solid ${proj.color}55`, borderRadius: '9999px',
+                  fontFamily: 'DM Sans', fontSize: '0.7rem', color: proj.color,
+                  letterSpacing: '0.1em', marginBottom: '1rem'
+                }}>
+                  {proj.tag}
+                </motion.div>
+
+                {/* Title */}
+                <h2 style={{
+                  fontFamily: "'Bebas Neue'", fontSize: 'clamp(3.5rem,8vw,6.5rem)',
+                  lineHeight: 0.9, color: '#f4f4f5', marginBottom: '1.2rem',
+                  letterSpacing: '0.02em'
+                }}>{proj.title}</h2>
+
+                {/* Description */}
+                <p style={{
+                  fontFamily: 'DM Sans', fontSize: 'clamp(0.88rem,1.4vw,1rem)',
+                  color: '#ffffff66', lineHeight: 1.75, maxWidth: '36ch',
+                  marginBottom: '2rem'
+                }}>
+                  {proj.description.slice(0, 130)}...
+                </p>
+
+                {/* CTA buttons */}
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    onClick={() => onProjectClick(proj)}
+                    style={{
+                      fontFamily: 'DM Sans', fontSize: '0.75rem', letterSpacing: '0.1em',
+                      textTransform: 'uppercase', padding: '0.7rem 1.5rem', background: proj.color,
+                      color: '#0a0a0f', border: 'none', borderRadius: '9999px', cursor: 'pointer',
+                      fontWeight: 600
+                    }}>
+                    View Details
+                  </motion.button>
+                </div>
               </motion.div>
 
-              {/* Title */}
-              <h2 style={{
-                fontFamily: "'Bebas Neue'", fontSize: 'clamp(3.5rem,8vw,6.5rem)',
-                lineHeight: 0.9, color: '#f4f4f5', marginBottom: '1.2rem',
-                letterSpacing: '0.02em'
-              }}>{proj.title}</h2>
+              {/* Right-edge vertical line accent */}
+              <div style={{
+                position: 'absolute', right: 0, top: '15%', bottom: '15%',
+                width: 1, background: `linear-gradient(to bottom, transparent, ${proj.color}44, transparent)`,
+                zIndex: 3
+              }} />
+            </div>
+          ))}
 
-              {/* Description */}
-              <p style={{
-                fontFamily: 'DM Sans', fontSize: 'clamp(0.88rem,1.4vw,1rem)',
-                color: '#ffffff66', lineHeight: 1.75, maxWidth: '36ch',
-                marginBottom: '2rem'
-              }}>
-                {proj.description.slice(0, 130)}...
+          {/* 5th Card: View All Projects CTA — no emoji decoration */}
+          <div style={{ flex: '0 0 20%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: '#050508' }}>
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, #00FFD111 0%, transparent 70%)' }} />
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onProjectClick('ARCHIVE')}
+              style={{ textAlign: 'center', cursor: 'pointer', zIndex: 10, padding: '3rem', border: '1px solid #ffffff11', borderRadius: '2rem' }}
+            >
+              <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem,6vw,5rem)', lineHeight: 0.9, color: '#f4f4f5', marginBottom: '0.5rem', letterSpacing: '0.02em' }}>
+                VIEW ALL <span style={{ color: '#00FFD1' }}>PROJECTS</span>
+              </h2>
+              <p style={{ fontFamily: 'DM Sans', fontSize: '0.9rem', color: '#ffffff66', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                Complete archive →
               </p>
-
-              {/* CTA buttons */}
-              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                <motion.button
-                  whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                  onClick={() => onProjectClick(proj)}
-                  style={{
-                    fontFamily: 'DM Sans', fontSize: '0.75rem', letterSpacing: '0.1em',
-                    textTransform: 'uppercase', padding: '0.7rem 1.5rem', background: proj.color,
-                    color: '#0a0a0f', border: 'none', borderRadius: '9999px', cursor: 'pointer',
-                    fontWeight: 600
-                  }}>
-                  View Details
-                </motion.button>
-              </div>
             </motion.div>
-
-            {/* Right-edge vertical line accent */}
-            <div style={{
-              position: 'absolute', right: 0, top: '15%', bottom: '15%',
-              width: 1, background: `linear-gradient(to bottom, transparent, ${proj.color}44, transparent)`,
-              zIndex: 3
-            }} />
           </div>
-        ))}
-
-        {/* 5th Card: View All Projects CTA — no emoji decoration */}
-        <div style={{ flex: '0 0 20%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: '#050508' }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, #00FFD111 0%, transparent 70%)' }} />
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onProjectClick('ARCHIVE')}
-            style={{ textAlign: 'center', cursor: 'pointer', zIndex: 10, padding: '3rem', border: '1px solid #ffffff11', borderRadius: '2rem' }}
-          >
-            <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem,6vw,5rem)', lineHeight: 0.9, color: '#f4f4f5', marginBottom: '0.5rem', letterSpacing: '0.02em' }}>
-              VIEW ALL <span style={{ color: '#00FFD1' }}>PROJECTS</span>
-            </h2>
-            <p style={{ fontFamily: 'DM Sans', fontSize: '0.9rem', color: '#ffffff66', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-              Complete archive →
-            </p>
-          </motion.div>
         </div>
-      </div>
       </motion.div>
     </div>
   );
@@ -355,9 +426,9 @@ export const ProjectsPanel = memo(function ProjectsPanel({ panelRef, onProjectCl
 // ── EXPERIENCE PANEL ──────────────────────────────────────────────────────────
 // Two accent tones: cyan (training) and amber (education) — matches skills palette
 const EXP_ITEMS = [
-  { date: '2024–Now',    title: 'Mobile App Trainee',          org: 'DEPI — Ministry of CIT',           desc: 'Intensive Flutter & Dart, government initiative.', color: '#00FFD1' },
-  { date: 'Summer 2024', title: 'Mobile App Trainee',          org: 'ITI — Information Technology Inst.', desc: 'Flutter, Dart, state management, Clean Architecture.', color: '#00FFD1' },
-  { date: '2021–Now',    title: 'Computer Engineering Student', org: 'Zagazig University',                desc: 'B.Sc. in Computer & Systems Engineering — Embedded & Software focus.', color: 'oklch(75% 0.18 60)' },
+  { date: '2024–Now', title: 'Mobile App Trainee', org: 'DEPI — Ministry of CIT', desc: 'Intensive Flutter & Dart, government initiative.', color: '#00FFD1' },
+  { date: 'Summer 2024', title: 'Mobile App Trainee', org: 'ITI — Information Technology Inst.', desc: 'Flutter, Dart, state management, Clean Architecture.', color: '#00FFD1' },
+  { date: '2021–Now', title: 'Computer Engineering Student', org: 'Zagazig University', desc: 'B.Sc. in Computer & Systems Engineering — Embedded & Software focus.', color: 'oklch(75% 0.18 60)' },
 ];
 
 export const ExperiencePanel = memo(function ExperiencePanel({ panelRef, isActive }) {
@@ -427,8 +498,8 @@ export const ExperiencePanelMobile = memo(function ExperiencePanelMobile({ panel
 
 // ── CONTACT PANEL ─────────────────────────────────────────────────────────────
 const CONTACT_LINKS = [
-  { label: 'Email',    text: 'amrabdelazeem117@gmail.com', href: 'mailto:amrabdelazeem117@gmail.com' },
-  { label: 'WhatsApp', text: '+20 112 115 3059',            href: 'https://wa.me/201121153059' },
+  { label: 'Email', text: 'amrabdelazeem117@gmail.com', href: 'mailto:amrabdelazeem117@gmail.com' },
+  { label: 'WhatsApp', text: '+20 112 115 3059', href: 'https://wa.me/201121153059' },
 ];
 
 // ContactPanel has its own state — cannot be a pure memo anymore.
@@ -508,8 +579,10 @@ export function ContactPanel({ panelRef, isActive }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem',
-                padding: '2rem', border: '1px solid #00FFD133', borderRadius: '0.75rem', background: '#00FFD108' }}>
+              style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem',
+                padding: '2rem', border: '1px solid #00FFD133', borderRadius: '0.75rem', background: '#00FFD108'
+              }}>
               <div style={{ fontFamily: "'Bebas Neue'", fontSize: '2rem', color: '#00FFD1', lineHeight: 1 }}>Message Sent.</div>
               <p style={{ fontFamily: 'DM Sans', fontSize: '0.9rem', color: 'oklch(65% 0.02 264)', lineHeight: 1.6 }}>
                 Got it — I'll get back to you soon.
@@ -520,33 +593,33 @@ export function ContactPanel({ panelRef, isActive }) {
               </button>
             </motion.div>
           ) : (
-          <motion.form variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {/* Web3Forms access key — public key, safe to commit */}
-            <input type="hidden" name="access_key" value={import.meta.env.VITE_WEB3FORMS_KEY} />
-            <input type="hidden" name="subject" value="Portfolio contact form submission" />
-            <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
+            <motion.form variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"} onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {/* Web3Forms access key — public key, safe to commit */}
+              <input type="hidden" name="access_key" value={import.meta.env.VITE_WEB3FORMS_KEY} />
+              <input type="hidden" name="subject" value="Portfolio contact form submission" />
+              <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
 
-            {[['Name', 'name', 'text', 'Your name', true], ['Email', 'email', 'email', 'your@email.com', true]].map(([label, name, type, ph, req]) => (
-              <div key={label}>
-                <label style={labelStyle} htmlFor={`field-${name}`}>{label}</label>
-                <input id={`field-${name}`} type={type} name={name} placeholder={ph}
-                  required={req} autoComplete={name}
-                  style={inputStyle} />
+              {[['Name', 'name', 'text', 'Your name', true], ['Email', 'email', 'email', 'your@email.com', true]].map(([label, name, type, ph, req]) => (
+                <div key={label}>
+                  <label style={labelStyle} htmlFor={`field-${name}`}>{label}</label>
+                  <input id={`field-${name}`} type={type} name={name} placeholder={ph}
+                    required={req} autoComplete={name}
+                    style={inputStyle} />
+                </div>
+              ))}
+              <div>
+                <label style={labelStyle} htmlFor="field-message">Message</label>
+                <textarea id="field-message" name="message" rows={4}
+                  placeholder="Tell me about your project..."
+                  required
+                  style={{ ...inputStyle, resize: 'none' }} />
               </div>
-            ))}
-            <div>
-              <label style={labelStyle} htmlFor="field-message">Message</label>
-              <textarea id="field-message" name="message" rows={4}
-                placeholder="Tell me about your project..."
-                required
-                style={{ ...inputStyle, resize: 'none' }} />
-            </div>
 
-            {formState === 'error' && (
-              <p role="alert" style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color: 'oklch(62% 0.2 25)', margin: 0 }}>
-                Something went wrong — try emailing me directly.
-              </p>
-            )}
+              {formState === 'error' && (
+                <p role="alert" style={{ fontFamily: 'DM Sans', fontSize: '0.8rem', color: 'oklch(62% 0.2 25)', margin: 0 }}>
+                  Something went wrong — try emailing me directly.
+                </p>
+              )}
 
               <motion.button type="submit"
                 variants={VARIANTS.fadeUp}
@@ -589,8 +662,8 @@ export function ContactPanel({ panelRef, isActive }) {
 
 // ── CONTACT MOBILE PANEL — shared parameterized component ────────────────────
 const FOOTER_LINKS = [
-  { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/amr-saeed-0bb957373/' },
-  { label: 'GitHub',   href: 'https://github.com/amrsaeedcse' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/amr-saeed-0bb957373/' },
+  { label: 'GitHub', href: 'https://github.com/amrsaeedcse' },
   { label: 'WhatsApp', href: 'https://wa.me/201121153059' },
 ];
 

@@ -1,7 +1,7 @@
 import React, { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PROJECTS_DATA } from '../../data/projects';
-import { useHasAnimated, AnimatedText, AnimatedCounter, VARIANTS } from '../ui/AnimatedElements';
+import { useHasAnimated, AnimatedText, AnimatedCounter, HexDecodedText, VARIANTS } from '../ui/AnimatedElements';
 
 // ── Shared social link data ───────────────────────────────────────────────────
 const SOCIAL_LINKS = [
@@ -21,10 +21,14 @@ export const HeroPanel = memo(function HeroPanel({ panelRef, scrollToSection, is
       <motion.div id="hero-content" className="w-full max-w-2xl hero-glow"
         style={{ textAlign: 'center' }}
         variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"}>
-        {/* Giant name — heading carries its own weight, no eyebrow needed */}
+        {/* Cybernetic hardware status tag */}
+        <motion.div variants={VARIANTS.fadeUp} style={{ fontFamily: 'monospace', fontSize: '0.72rem', color: '#00FFD199', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>
+          <HexDecodedText text="[ SYS_ONLINE // KERNEL v3.0 ]" active={hasAnimated} speed={18} delay={220} />
+        </motion.div>
+        {/* Giant name with hardware decoding reveal */}
         <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(5rem, 16vw, 12rem)', lineHeight: 0.88, letterSpacing: '0.02em', color: 'oklch(96% 0.005 264)', marginBottom: '1rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
-          <AnimatedText text="HI, I'M" style={{ display: 'block' }} />
-          <AnimatedText text="AMR." style={{ color: 'oklch(68% 0.15 200)' }} />
+          <HexDecodedText text="HI, I'M" active={hasAnimated} speed={24} delay={380} style={{ display: 'block' }} />
+          <HexDecodedText text="AMR." active={hasAnimated} speed={30} delay={550} style={{ color: '#00FFD1' }} />
         </h1>
 
         <motion.p variants={VARIANTS.fadeUp}

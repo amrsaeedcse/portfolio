@@ -573,7 +573,7 @@ export default function App() {
         transition={{ duration: 1.2, ease: [0.85, 0, 0.15, 1], delay: 0.1 }}
         className="motion-stage"
         style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 10 }}>
-        <HeroPanel panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} isActive={activePanel === 0} isMobile={isMobile} />
+        <HeroPanel panelRef={el => panelRefs.current[0] = el} scrollToSection={scrollToSection} isActive={activePanel === 0 && (loaderExiting || loaded)} isMobile={isMobile} />
         {isMobile ? (
           <>
             <AboutPanel panelRef={el => panelRefs.current[1] = el} isActive={activePanel === 1} isMobile={true} />

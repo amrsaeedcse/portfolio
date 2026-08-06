@@ -213,3 +213,70 @@ export const AnimatedCounter = ({ targetValue, isActive, format = (v) => Math.ro
 
   return <span ref={nodeRef}>{hasAnimated ? format(targetValue) : 0}</span>;
 };
+
+// ── Hardware Hexadecimal Text Decoding Component ─────────────────────────────
+const HEX_CHARS = '0123456789ABCDEF!<>_/#&*█▀▄[];=^$@0123456789ABCDEF';
+
+export const HexDecodedText = ({ text, active = true, style, className, speed = 28, delay = 0 }) => {
+  const [displayedText, setDisplayedText] = useState(() => text.replace(/[^\s]/g, '█'));
+  const [isDecoding, setIsDecoding] = useState(true);
+
+  useEffect(() => {
+    if (!active) {
+      setDisplayedText(text.replace(/[^\s]/g, '█'));
+      setIsDecoding(true);
+      return;
+    }
+    let timeoutId;
+    let intervalId;
+    let iterations = 0;
+    
+    timeoutId = setTimeout(() => {
+      const maxIterations = text.length * 3 + 5;
+      
+      intervalId = setInterval(() => {
+        setDisplayedText(() => 
+          text
+            .split('')
+            .map((char, index) => {
+              if (char === ' ') return ' ';
+              if (index < Math.floor(iterations / 3)) {
+                return text[index];
+              }
+              return HEX_CHARS[Math.floor(Math.random() * HEX_CHARS.length)];
+            })
+            .join('')
+        );
+
+        if (iterations >= maxIterations) {
+          clearInterval(intervalId);
+          setIsDecoding(false);
+          setDisplayedText(text);
+        }
+        iterations += 1;
+      }, speed);
+    }, delay);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [active, text, speed, delay]);
+
+  return (
+    <span 
+      className={className} 
+      style={{ 
+        display: 'inline-block', 
+        fontVariantNumeric: 'tabular-nums',
+        transition: 'color 0.4s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        ...style,
+        color: isDecoding ? '#00FFD1' : style?.color,
+        textShadow: isDecoding ? '0 0 20px rgba(0, 255, 209, 0.9), 0 0 40px rgba(0, 255, 209, 0.4)' : style?.textShadow,
+      }}
+    >
+      {displayedText}
+    </span>
+  );
+};
+

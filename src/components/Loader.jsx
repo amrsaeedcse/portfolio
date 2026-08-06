@@ -51,38 +51,84 @@ const styles = `
     from { opacity: 0; transform: translateY(-10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+  @keyframes seamFlash {
+    0%   { transform: scaleX(0); opacity: 0; height: 1px; filter: drop-shadow(0 0 4px #00FFD1); }
+    35%  { transform: scaleX(1); opacity: 1; height: 2px; filter: drop-shadow(0 0 18px #00FFD1) drop-shadow(0 0 35px #00FFD1); }
+    75%  { transform: scaleX(1); opacity: 1; height: 4px; background: #ffffff; }
+    100% { transform: scaleX(1); opacity: 0; }
+  }
 
   .loader-root {
     position: fixed; inset: 0; z-index: 1000;
     font-family: 'DM Sans', sans-serif;
   }
   .loader-root.exiting .shutter-top {
+    border-color: #00FFD1;
+    box-shadow: 0 4px 35px rgba(0, 255, 209, 0.45);
     animation: shutterTop 0.8s cubic-bezier(0.85,0,0.15,1) 0.2s forwards;
     will-change: transform;
   }
   .loader-root.exiting .shutter-bottom {
+    border-color: #00FFD1;
+    box-shadow: 0 -4px 35px rgba(0, 255, 209, 0.45);
     animation: shutterBottom 0.8s cubic-bezier(0.85,0,0.15,1) 0.2s forwards;
     will-change: transform;
   }
   .loader-root.exiting .content-wrapper {
-    animation: fadeOut 0.4s ease-out forwards;
+    animation: fadeOut 0.25s ease-out forwards;
     will-change: opacity;
   }
   .loader-root.exiting .glow-pulse {
     display: none; /* Immediately hide heavy blur to prevent composite lag */
   }
 
+  .aperture-seam {
+    position: absolute; top: calc(50vh - 1px); left: 0; right: 0;
+    height: 2px; background: #00FFD1; z-index: 1050;
+    pointer-events: none; transform: scaleX(0); opacity: 0;
+    transform-origin: center;
+  }
+  .loader-root.exiting .aperture-seam {
+    animation: seamFlash 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
+  }
+
   .shutter-top {
     position: absolute; top: 0; left: 0;
     width: 100vw; height: 50vh;
     background: #05050a;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     transform-origin: bottom center;
+    overflow: hidden;
   }
   .shutter-bottom {
     position: absolute; top: 50vh; left: 0;
     width: 100vw; height: 50vh;
     background: #05050a;
+    border-top: 1px solid transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     transform-origin: top center;
+    overflow: hidden;
+  }
+  .shutter-telemetry-top {
+    position: absolute; bottom: 0.5rem; right: 8vw;
+    font-family: monospace; font-size: 0.62rem;
+    letter-spacing: 0.28em; color: #00FFD1bb;
+    text-transform: uppercase; opacity: 0;
+    transition: opacity 0.2s ease 0.1s;
+    text-shadow: 0 0 8px #00FFD166;
+  }
+  .shutter-telemetry-bottom {
+    position: absolute; top: 0.5rem; left: 8vw;
+    font-family: monospace; font-size: 0.62rem;
+    letter-spacing: 0.28em; color: #00FFD1bb;
+    text-transform: uppercase; opacity: 0;
+    transition: opacity 0.2s ease 0.1s;
+    text-shadow: 0 0 8px #00FFD166;
+  }
+  .loader-root.exiting .shutter-telemetry-top,
+  .loader-root.exiting .shutter-telemetry-bottom {
+    opacity: 1;
   }
 
   .content-wrapper {
@@ -244,8 +290,13 @@ export default function Loader({ onComplete, onExiting, readyToExit }) {
     <>
       <style>{styles}</style>
       <div className={`loader-root${isExiting ? ' exiting' : ''}`}>
-        <div className="shutter-top" />
-        <div className="shutter-bottom" />
+        <div className="aperture-seam" />
+        <div className="shutter-top">
+          <div className="shutter-telemetry-top">[ APERTURE_DISENGAGED // UNLOCKING_HUD ]</div>
+        </div>
+        <div className="shutter-bottom">
+          <div className="shutter-telemetry-bottom">[ SEC_GATE: OPEN // PROTOCOL_V3_ONLINE ]</div>
+        </div>
 
         <div className="content-wrapper">
           {/* Ambient grid */}

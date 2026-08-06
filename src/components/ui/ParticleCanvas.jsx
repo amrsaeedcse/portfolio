@@ -389,9 +389,9 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
           p.domain       = tg.domain;
           p.side         = tg.side;
           p.shocked      = false;
-          // Ensure 100% of particles reach outer perimeter BEFORE 650ms so they never meet cards halfway!
+          // Ensure 100% of particles reach outer perimeter BEFORE 1000ms so they never meet cards halfway!
           p.delay        = (section === 2) ? Math.random() * 80 : ((1 - dists[i]/maxD) * 260 + Math.random() * 120);
-          p.dur          = isFirstSkillsVisit ? (400 + Math.random() * 90) : (section === 2 ? (580 + Math.random() * 140) : (ASSEMBLE_MS + Math.random() * 200));
+          p.dur          = isFirstSkillsVisit ? (720 + Math.random() * 220) : (section === 2 ? (580 + Math.random() * 140) : (ASSEMBLE_MS + Math.random() * 200));
           p.done         = false;
           p.tOpacity     = 0.18;  // soft visibility while gliding
           p.finalOpacity = fo;    // intensifies slightly upon arrival
@@ -433,7 +433,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
 
         const isSkillsAssemble = (st.section === 2 && st.phase === 'assemble' && !hasSkillsTractorRun);
 
-        if (isSkillsAssemble && elapsed >= 1300) {
+        if (isSkillsAssemble && elapsed >= 1700) {
           hasSkillsTractorRun = true;
         }
 
@@ -442,7 +442,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
           // ── Bezier progress & Kinetic Tractor Beam ────────────────────────
           if (!p.done) {
             const lT = Math.max(0, (elapsed - p.delay) / p.dur);
-            if (lT < 1 || (isSkillsAssemble && elapsed < 1300)) allDone = false;
+            if (lT < 1 || (isSkillsAssemble && elapsed < 1700)) allDone = false;
             const e = easeOutExpo(Math.min(1, lT));
             
             p.prevCx = p.cx; 
@@ -452,8 +452,8 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
             let curTx = p.tx, curTy = p.ty;
             if (isSkillsAssemble && p.side) {
               const maxOffset = isMobile ? 65 : 280;
-              const WRAP_DUR = 650; // 0ms to 650ms: fluid flight out to intercept cards in continuous motion!
-              const PULL_DUR = 650; // 650ms to 1300ms: immediate magnetic pull toward center synchronously with DOM cards
+              const WRAP_DUR = 1000; // 0ms to 1000ms: fluid flight out to intercept cards in continuous motion!
+              const PULL_DUR = 700; // 1000ms to 1700ms: immediate magnetic pull toward center synchronously with DOM cards
               
               if (elapsed < WRAP_DUR) {
                 // Stage 1: Particles sweep out to outer card boundary without any static waiting pause
@@ -476,7 +476,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
             p.cx = u * u * p.sx + 2 * u * e * p.qx + e * e * curTx;
             p.cy = u * u * p.sy + 2 * u * e * p.qy + e * e * curTy;
 
-            if (lT >= 1 && (!isSkillsAssemble || elapsed >= 1300)) {
+            if (lT >= 1 && (!isSkillsAssemble || elapsed >= 1700)) {
               p.done = true;
             }
             // Snap brightness to full intensity upon arriving near goal (60%)
@@ -486,8 +486,8 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
             }
           }
 
-          // ── Refined Executive Micro-Pulse upon Magnetic Slam (at ~1280ms real time) ─
-          if (isSkillsAssemble && !p.shocked && elapsed >= 1280 && elapsed < 1420) {
+          // ── Refined Executive Micro-Pulse upon Magnetic Slam (at ~1680ms real time) ─
+          if (isSkillsAssemble && !p.shocked && elapsed >= 1680 && elapsed < 1820) {
             p.shocked = true;
             const dx = p.cx - logCx, dy = p.cy - logCy;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;

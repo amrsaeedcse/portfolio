@@ -169,11 +169,11 @@ export const SkillsPanel = memo(function SkillsPanel({ panelRef, isActive, isMob
                     filter: 'brightness(1)',
                   } : { opacity: 0, x: slamOffset, scale: 1, filter: 'brightness(0.3)' }}
                   transition={{
-                    // Cards stay hidden until ~520ms right as particle swarm arrives and wraps around them, creating a seamless reveal!
-                    opacity: { duration: 0.25, delay: 0.52 + (idx * 0.03) },
-                    filter: { duration: 0.65, delay: 0.65 },
-                    // At exactly 0.65s, particles and cards lock together and pull smoothly inward!
-                    x: { duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.65 }
+                    // Cards stay hidden until ~820ms right as particle swarm arrives and wraps around them, creating a seamless reveal!
+                    opacity: { duration: 0.28, delay: 0.82 + (idx * 0.03) },
+                    filter: { duration: 0.7, delay: 1.0 },
+                    // At exactly 1.0s, particles and cards lock together and pull smoothly inward!
+                    x: { duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 1.0 }
                   }}
                   role="group"
                   aria-labelledby={headingId}

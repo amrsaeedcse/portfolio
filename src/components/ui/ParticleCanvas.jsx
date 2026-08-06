@@ -21,7 +21,7 @@ const AMBER_SPEED_COLORS = Array.from({ length: 20 }, (_, i) => {
 let hasSkillsTractorRun = false; // Tracks if the kinetic tractor sequence has already executed this session
 
 // Deterministic pseudo-random seeds for ambient particles (prevents teleporting/respawning across DOM updates)
-const AMBIENT_SEEDS = Array.from({ length: 150 }, (_, i) => {
+const AMBIENT_SEEDS = Array.from({ length: 400 }, (_, i) => {
   const rx = ((Math.sin(i * 12.9898 + 78.233) * 43758.5453) % 1 + 1) % 1;
   const ry = ((Math.sin(i * 68.233 + 12.9898) * 43758.5453) % 1 + 1) % 1;
   return { rx: 0.04 + rx * 0.92, ry: 0.04 + ry * 0.92 };
@@ -126,7 +126,16 @@ function buildTargets(section, isMobile) {
   const pad = (pts) => {
     const bg = ambient(AMBIENT_N);
     const combined = [...pts, ...bg];
-    while (combined.length < N) combined.push(ambient(1)[0]);
+    let seedIdx = AMBIENT_N;
+    while (combined.length < N) {
+      const seed = AMBIENT_SEEDS[seedIdx % AMBIENT_SEEDS.length];
+      combined.push({
+        x: 20 + seed.rx * (vw - 40),
+        y: 20 + seed.ry * (vh - 40),
+        ambient: true,
+      });
+      seedIdx++;
+    }
     // Preserve deterministic array order so particles never teleport or respawn across targets during real-time DOM retargeting!
     return combined.slice(0, N);
   };

@@ -23,7 +23,7 @@ export const HeroPanel = memo(function HeroPanel({ panelRef, scrollToSection, is
         variants={VARIANTS.container} initial="hidden" animate={hasAnimated ? "visible" : "hidden"}>
         {/* Cybernetic hardware status tag */}
         <motion.div variants={VARIANTS.fadeUp} style={{ fontFamily: 'monospace', fontSize: '0.72rem', color: '#00FFD199', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>
-          <HexDecodedText text="[ SYS_ONLINE // KERNEL v3.0 ]" active={hasAnimated} speed={18} delay={220} />
+          <HexDecodedText text="[ SYSTEMS ARCHITECTURE // MOBILE & EMBEDDED ]" active={hasAnimated} speed={18} delay={220} />
         </motion.div>
         {/* Giant name with hardware decoding reveal */}
         <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(5rem, 16vw, 12rem)', lineHeight: 0.88, letterSpacing: '0.02em', color: 'oklch(96% 0.005 264)', marginBottom: '1rem', textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>

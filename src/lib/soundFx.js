@@ -1,27 +1,20 @@
-/**
- * Web Audio API Procedural Sound Synthesizer
- * Zero-asset, high-performance sound effects for interactive UI feedback.
- */
-
+// Procedural Web Audio API Sound Engine (Zero external assets required)
 let audioCtx = null;
-let soundEnabled = false;
+let soundEnabled = true;
 
-// Attempt to load preference from localStorage if available
-try {
-  const saved = localStorage.getItem('agy_sound_enabled');
+if (typeof window !== 'undefined') {
+  const saved = localStorage.getItem('bp_sound_enabled');
   if (saved !== null) {
     soundEnabled = saved === 'true';
   }
-} catch {
-  // Ignore local storage errors
 }
 
 function getAudioContext() {
   if (typeof window === 'undefined') return null;
   if (!audioCtx) {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (AudioContextClass) {
-      audioCtx = new AudioContextClass();
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) {
+      audioCtx = new AudioContext();
     }
   }
   if (audioCtx && audioCtx.state === 'suspended') {
@@ -34,131 +27,123 @@ export function isSoundEnabled() {
   return soundEnabled;
 }
 
-export function setSoundEnabled(enabled) {
-  soundEnabled = enabled;
-  try {
-    localStorage.setItem('agy_sound_enabled', String(enabled));
-  } catch {
-    // Ignore storage errors
+export function toggleSound() {
+  soundEnabled = !soundEnabled;
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('bp_sound_enabled', String(soundEnabled));
   }
-  if (enabled) {
+  if (soundEnabled) {
     playSwitchClick();
   }
-}
-
-export function toggleSound() {
-  setSoundEnabled(!soundEnabled);
   return soundEnabled;
 }
 
-/** Subtle mechanical relay click on button click */
+// 1. Mechanical Relay Switch Click (Punchy & Crisp)
 export function playSwitchClick() {
   if (!soundEnabled) return;
-  const ctx = getAudioContext();
-  if (!ctx) return;
-
   try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(820, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.04);
 
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1600, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.05);
+
+    gain.gain.setValueAtTime(0.26, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.04);
-  } catch {
-    // Graceful fallback
+    osc.stop(ctx.currentTime + 0.05);
+  } catch (err) {
+    console.debug('Audio error:', err);
   }
 }
 
-/** Subtle high-frequency blip on hover */
+// 2. High-Frequency Drafting Micro-blip (Clear & Audible)
 export function playHoverTick() {
   if (!soundEnabled) return;
-  const ctx = getAudioContext();
-  if (!ctx) return;
-
   try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(1240, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(840, ctx.currentTime + 0.025);
 
-    gain.gain.setValueAtTime(0.04, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.025);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2400, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1900, ctx.currentTime + 0.025);
+
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.025);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.025);
-  } catch {
-    // Graceful fallback
+  } catch (err) {
+    console.debug('Audio error:', err);
   }
 }
 
-/** Smooth airy card slide / pan whoosh */
+// 3. Slide Air Whoosh (Sheet transition)
 export function playSlideWhoosh() {
   if (!soundEnabled) return;
-  const ctx = getAudioContext();
-  if (!ctx) return;
-
   try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
     const osc = ctx.createOscillator();
-    const filter = ctx.createBiquadFilter();
     const gain = ctx.createGain();
 
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(220, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(540, ctx.currentTime + 0.08);
+    osc.frequency.setValueAtTime(320, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(540, ctx.currentTime + 0.09);
 
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(600, ctx.currentTime);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
 
-    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
-
-    osc.connect(filter);
-    filter.connect(gain);
+    osc.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.09);
-  } catch {
-    // Graceful fallback
+    osc.stop(ctx.currentTime + 0.11);
+  } catch (err) {
+    console.debug('Audio error:', err);
   }
 }
 
-/** High-tech modal open harmonic chime */
-export function playModalChime() {
+// 4. Harmonic Pulse Chime (Clear resonant harmonic)
+export function playPulseChime() {
   if (!soundEnabled) return;
-  const ctx = getAudioContext();
-  if (!ctx) return;
-
   try {
-    const frequencies = [587.33, 880, 1174.66]; // D5, A5, D6 chord
-    frequencies.forEach((freq, idx) => {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.03);
 
-      gain.gain.setValueAtTime(0.06, ctx.currentTime + idx * 0.03);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.035);
+
+      gain.gain.setValueAtTime(0.14, now + idx * 0.035);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.035 + 0.3);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
-      osc.start(ctx.currentTime + idx * 0.03);
-      osc.stop(ctx.currentTime + 0.22);
+      osc.start(now + idx * 0.035);
+      osc.stop(now + idx * 0.035 + 0.3);
     });
-  } catch {
-    // Graceful fallback
+  } catch (err) {
+    console.debug('Audio error:', err);
   }
 }

@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback, Suspense, lazy } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Loader from './components/Loader';
+import CustomCursor from './components/ui/CustomCursor';
+import { isSoundEnabled, toggleSound, playSwitchClick, playHoverTick } from './lib/soundFx';
 
 const ProjectDetail = lazy(() => import('./components/sections/ProjectDetail'));
 const ProjectArchive = lazy(() => import('./components/sections/ProjectArchive'));
@@ -24,8 +26,49 @@ export default function App() {
   const [activeProject, setActiveProject] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [soundOn, setSoundOn] = useState(() => isSoundEnabled());
+  const [cadMode, setCadMode] = useState(false);
+  const [currentTime, setCurrentTime] = useState('');
 
   const handleLoaderDone = useCallback(() => setLoaded(true), []);
+
+  /* Live Clock for Cairo/Zagazig Time */
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', {
+        timeZone: 'Africa/Cairo',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      });
+      setCurrentTime(timeStr);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  /* Toggle Dark CAD vs Light Parchment Mode */
+  const handleToggleCadMode = () => {
+    playSwitchClick();
+    setCadMode((prev) => {
+      const next = !prev;
+      if (next) {
+        document.documentElement.classList.add('dark-cad');
+      } else {
+        document.documentElement.classList.remove('dark-cad');
+      }
+      return next;
+    });
+  };
+
+  /* Toggle Sound */
+  const handleToggleSound = () => {
+    const newState = toggleSound();
+    setSoundOn(newState);
+  };
 
   /* Lock page scroll when a project modal is open */
   useEffect(() => {
@@ -62,6 +105,7 @@ export default function App() {
   }, [loaded]);
 
   const scrollToSection = useCallback((id) => {
+    playSwitchClick();
     setMobileMenuOpen(false);
     if (id === 'home') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -79,7 +123,10 @@ export default function App() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#F2EFE7] text-[#111318]">
+    <div className={`relative min-h-screen ${cadMode ? 'dark-cad bg-[#080E1E] text-[#F1F5F9]' : 'bg-[#F2EFE7] text-[#111318]'}`}>
+
+      {/* ── Technical CAD Reticle Cursor ─────────────────────────────────── */}
+      <CustomCursor />
 
       {/* ── Blueprint CAD Loader ─────────────────────────────────────────── */}
       <AnimatePresence>
@@ -123,36 +170,38 @@ export default function App() {
         />
       </div>
 
-      {/* ── Fixed Header Navbar ─────────────────────────────────────────── */}
-      <header className="fixed top-0 inset-x-0 z-50 px-5 md:px-14 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between border-b-2 border-[#111318] px-5 py-2.5 bg-[#F2EFE7]/92 backdrop-blur-xl">
+      {/* ── Fixed Header Navbar with Clean Spacing ──────────────────────── */}
+      <header className="fixed top-0 inset-x-0 z-50 px-4 md:px-12 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between border-b-2 border-current px-4 sm:px-6 py-2.5 bg-inherit/92 backdrop-blur-xl gap-4">
 
-          {/* Brand Mark */}
+          {/* Left: Brand Mark */}
           <button
             onClick={() => scrollToSection('home')}
-            className="flex items-baseline gap-2 cursor-pointer text-left group"
+            onMouseEnter={playHoverTick}
+            className="flex items-baseline gap-2 cursor-pointer text-left flex-none group"
           >
-            <span className="font-display font-black text-lg tracking-tight text-[#111318]">
+            <span className="font-display font-black text-lg tracking-tight">
               AMR<span className="text-[#FF4400]">.</span>SAEED
             </span>
-            <span className="font-mono text-[0.62rem] text-[#8A91A5] font-bold hidden sm:inline">
+            <span className="font-mono text-[0.62rem] text-[#8A91A5] font-bold hidden xl:inline">
               [CSE // DWG-SET]
             </span>
           </button>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6">
+          {/* Center: Navigation Links (Cleanly separated) */}
+          <nav className="hidden lg:flex items-center gap-5 xl:gap-7">
             {NAV_LINKS.map((link) => {
               const isActive = activeSection === link.id;
               return (
                 <button
                   key={link.id}
                   onClick={() => scrollToSection(link.id)}
+                  onMouseEnter={playHoverTick}
                   className="flex items-baseline gap-1.5 transition-colors cursor-pointer"
-                  style={{ color: isActive ? '#FF4400' : '#4B5162' }}
+                  style={{ color: isActive ? '#FF4400' : 'inherit' }}
                 >
                   <span className="font-mono text-[0.6rem] font-bold tabular-nums opacity-75">{link.no}</span>
-                  <span className={`font-mono text-[0.72rem] tracking-[0.14em] uppercase font-bold ${isActive ? 'border-b-2 border-[#FF4400] pb-0.5' : ''}`}>
+                  <span className={`font-mono text-[0.72rem] tracking-[0.12em] uppercase font-bold ${isActive ? 'border-b-2 border-[#FF4400] pb-0.5' : ''}`}>
                     {link.label}
                   </span>
                 </button>
@@ -160,17 +209,50 @@ export default function App() {
             })}
           </nav>
 
-          {/* Right Action CTAs */}
-          <div className="hidden sm:flex items-center gap-3">
+          {/* Right: Telemetry & Actions (No collisions) */}
+          <div className="hidden sm:flex items-center gap-2.5 flex-none">
+            {/* Live Cairo Clock with clear separation */}
+            {currentTime && (
+              <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 bg-current/5 border border-current/15 font-mono text-[0.65rem] text-inherit font-bold tabular-nums mr-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#FF4400] animate-pulse" />
+                <span>{currentTime} · UTC+3</span>
+              </div>
+            )}
+
+            {/* CAD / Parchment Inverter Toggle */}
+            <button
+              onClick={handleToggleCadMode}
+              onMouseEnter={playHoverTick}
+              className="bp-chip !text-[0.62rem] !py-1 !px-2.5 cursor-pointer font-bold"
+              title="Toggle Parchment / Dark CAD Mode"
+            >
+              {cadMode ? '☀️ PARCHMENT' : '🌙 DARK CAD'}
+            </button>
+
+            {/* Sound FX Toggle */}
+            <button
+              onClick={handleToggleSound}
+              onMouseEnter={playHoverTick}
+              className={`bp-chip !text-[0.62rem] !py-1 !px-2.5 cursor-pointer font-bold ${
+                soundOn ? '!border-[#FF4400] !text-[#FF4400]' : 'opacity-60'
+              }`}
+              title={soundOn ? 'Mute Audio' : 'Enable Audio'}
+            >
+              {soundOn ? '🔊 AUDIO ON' : '🔇 AUDIO OFF'}
+            </button>
+
             <a
               href="assets/Amr_Abdelazeem_Resume.pdf"
               download="Amr_Abdelazeem_Resume.pdf"
-              className="bp-btn-secondary !py-1.5 !px-3.5 !text-[0.68rem]"
+              onClick={playSwitchClick}
+              onMouseEnter={playHoverTick}
+              className="bp-btn-secondary !py-1.5 !px-3 !text-[0.68rem]"
             >
               Resume ↓
             </a>
             <button
               onClick={() => scrollToSection('contact')}
+              onMouseEnter={playHoverTick}
               className="bp-btn-primary !py-1.5 !px-3.5 !text-[0.68rem]"
             >
               Work Order ↗
@@ -178,17 +260,25 @@ export default function App() {
           </div>
 
           {/* Mobile Hamburger Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(true)}
-            aria-label="Open menu"
-            className="md:hidden p-2 text-[#111318] hover:bg-[#EAE6DC] transition-colors"
-          >
-            <span className="flex flex-col gap-1 w-5">
-              <span className="h-0.5 w-full bg-[#111318]" />
-              <span className="h-0.5 w-full bg-[#FF4400]" />
-              <span className="h-0.5 w-full bg-[#111318]" />
-            </span>
-          </button>
+          <div className="flex sm:hidden items-center gap-2">
+            <button
+              onClick={handleToggleCadMode}
+              className="bp-chip !text-[0.6rem] !py-0.5 !px-2"
+            >
+              {cadMode ? '☀️' : '🌙'}
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+              className="p-2 text-current"
+            >
+              <span className="flex flex-col gap-1 w-5">
+                <span className="h-0.5 w-full bg-current" />
+                <span className="h-0.5 w-full bg-[#FF4400]" />
+                <span className="h-0.5 w-full bg-current" />
+              </span>
+            </button>
+          </div>
 
         </div>
       </header>
@@ -201,15 +291,17 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[100] bg-[#F2EFE7] flex flex-col justify-between p-6 border-8 border-[#111318]"
+            className={`fixed inset-0 z-[100] flex flex-col justify-between p-6 border-8 border-current ${
+              cadMode ? 'bg-[#080E1E] text-[#F1F5F9]' : 'bg-[#F2EFE7] text-[#111318]'
+            }`}
           >
-            <div className="flex items-center justify-between pb-6 border-b border-[#111318]">
+            <div className="flex items-center justify-between pb-6 border-b border-current">
               <div className="font-mono font-bold text-[#FF4400] text-sm">
                 [ DRAWING INDEX ]
               </div>
               <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-[#111318] font-mono text-xl font-bold"
+                onClick={() => { playSwitchClick(); setMobileMenuOpen(false); }}
+                className="p-2 text-current font-mono text-xl font-bold"
               >
                 ✕
               </button>
@@ -223,14 +315,29 @@ export default function App() {
                   className="text-left flex items-baseline gap-3"
                 >
                   <span className="font-mono font-bold text-sm text-[#FF4400]">{link.no}</span>
-                  <span className="font-display font-black text-3xl text-[#111318] hover:text-[#FF4400] transition-colors uppercase">
+                  <span className="font-display font-black text-3xl hover:text-[#FF4400] transition-colors uppercase">
                     {link.label}
                   </span>
                 </button>
               ))}
             </div>
 
-            <div className="space-y-3 pt-6 border-t border-[#111318]">
+            <div className="space-y-3 pt-6 border-t border-current">
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  onClick={handleToggleCadMode}
+                  className="bp-chip flex-1 text-center !py-2 font-bold"
+                >
+                  {cadMode ? '☀️ PARCHMENT MODE' : '🌙 DARK CAD MODE'}
+                </button>
+                <button
+                  onClick={handleToggleSound}
+                  className="bp-chip flex-1 text-center !py-2 font-bold"
+                >
+                  {soundOn ? '🔊 AUDIO ON' : '🔇 AUDIO OFF'}
+                </button>
+              </div>
+
               <a
                 href="assets/Amr_Abdelazeem_Resume.pdf"
                 download="Amr_Abdelazeem_Resume.pdf"

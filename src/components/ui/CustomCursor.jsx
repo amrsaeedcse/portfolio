@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function CustomCursor() {
   const [coords, setCoords] = useState({ x: -100, y: -100 });
@@ -6,19 +6,13 @@ export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
 
-  const ringRef = useRef(null);
-  const ringPos = useRef({ x: -100, y: -100 });
-  const targetPos = useRef({ x: -100, y: -100 });
-  const rafRef = useRef(null);
-
   useEffect(() => {
     // Only activate on pointer devices (mice, trackpads), not touchscreens
     if (typeof window === 'undefined' || !window.matchMedia('(pointer: fine)').matches) return;
 
     const handleMouseMove = (e) => {
-      targetPos.current = { x: e.clientX, y: e.clientY };
       setCoords({ x: e.clientX, y: e.clientY });
-      setIsVisible(true);
+      if (!isVisible) setIsVisible(true);
 
       // Check if hovering interactive target
       const target = e.target;
@@ -30,7 +24,7 @@ export default function CustomCursor() {
           target.closest('input') ||
           target.closest('textarea') ||
           target.closest('.bp-chip') ||
-          target.closest('.parts-row');
+          target.closest('.sheet-frame');
 
         setIsHovered(!!isInteractive);
       }
@@ -45,66 +39,56 @@ export default function CustomCursor() {
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mouseleave', handleMouseLeave);
 
-    // Direct DOM manipulation in RAF loop for 60fps smoothness without React re-renders
-    const loop = () => {
-      ringPos.current.x += (targetPos.current.x - ringPos.current.x) * 0.22;
-      ringPos.current.y += (targetPos.current.y - ringPos.current.y) * 0.22;
-
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0) translate(-50%, -50%)`;
-      }
-      rafRef.current = requestAnimationFrame(loop);
-    };
-    rafRef.current = requestAnimationFrame(loop);
-
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mouseleave', handleMouseLeave);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [isVisible]);
 
   if (!isVisible) return null;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden" aria-hidden="true">
-      {/* ── Center Reticle Dot ────────────────────────────────────────── */}
+      {/* ── Precision Reticle Assembly (Perfect Concentric Alignment) ── */}
       <div
-        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-signal transition-transform duration-75"
+        className="fixed top-0 left-0 transition-transform duration-75 ease-out"
         style={{
-          transform: `translate3d(${coords.x}px, ${coords.y}px, 0) translate(-50%, -50%) scale(${isClicking ? 0.7 : 1})`,
+          transform: `translate3d(${coords.x}px, ${coords.y}px, 0) translate(-50%, -50%)`,
         }}
-      />
-
-      {/* ── Outer Drafting Reticle Ring ───────────────────────────────── */}
-      <div
-        ref={ringRef}
-        className={`fixed top-0 left-0 border transition-[width,height,border-color,background-color] duration-150 rounded-full ${
-          isHovered
-            ? 'w-10 h-10 border-signal bg-signal/10'
-            : 'w-7 h-7 border-ink/40 bg-transparent'
-        }`}
       >
-        {/* Reticle Crosshair Ticks */}
-        <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-px h-1 bg-current opacity-60" />
-        <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-px h-1 bg-current opacity-60" />
-        <span className="absolute -left-1 top-1/2 -translate-y-1/2 h-px w-1 bg-current opacity-60" />
-        <span className="absolute -right-1 top-1/2 -translate-y-1/2 h-px w-1 bg-current opacity-60" />
-      </div>
-
-      {/* ── Real-time Coordinate HUD ──────────────────────────────────── */}
-      {isHovered && (
+        {/* Center Crosshair Dot */}
         <div
-          className="fixed top-0 left-0 font-mono text-[0.52rem] text-signal font-bold tracking-widest bg-paper/90 px-1 py-0.5 border border-signal/40 pointer-events-none"
-          style={{
-            transform: `translate3d(${coords.x}px, ${coords.y + 26}px, 0) translate(-50%, 0)`,
-          }}
+          className={`w-2 h-2 rounded-full bg-[#FF4400] transition-transform duration-100 ${
+            isClicking ? 'scale-75' : isHovered ? 'scale-125' : 'scale-100'
+          }`}
+        />
+
+        {/* Outer Drafting Ring (Expands symmetrically in place) */}
+        <div
+          className={`absolute inset-0 -m-3.5 rounded-full border transition-all duration-200 ease-out flex items-center justify-center ${
+            isHovered
+              ? 'w-9 h-9 -m-4.5 border-[#FF4400] bg-[#FF4400]/15 scale-110'
+              : 'w-7 h-7 -m-3.5 border-current opacity-40 bg-transparent scale-100'
+          }`}
         >
-          X:{Math.round(coords.x)} Y:{Math.round(coords.y)}
+          {/* Reticle Crosshair Ticks */}
+          <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-px h-1 bg-current opacity-70" />
+          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-px h-1 bg-current opacity-70" />
+          <span className="absolute -left-1 top-1/2 -translate-y-1/2 h-px w-1 bg-current opacity-70" />
+          <span className="absolute -right-1 top-1/2 -translate-y-1/2 h-px w-1 bg-current opacity-70" />
         </div>
-      )}
+
+        {/* Real-time Coordinate HUD Badge below cursor */}
+        {isHovered && (
+          <div
+            className="absolute top-6 left-1/2 -translate-x-1/2 font-mono text-[0.52rem] text-[#FF4400] font-bold tracking-widest px-1 py-0.5 border border-[#FF4400]/50 bg-white/95 dark:bg-black/95 shadow-sm whitespace-nowrap"
+          >
+            X:{Math.round(coords.x)}mm · Y:{Math.round(coords.y)}mm
+          </div>
+        )}
+      </div>
     </div>
   );
 }

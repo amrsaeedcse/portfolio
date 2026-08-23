@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import TiltCard from '../ui/TiltCard';
+import { playSwitchClick, playHoverTick, playPulseChime } from '../../lib/soundFx';
 
 const ARCH_MODES = {
   mobile: {
@@ -18,6 +20,7 @@ const ARCH_MODES = {
       { label: 'Platform Bridge', val: 'Native C-API' },
       { label: 'Architecture', val: 'Clean / SOLID' },
     ],
+    actionLabel: 'Transmit BLoC Event Stream ⚡',
   },
   embedded: {
     id: 'embedded',
@@ -35,12 +38,23 @@ const ARCH_MODES = {
       { label: 'Serial Buses', val: 'UART / I2C / SPI' },
       { label: 'Digital Logic', val: 'VHDL / FPGA' },
     ],
+    actionLabel: 'Trigger Sensor Actuation Pulse ⚡',
   },
 };
 
 export default function Hero({ scrollToSection }) {
   const [activeMode, setActiveMode] = useState('mobile');
+  const [isPulsing, setIsPulsing] = useState(false);
+  const [pulseCount, setPulseCount] = useState(0);
+
   const current = ARCH_MODES[activeMode];
+
+  const handleTriggerPulse = () => {
+    playPulseChime();
+    setIsPulsing(true);
+    setPulseCount((c) => c + 1);
+    setTimeout(() => setIsPulsing(false), 900);
+  };
 
   return (
     <section id="home" className="relative min-h-[94vh] flex flex-col justify-center px-5 md:px-14 pt-32 pb-20 overflow-hidden">
@@ -102,7 +116,8 @@ export default function Hero({ scrollToSection }) {
               className="flex flex-wrap items-center gap-3.5 mt-8"
             >
               <button
-                onClick={() => scrollToSection('work')}
+                onClick={() => { playSwitchClick(); scrollToSection('work'); }}
+                onMouseEnter={playHoverTick}
                 className="bp-btn-primary"
               >
                 Inspect Drawing Set <span aria-hidden="true">↗</span>
@@ -110,12 +125,15 @@ export default function Hero({ scrollToSection }) {
               <a
                 href="assets/Amr_Abdelazeem_Resume.pdf"
                 download="Amr_Abdelazeem_Resume.pdf"
+                onClick={playSwitchClick}
+                onMouseEnter={playHoverTick}
                 className="bp-btn-secondary"
               >
                 Download Resume <span aria-hidden="true">↓</span>
               </a>
               <button
-                onClick={() => scrollToSection('contact')}
+                onClick={() => { playSwitchClick(); scrollToSection('contact'); }}
+                onMouseEnter={playHoverTick}
                 className="bp-btn-secondary"
               >
                 Work Order →
@@ -130,109 +148,129 @@ export default function Hero({ scrollToSection }) {
               className="flex items-center gap-4 mt-8 pt-6 border-t border-[#111318]/15 text-xs font-mono text-[#4B5162]"
             >
               <span>PROFILES:</span>
-              <a href="https://github.com/amrsaeedcse" target="_blank" rel="noreferrer" className="hover:text-[#FF4400] transition-colors font-bold">
+              <a href="https://github.com/amrsaeedcse" target="_blank" rel="noreferrer" onMouseEnter={playHoverTick} className="hover:text-[#FF4400] transition-colors font-bold">
                 GITHUB ↗
               </a>
-              <a href="https://linkedin.com/in/amrsaeed-cse" target="_blank" rel="noreferrer" className="hover:text-[#3A57C4] transition-colors font-bold">
+              <a href="https://linkedin.com/in/amrsaeed-cse" target="_blank" rel="noreferrer" onMouseEnter={playHoverTick} className="hover:text-[#3A57C4] transition-colors font-bold">
                 LINKEDIN ↗
               </a>
-              <a href="https://wa.me/201121153059" target="_blank" rel="noreferrer" className="hover:text-[#0E8345] transition-colors font-bold">
+              <a href="https://wa.me/201121153059" target="_blank" rel="noreferrer" onMouseEnter={playHoverTick} className="hover:text-[#0E8345] transition-colors font-bold">
                 WHATSAPP ↗
               </a>
             </motion.div>
           </div>
 
-          {/* Right Column: Interactive Blueprint Architecture Hub */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="sheet-frame p-6 sm:p-8 shadow-md relative overflow-hidden"
-          >
-            {/* Top Switcher Tabs */}
-            <div className="flex items-center justify-between border-b border-[#111318]/15 pb-4 mb-5">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setActiveMode('mobile')}
-                  className={`px-3.5 py-1.5 rounded-sm font-mono text-xs font-bold uppercase transition-all cursor-pointer ${
-                    activeMode === 'mobile'
-                      ? 'bg-[#111318] text-[#F2EFE7] shadow-sm'
-                      : 'text-[#4B5162] hover:text-[#111318] bg-transparent border border-[#111318]/20'
-                  }`}
-                >
-                  📱 Mobile Stack
-                </button>
-                <button
-                  onClick={() => setActiveMode('embedded')}
-                  className={`px-3.5 py-1.5 rounded-sm font-mono text-xs font-bold uppercase transition-all cursor-pointer ${
-                    activeMode === 'embedded'
-                      ? 'bg-[#3A57C4] text-white shadow-sm'
-                      : 'text-[#4B5162] hover:text-[#111318] bg-transparent border border-[#111318]/20'
-                  }`}
-                >
-                  ⚡ Embedded IoT
-                </button>
+          {/* Right Column: Interactive 3D Blueprint Architecture Hub */}
+          <TiltCard maxTilt={5}>
+            <div className="sheet-frame p-6 sm:p-8 shadow-md relative overflow-hidden bg-[#EAE6DC]">
+              {/* Top Switcher Tabs */}
+              <div className="flex items-center justify-between border-b border-[#111318]/15 pb-4 mb-5">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => { playSwitchClick(); setActiveMode('mobile'); }}
+                    onMouseEnter={playHoverTick}
+                    className={`px-3.5 py-1.5 rounded-sm font-mono text-xs font-bold uppercase transition-all cursor-pointer ${
+                      activeMode === 'mobile'
+                        ? 'bg-[#111318] text-[#F2EFE7] shadow-sm'
+                        : 'text-[#4B5162] hover:text-[#111318] bg-transparent border border-[#111318]/20'
+                    }`}
+                  >
+                    📱 Mobile Stack
+                  </button>
+                  <button
+                    onClick={() => { playSwitchClick(); setActiveMode('embedded'); }}
+                    onMouseEnter={playHoverTick}
+                    className={`px-3.5 py-1.5 rounded-sm font-mono text-xs font-bold uppercase transition-all cursor-pointer ${
+                      activeMode === 'embedded'
+                        ? 'bg-[#3A57C4] text-white shadow-sm'
+                        : 'text-[#4B5162] hover:text-[#111318] bg-transparent border border-[#111318]/20'
+                    }`}
+                  >
+                    ⚡ Embedded IoT
+                  </button>
+                </div>
+
+                <span className="bp-stamp text-[#0E8345] border-[#0E8345] bg-[#0E8345]/10">
+                  ACTIVE BOM
+                </span>
               </div>
 
-              <span className="bp-stamp text-[#0E8345] border-[#0E8345] bg-[#0E8345]/10">
-                ACTIVE BOM
-              </span>
-            </div>
+              {/* Architecture Visual Layers */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={current.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                  className="space-y-3"
+                >
+                  <div className="flex items-center justify-between font-mono text-xs font-bold text-[#FF4400] mb-1">
+                    <span>{current.tag}</span>
+                    <span className="text-[#8A91A5] text-[0.65rem]">
+                      STATUS: {isPulsing ? 'TRANSMITTING STREAM…' : 'SYNCHRONIZED'}
+                    </span>
+                  </div>
 
-            {/* Architecture Visual Layers */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={current.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                className="space-y-3"
-              >
-                <div className="flex items-center justify-between font-mono text-xs font-bold text-[#FF4400] mb-1">
-                  <span>{current.tag}</span>
-                  <span className="text-[#8A91A5] text-[0.65rem]">STATUS: COMPILED</span>
-                </div>
-
-                {/* 4 Technical Layer Items */}
-                {current.layers.map((layer, idx) => (
-                  <motion.div
-                    key={layer.name}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05, duration: 0.3 }}
-                    className="p-3 bg-[#F2EFE7] border border-[#111318]/15 hover:border-[#111318] transition-all flex items-center justify-between gap-3 group"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className="text-lg flex-none">{layer.icon}</span>
-                      <div className="min-w-0">
-                        <div className="font-mono font-bold text-[#111318] text-xs sm:text-sm group-hover:text-[#FF4400] transition-colors truncate">
-                          {layer.name}
-                        </div>
-                        <div className="font-mono text-[0.68rem] text-[#4B5162] truncate">
-                          {layer.desc}
+                  {/* 4 Technical Layer Items with Dynamic Pulse Animation */}
+                  {current.layers.map((layer, idx) => (
+                    <motion.div
+                      key={layer.name}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{
+                        opacity: 1,
+                        x: 0,
+                        backgroundColor: isPulsing ? 'rgba(255, 68, 0, 0.12)' : '#F2EFE7',
+                        borderColor: isPulsing ? '#FF4400' : 'rgba(17, 19, 24, 0.15)',
+                      }}
+                      transition={{ delay: idx * 0.05, duration: 0.2 }}
+                      className="p-3 border transition-colors flex items-center justify-between gap-3 group"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="text-lg flex-none">{layer.icon}</span>
+                        <div className="min-w-0">
+                          <div className="font-mono font-bold text-[#111318] text-xs sm:text-sm group-hover:text-[#FF4400] transition-colors truncate">
+                            {layer.name}
+                          </div>
+                          <div className="font-mono text-[0.68rem] text-[#4B5162] truncate">
+                            {layer.desc}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <span className="bp-stamp !text-[0.58rem] !py-0.5 !px-2 flex-none text-[#111318] border-[#111318]">
-                      {layer.status}
-                    </span>
-                  </motion.div>
-                ))}
-
-                {/* Live Metrics Grid */}
-                <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[#111318]/15 mt-2">
-                  {current.telemetry.map((t) => (
-                    <div key={t.label} className="p-2 bg-[#F2EFE7] border border-[#111318]/15 text-center">
-                      <div className="font-mono text-[0.6rem] text-[#8A91A5] uppercase">{t.label}</div>
-                      <div className="font-mono text-xs text-[#111318] font-bold mt-0.5 truncate">{t.val}</div>
-                    </div>
+                      <span className={`bp-stamp !text-[0.58rem] !py-0.2 !px-2 flex-none ${isPulsing ? 'bg-[#FF4400] text-white border-[#FF4400]' : 'text-[#111318] border-[#111318]'}`}>
+                        {isPulsing ? 'STREAMING' : layer.status}
+                      </span>
+                    </motion.div>
                   ))}
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
+
+                  {/* Live Metrics Grid */}
+                  <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[#111318]/15 mt-2">
+                    {current.telemetry.map((t) => (
+                      <div key={t.label} className="p-2 bg-[#F2EFE7] border border-[#111318]/15 text-center">
+                        <div className="font-mono text-[0.6rem] text-[#8A91A5] uppercase">{t.label}</div>
+                        <div className="font-mono text-xs text-[#111318] font-bold mt-0.5 truncate">{t.val}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Interactive Live Signal Simulator Trigger */}
+                  <button
+                    onClick={handleTriggerPulse}
+                    onMouseEnter={playHoverTick}
+                    className="w-full mt-3 py-2.5 px-4 font-mono text-xs font-bold uppercase tracking-wider bg-[#F2EFE7] hover:bg-[#111318] text-[#111318] hover:text-white border border-[#111318] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.98]"
+                  >
+                    <span>{current.actionLabel}</span>
+                    {pulseCount > 0 && (
+                      <span className="bp-stamp !text-[0.55rem] !py-0 !px-1.5 text-[#FF4400] border-[#FF4400] bg-white">
+                        PULSE #{pulseCount}
+                      </span>
+                    )}
+                  </button>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </TiltCard>
 
         </div>
 

@@ -27,15 +27,15 @@
 
   html {
     scroll-behavior: smooth;
-    background-color: #F2EFE7;
-    color: #111318;
-    color-scheme: light;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   body {
     font-family: var(--font-body);
-    background-color: #F2EFE7;
-    color: #111318;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -47,20 +47,81 @@
     height: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: #F2EFE7;
-    border-left: 1px solid rgba(17, 19, 24, 0.12);
+    background: var(--color-paper);
+    border-left: 1px solid var(--color-line);
   }
   ::-webkit-scrollbar-thumb {
-    background: #111318;
+    background: var(--color-ink);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #FF4400;
+    background: var(--color-signal);
   }
 
   input, textarea, button, select {
     font: inherit;
     color: inherit;
   }
+}
+
+/* ── Dark CAD Mode Overrides ─────────────────────────────────────────────── */
+.dark-cad {
+  --color-paper: #080E1E;
+  --color-paper-2: #0E162B;
+  --color-paper-3: #141F3D;
+  --color-ink: #F1F5F9;
+  --color-ink-2: #94A3B8;
+  --color-ink-3: #64748B;
+  --color-line: rgba(255, 255, 255, 0.12);
+  --color-line-strong: rgba(255, 255, 255, 0.25);
+  --color-signal: #FF4400;
+  --color-blueprint: #38BDF8;
+  --color-approved: #10B981;
+}
+
+.dark-cad .sheet-frame {
+  background-color: #0E162B !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #F1F5F9 !important;
+}
+
+.dark-cad .sheet-frame::before,
+.dark-cad .sheet-frame::after {
+  color: #38BDF8 !important;
+}
+
+.dark-cad .bp-stamp {
+  border-color: currentColor;
+}
+
+.dark-cad .bp-btn-primary {
+  background-color: #F1F5F9 !important;
+  color: #080E1E !important;
+  border-color: #F1F5F9 !important;
+}
+.dark-cad .bp-btn-primary:hover {
+  background-color: #FF4400 !important;
+  border-color: #FF4400 !important;
+  color: #FFFFFF !important;
+}
+
+.dark-cad .bp-btn-secondary {
+  background-color: transparent !important;
+  color: #F1F5F9 !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+.dark-cad .bp-btn-secondary:hover {
+  background-color: #0E162B !important;
+  border-color: #F1F5F9 !important;
+}
+
+.dark-cad .bp-chip {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #94A3B8 !important;
+}
+.dark-cad .bp-chip:hover {
+  color: #F1F5F9 !important;
+  border-color: #38BDF8 !important;
 }
 
 /* ── Blueprint Drafting Grid Background ──────────────────────────────────── */
@@ -70,9 +131,15 @@
   pointer-events: none;
   z-index: 0;
   background-image:
-    linear-gradient(rgba(58, 87, 196, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(58, 87, 196, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(58, 87, 196, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(58, 87, 196, 0.06) 1px, transparent 1px);
   background-size: 32px 32px;
+}
+
+.dark-cad .bp-grid {
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.06) 1px, transparent 1px);
 }
 
 .bp-vignette {
@@ -90,10 +157,11 @@
 
   /* Blueprint Sheet Frame with Crosshairs */
   .sheet-frame {
-    background-color: #EAE6DC;
-    border: 1px solid rgba(17, 19, 24, 0.18);
+    background-color: var(--color-paper-2);
+    border: 1px solid var(--color-line-strong);
     position: relative;
-    box-shadow: 0 4px 20px rgba(17, 19, 24, 0.04);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s ease;
   }
 
   .sheet-frame::before,
@@ -103,7 +171,7 @@
     font-family: var(--font-mono);
     font-size: 11px;
     line-height: 1;
-    color: rgba(17, 19, 24, 0.4);
+    color: var(--color-signal);
     pointer-events: none;
     z-index: 5;
   }
@@ -137,16 +205,16 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    background-color: #111318;
-    color: #F2EFE7;
-    border: 1px solid #111318;
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    border: 1px solid var(--color-ink);
     cursor: pointer;
     text-decoration: none;
     transition: all 0.2s ease;
   }
   .bp-btn-primary:hover {
-    background-color: #FF4400;
-    border-color: #FF4400;
+    background-color: var(--color-signal);
+    border-color: var(--color-signal);
     color: #FFFFFF;
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(255, 68, 0, 0.25);
@@ -165,15 +233,15 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     background-color: transparent;
-    color: #111318;
-    border: 1px solid rgba(17, 19, 24, 0.3);
+    color: var(--color-ink);
+    border: 1px solid var(--color-line-strong);
     cursor: pointer;
     text-decoration: none;
     transition: all 0.2s ease;
   }
   .bp-btn-secondary:hover {
-    background-color: #EAE6DC;
-    border-color: #111318;
+    background-color: var(--color-paper-2);
+    border-color: var(--color-ink);
     transform: translateY(-2px);
   }
 
@@ -188,12 +256,12 @@
     font-weight: 600;
     letter-spacing: 0.04em;
     background-color: rgba(17, 19, 24, 0.05);
-    border: 1px solid rgba(17, 19, 24, 0.15);
-    color: #4B5162;
+    border: 1px solid var(--color-line);
+    color: var(--color-ink-2);
     transition: all 0.2s ease;
   }
   .bp-chip:hover {
-    border-color: #111318;
-    color: #111318;
+    border-color: var(--color-ink);
+    color: var(--color-ink);
   }
 }

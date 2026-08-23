@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import TiltCard from '../ui/TiltCard';
+import { playSwitchClick, playHoverTick } from '../../lib/soundFx';
 
 const SKILL_CATEGORIES = [
   {
@@ -70,13 +72,13 @@ export default function Skills() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 pb-4 border-b border-[#111318]/15"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 pb-4 border-b border-current/15"
         >
           <div>
             <span className="bp-stamp text-[#3A57C4] border-[#3A57C4] mb-2 block w-fit">
               SHEET 02 // BILL OF MATERIALS (BOM)
             </span>
-            <h2 className="font-display font-black text-3xl sm:text-5xl text-[#111318] tracking-tight uppercase">
+            <h2 className="font-display font-black text-3xl sm:text-5xl tracking-tight uppercase">
               TECHNICAL MATRIX.
             </h2>
           </div>
@@ -88,11 +90,12 @@ export default function Skills() {
               return (
                 <button
                   key={cat.id}
-                  onClick={() => setActiveTab(cat.id)}
+                  onClick={() => { playSwitchClick(); setActiveTab(cat.id); }}
+                  onMouseEnter={playHoverTick}
                   className={`px-3.5 py-1.5 font-mono text-xs font-bold uppercase transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-[#111318] text-[#F2EFE7] shadow-sm'
-                      : 'text-[#4B5162] hover:text-[#111318] bg-transparent border border-[#111318]/20'
+                      ? 'bg-current text-[#F2EFE7] dark:text-[#080E1E] shadow-sm'
+                      : 'text-inherit/70 hover:text-inherit bg-transparent border border-current/20'
                   }`}
                 >
                   [{cat.code}] {cat.title}
@@ -118,21 +121,27 @@ export default function Skills() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.04, duration: 0.3 }}
-                className="sheet-frame p-5 border border-[#111318]/15 bg-[#EAE6DC] flex flex-col justify-between group"
               >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="font-display font-bold text-[#111318] text-base group-hover:text-[#FF4400] transition-colors">
-                      {skill.name}
-                    </span>
-                    <span className="bp-stamp !text-[0.58rem] !py-0.2 !px-1.5 text-[#111318] border-[#111318]">
-                      {skill.level}
-                    </span>
+                <TiltCard maxTilt={5}>
+                  <div
+                    onMouseEnter={playHoverTick}
+                    className="sheet-frame p-5 border border-current/15 flex flex-col justify-between group h-full"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="font-display font-bold text-base group-hover:text-[#FF4400] transition-colors">
+                          {skill.name}
+                        </span>
+                        <span className="bp-stamp !text-[0.58rem] !py-0.2 !px-1.5 text-current border-current">
+                          {skill.level}
+                        </span>
+                      </div>
+                      <p className="text-inherit/70 text-xs font-mono leading-relaxed">
+                        {skill.desc}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-[#4B5162] text-xs font-mono leading-relaxed">
-                    {skill.desc}
-                  </p>
-                </div>
+                </TiltCard>
               </motion.div>
             ))}
           </motion.div>

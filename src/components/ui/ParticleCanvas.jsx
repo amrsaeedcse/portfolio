@@ -1,582 +1,548 @@
 import { useEffect, useRef, memo } from 'react';
 
-// ── Constants ─────────────────────────────────────────────────────────────────
-const N           = 400;
-const SHAPE_N     = 320;  // exact count of points for unbroken closed perimeters
-const AMBIENT_N   = 80;   // exact count of floating ambient stars
-const ASSEMBLE_MS = 1650; // smooth, unobtrusive convergence
-const MOUSE_R     = 72;
-const MOUSE_STR   = 1100;
-const easeOutExpo = t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
-// Pre-calculate colors to prevent 22,000 string allocations per second
-// Blueprint palette: signal-orange ramp for SW domains, construction-blue ramp for HW
-const SPEED_COLORS = Array.from({ length: 20 }, (_, i) => {
-  const norm = i / 19;
-  return `rgb(255,${Math.round(77 + norm * 123)},${Math.round(norm * 150)})`;
-});
-const BLUE_SPEED_COLORS = Array.from({ length: 20 }, (_, i) => {
-  const norm = i / 19;
-  return `rgb(${Math.round(58 + norm * 82)},${Math.round(87 + norm * 78)},${Math.round(196 + norm * 44)})`;
-});
-let hasSkillsTractorRun = false; // Tracks if the kinetic tractor sequence has already executed this session
+// ── Particle Configuration ───────────────────────────────────────────────────
+const AMBIENT_COUNT = 90;
+const SHAPE_COUNT = 160;
+const MOUSE_RADIUS = 110;
+const MOUSE_RADIUS_SQ = MOUSE_RADIUS * MOUSE_RADIUS;
 
-// Deterministic pseudo-random seeds for ambient particles (prevents teleporting/respawning across DOM updates)
-const AMBIENT_SEEDS = Array.from({ length: 400 }, (_, i) => {
-  const rx = ((Math.sin(i * 12.9898 + 78.233) * 43758.5453) % 1 + 1) % 1;
-  const ry = ((Math.sin(i * 68.233 + 12.9898) * 43758.5453) % 1 + 1) % 1;
-  return { rx: 0.04 + rx * 0.92, ry: 0.04 + ry * 0.92 };
-});
+// Palette: Blueprint Blue and Signal Orange
+const COLOR_SIGNAL = 'rgba(255, 68, 0, ';
+const COLOR_BLUE   = 'rgba(58, 87, 196, ';
+const COLOR_INK    = 'rgba(26, 29, 35, ';
 
-// Helper to acquire pure, un-rotated bounding boxes without GSAP 3D transformation distortion
-function getFlatRect(element) {
-  if (!element) return null;
-  const panel = element.closest('.section-panel') || document.querySelector('.skills-panel');
-  const oldTransform = panel ? panel.style.transform : '';
-  if (panel) panel.style.transform = 'translate3d(0, 0, 0)';
-  const rect = element.getBoundingClientRect();
-  if (panel) panel.style.transform = oldTransform;
-  return rect;
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
 }
 
-// ── Distribute N points evenly around a rect perimeter ───────────────────────
-function rectPts(rect, n, inflate = 0) {
-  const x = rect.left - inflate, y = rect.top - inflate;
-  const w = rect.width + inflate*2, h = rect.height + inflate*2;
+function clamp(v, min, max) {
+  return Math.max(min, Math.min(max, v));
+}
+
+// ── Geometry Generators for Section Reticles ──────────────────────────────────
+function generateHeroTargets(vw, vh) {
+  const cx = vw * 0.5;
+  const cy = vh * 0.44;
+  const w = Math.min(vw * 0.82, 920);
+  const h = Math.min(vh * 0.46, 320);
+  const x0 = cx - w / 2;
+  const y0 = cy - h / 2;
   const perim = 2 * (w + h);
   const pts = [];
-  for (let i = 0; i < n; i++) {
-    const d = (i / n) * perim;
+
+  // Frame perimeter
+  for (let i = 0; i < 110; i++) {
+    const d = (i / 110) * perim;
     let px, py;
-    if      (d < w)         { px = x + d;           py = y; }
-    else if (d < w + h)     { px = x + w;            py = y + (d - w); }
-    else if (d < 2*w + h)   { px = x + w - (d-w-h); py = y + h; }
-    else                    { px = x;                py = y + h - (d-2*w-h); }
-    pts.push({ x: px, y: py });
+    if (d < w) { px = x0 + d; py = y0; }
+    else if (d < w + h) { px = x0 + w; py = y0 + (d - w); }
+    else if (d < 2 * w + h) { px = x0 + w - (d - w - h); py = y0 + h; }
+    else { px = x0; py = y0 + h - (d - 2 * w - h); }
+    pts.push({ x: px, y: py, color: 'signal', size: 1.6, speed: 0.08 });
+  }
+
+  // Crosshair center reticles
+  for (let i = 0; i < 25; i++) {
+    const t = (i / 24) * 2 - 1;
+    pts.push({ x: cx + t * (w * 0.42), y: cy, color: 'blue', size: 1.3, speed: 0.05 });
+  }
+  for (let i = 0; i < 25; i++) {
+    const t = (i / 24) * 2 - 1;
+    pts.push({ x: cx, y: cy + t * (h * 0.42), color: 'blue', size: 1.3, speed: 0.05 });
   }
   return pts;
 }
 
-// Distribute n pts across multiple rects proportionally by perimeter
-function multiRectPts(rects, n, inflate = 0) {
-  if (!rects.length) return [];
-  const perims = rects.map(r => 2 * (r.width + r.height));
-  const total  = perims.reduce((a, b) => a + b, 0);
-  const pts    = [];
-  rects.forEach((r, i) => {
-    const count = Math.max(4, Math.round((perims[i] / total) * n));
-    pts.push(...rectPts(r, count, inflate));
+function generateAboutTargets(vw, vh) {
+  const isMobile = vw < 768;
+  const cx = isMobile ? vw * 0.5 : vw * 0.28;
+  const cy = isMobile ? vh * 0.35 : vh * 0.48;
+  const size = isMobile ? Math.min(vw * 0.7, 240) : Math.min(vw * 0.22, 280);
+  const pts = [];
+
+  // Square figure frame around FIG.01
+  const half = size / 2;
+  for (let i = 0; i < 100; i++) {
+    const perim = size * 4;
+    const d = (i / 100) * perim;
+    let px, py;
+    if (d < size) { px = cx - half + d; py = cy - half; }
+    else if (d < size * 2) { px = cx + half; py = cy - half + (d - size); }
+    else if (d < size * 3) { px = cx + half - (d - size * 2); py = cy + half; }
+    else { px = cx - half; py = cy + half - (d - size * 3); }
+    pts.push({ x: px, y: py, color: 'signal', size: 1.5, speed: 0.07 });
+  }
+
+  // Measurement callout dimension line
+  const dimX = isMobile ? cx : cx + half + 36;
+  const dimYStart = cy - half;
+  const dimYEnd = cy + half;
+  for (let i = 0; i < 30; i++) {
+    const t = i / 29;
+    pts.push({ x: dimX, y: dimYStart + t * (dimYEnd - dimYStart), color: 'blue', size: 1.2, speed: 0.04 });
+  }
+  for (let i = 0; i < 30; i++) {
+    const t = i / 29;
+    pts.push({ x: dimX + (t - 0.5) * 24, y: (i < 15 ? dimYStart : dimYEnd), color: 'blue', size: 1.2, speed: 0.04 });
+  }
+  return pts;
+}
+
+function generateSkillsTargets(vw, vh) {
+  const isMobile = vw < 768;
+  const cx = vw * 0.5;
+  const cy = vh * 0.50;
+  const w = Math.min(vw * 0.88, 980);
+  const h = isMobile ? vh * 0.6 : 380;
+  const pts = [];
+
+  // Dual bus rails (Top = Signal Orange / SW, Bottom = Blueprint Blue / HW)
+  const yTop = cy - h * 0.35;
+  const yBot = cy + h * 0.35;
+
+  for (let i = 0; i < 60; i++) {
+    const t = i / 59;
+    const px = cx - w / 2 + t * w;
+    pts.push({ x: px, y: yTop, color: 'signal', size: 1.6, speed: 0.09 });
+  }
+  for (let i = 0; i < 60; i++) {
+    const t = i / 59;
+    const px = cx - w / 2 + t * w;
+    pts.push({ x: px, y: yBot, color: 'blue', size: 1.6, speed: 0.09 });
+  }
+
+  // Interconnect vertical lines bridging SW and HW
+  const cols = isMobile ? 3 : 5;
+  const perCol = Math.floor(40 / cols);
+  for (let c = 0; c < cols; c++) {
+    const colX = cx - w * 0.4 + (c / (cols - 1)) * (w * 0.8);
+    for (let k = 0; k < perCol; k++) {
+      const t = k / (perCol - 1);
+      pts.push({
+        x: colX,
+        y: yTop + t * (yBot - yTop),
+        color: t < 0.5 ? 'signal' : 'blue',
+        size: 1.3,
+        speed: 0.06,
+      });
+    }
+  }
+  return pts;
+}
+
+function generateWorkTargets(vw, vh) {
+  const cx = vw * 0.5;
+  const cy = vh * 0.52;
+  const w = Math.min(vw * 0.86, 1020);
+  const h = Math.min(vh * 0.60, 480);
+  const pts = [];
+
+  // 4 Corner registration brackets
+  const corners = [
+    { x: cx - w / 2, y: cy - h / 2, dx: 1, dy: 1 },
+    { x: cx + w / 2, y: cy - h / 2, dx: -1, dy: 1 },
+    { x: cx - w / 2, y: cy + h / 2, dx: 1, dy: -1 },
+    { x: cx + w / 2, y: cy + h / 2, dx: -1, dy: -1 },
+  ];
+
+  corners.forEach((c) => {
+    for (let i = 0; i < 15; i++) {
+      const len = 45 * (i / 14);
+      pts.push({ x: c.x + c.dx * len, y: c.y, color: 'signal', size: 1.4, speed: 0.07 });
+      pts.push({ x: c.x, y: c.y + c.dy * len, color: 'signal', size: 1.4, speed: 0.07 });
+    }
+  });
+
+  // Center drafting cross
+  for (let i = 0; i < 20; i++) {
+    const t = (i / 19) * 2 - 1;
+    pts.push({ x: cx + t * 90, y: cy, color: 'blue', size: 1.3, speed: 0.04 });
+  }
+  for (let i = 0; i < 20; i++) {
+    const t = (i / 19) * 2 - 1;
+    pts.push({ x: cx, y: cy + t * 70, color: 'blue', size: 1.3, speed: 0.04 });
+  }
+  return pts;
+}
+
+function generateExperienceTargets(vw, vh) {
+  const isMobile = vw < 768;
+  const railX = isMobile ? 35 : Math.max(vw * 0.22, 140);
+  const yStart = vh * 0.16;
+  const yEnd = vh * 0.84;
+  const pts = [];
+
+  // Main vertical bus line
+  for (let i = 0; i < 90; i++) {
+    const t = i / 89;
+    pts.push({ x: railX, y: yStart + t * (yEnd - yStart), color: i % 2 === 0 ? 'signal' : 'blue', size: 1.5, speed: 0.09 });
+  }
+
+  // 3 Datum diamond nodes along the bus
+  const nodes = [0.22, 0.50, 0.78];
+  nodes.forEach((pos, ni) => {
+    const nodeY = yStart + pos * (yEnd - yStart);
+    const nodeColor = ni === 2 ? 'blue' : 'signal';
+    for (let k = 0; k < 20; k++) {
+      const angle = (k / 20) * Math.PI * 2;
+      const r = 14;
+      pts.push({
+        x: railX + Math.cos(angle) * r,
+        y: nodeY + Math.sin(angle) * r,
+        color: nodeColor,
+        size: 1.4,
+        speed: 0.05,
+      });
+    }
   });
   return pts;
 }
 
-// ── Line: n evenly spaced points between two positions ───────────────────────
-function linePts(x1, y1, x2, y2, n) {
-  return Array.from({ length: n }, (_, i) => {
-    const t = n === 1 ? 0 : i / (n - 1);
-    return { x: x1 + (x2 - x1) * t, y: y1 + (y2 - y1) * t };
+function generateContactTargets(vw, vh) {
+  const isMobile = vw < 768;
+  const cx = isMobile ? vw * 0.5 : vw * 0.72;
+  const cy = isMobile ? vh * 0.60 : vh * 0.48;
+  const pts = [];
+
+  // Concentric radar rings centered on the work order form
+  const radii = [45, 95, 155];
+  radii.forEach((r, ri) => {
+    const count = 40 + ri * 15;
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2;
+      pts.push({
+        x: cx + Math.cos(angle) * r,
+        y: cy + Math.sin(angle) * r,
+        color: ri % 2 === 0 ? 'signal' : 'blue',
+        size: 1.3,
+        speed: 0.06 + ri * 0.02,
+      });
+    }
   });
+  return pts;
 }
 
-// Generic pixel-sampler: renders word to offscreen canvas → grid scan → N points
-const WORD_CACHE = {};
-function sampleWord(word, n, cx, cy, scale = 1.0) {
-  const cacheKey = `${word}_${n}_${cx}_${cy}_${scale}`;
-  if (WORD_CACHE[cacheKey]) return WORD_CACHE[cacheKey];
-
-  const W = Math.round(Math.min(window.innerWidth * 0.48 * scale, 460 * scale));
-  const H = Math.round(W * 0.38);
-  const off = document.createElement('canvas');
-  off.width = W; off.height = H;
-  const ctx = off.getContext('2d');
-  const fs  = Math.min(W * 0.20, H * 0.74);
-  ctx.font         = `900 ${fs}px "Archivo", Impact, "Arial Black", sans-serif`;
-  ctx.fillStyle    = '#fff';
-  ctx.textAlign    = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(word, W / 2, H / 2);
-  const { data } = ctx.getImageData(0, 0, W, H);
-  let step = 2, gridPts = [];
-  while (step < 20) {
-    gridPts = [];
-    for (let y = 0; y < H; y += step)
-      for (let x = 0; x < W; x += step)
-        if (data[(y * W + x) * 4 + 3] > 120) gridPts.push([x - W / 2, y - H / 2]);
-    if (gridPts.length <= n) break;
-    step++;
+function getSectionTargets(section, vw, vh) {
+  switch (section) {
+    case 0: return generateHeroTargets(vw, vh);
+    case 1: return generateAboutTargets(vw, vh);
+    case 2: return generateSkillsTargets(vw, vh);
+    case 3: return generateWorkTargets(vw, vh);
+    case 4: return generateExperienceTargets(vw, vh);
+    case 5: return generateContactTargets(vw, vh);
+    default: return generateHeroTargets(vw, vh);
   }
-  const result = gridPts.slice(0, n).map(([dx, dy]) => ({ x: cx + dx, y: cy + dy }));
-  WORD_CACHE[cacheKey] = result;
-  return result;
 }
 
-// ── Build targets per section using real DOM bounding boxes ───────────────────
-function buildTargets(section) {
-  const vw = window.innerWidth, vh = window.innerHeight;
-  const cx = vw / 2, cy = vh / 2;
-
-  // Ambient filler: deterministic coordinates across FULL viewport (prevents respawn flickering)
-  const ambient = (count) =>
-    Array.from({ length: count }, (_, i) => ({
-      x: 20 + (AMBIENT_SEEDS[i % AMBIENT_SEEDS.length].rx) * (vw - 40),
-      y: 20 + (AMBIENT_SEEDS[i % AMBIENT_SEEDS.length].ry) * (vh - 40),
-      ambient: true,
-    }));
-
-  // Guarantee exactly AMBIENT_N stars floating while preserving 100% of shape points!
-  const pad = (pts) => {
-    const bg = ambient(AMBIENT_N);
-    const combined = [...pts, ...bg];
-    let seedIdx = AMBIENT_N;
-    while (combined.length < N) {
-      const seed = AMBIENT_SEEDS[seedIdx % AMBIENT_SEEDS.length];
-      combined.push({
-        x: 20 + seed.rx * (vw - 40),
-        y: 20 + seed.ry * (vh - 40),
-        ambient: true,
-      });
-      seedIdx++;
-    }
-    // Preserve deterministic array order so particles never teleport or respawn across targets during real-time DOM retargeting!
-    return combined.slice(0, N);
-  };
-
-  // Projects: invisible
-  if (section === 3) return null;
-
-  // ── HERO: trace the title block perimeter — the drawing's headline frame ────
-  if (section === 0) {
-    const block = document.querySelector('[data-particle-target="hero"]');
-    if (block) {
-      const r = getFlatRect(block) || block.getBoundingClientRect();
-      return pad(rectPts(r, SHAPE_N, 10));
-    }
-    const pts = sampleWord('AMR', SHAPE_N, cx, cy, 0.9);
-    return pad(pts);
-  }
-
-  // ── ABOUT: trace photo figure frame ───────────────────────────────────────
-  if (section === 1) {
-    const photo = document.querySelector('#photo-frame-border');
-    if (photo) {
-      const r = getFlatRect(photo) || photo.getBoundingClientRect();
-      return pad(rectPts(r, SHAPE_N, 4));
-    }
-    return pad(ambient(SHAPE_N));
-  }
-
-  // ── SKILLS: trace each parts-list group block ─────────────────────────────
-  if (section === 2) {
-    const groups = [...document.querySelectorAll('[data-skill-group]')];
-    if (groups.length) {
-      const perims = groups.map(g => g.getBoundingClientRect());
-      const totalPerim = perims.reduce((acc, r) => acc + 2 * (r.width + r.height), 0);
-      const allPts = [];
-
-      groups.forEach((g, idx) => {
-        const r = perims[idx];
-        const count = Math.max(14, Math.round((2 * (r.width + r.height) / (totalPerim || 1)) * SHAPE_N));
-        const pts = rectPts(r, count, 3);
-        const domain = g.getAttribute('data-domain') === 'hw' ? 'systems' : 'digital';
-        pts.forEach(p => { p.domain = domain; });
-        allPts.push(...pts);
-      });
-      return pad(allPts);
-    }
-    return pad(ambient(SHAPE_N));
-  }
-
-  // ── EXPERIENCE: flow along the revision rail ──────────────────────────────
-  if (section === 4) {
-    const rail = document.querySelector('[data-exp-rail]');
-    if (rail) {
-      const r = getFlatRect(rail) || rail.getBoundingClientRect();
-      return pad(linePts(r.left + r.width / 2, r.top, r.left + r.width / 2, r.bottom, SHAPE_N));
-    }
-    return pad(linePts(cx, vh * 0.18, cx, vh * 0.82, SHAPE_N));
-  }
-
-  // ── CONTACT: trace work-order form field borders ──────────────────────────
-  const fields = [...document.querySelectorAll(
-    '.wo-form input, .wo-form textarea, .wo-form button[type="submit"]'
-  )];
-  if (fields.length) {
-    const rects = fields
-      .filter(f => f.getBoundingClientRect().width > 0)
-      .map(f => f.getBoundingClientRect());
-    if (!rects.length) return pad(ambient(SHAPE_N));
-    return pad(multiRectPts(rects, SHAPE_N));
-  }
-  return pad(ambient(SHAPE_N));
-}
-
-// Bezier control point — bigger arc (40-70% of path length) for visible curve
-function ctrlPt(sx, sy, tx, ty) {
-  const mx  = (sx + tx) / 2, my = (sy + ty) / 2;
-  const dx  = tx - sx,       dy = ty - sy;
-  const len = Math.sqrt(dx * dx + dy * dy) || 1;
-  const px  = -dy / len,     py = dx / len;
-  const arc = len * (0.40 + Math.random() * 0.30);   // 40–70% arc
-  const sgn = Math.random() < 0.5 ? 1 : -1;
-  return { qx: mx + px * arc * sgn, qy: my + py * arc * sgn };
-}
-
-// ── Component ─────────────────────────────────────────────────────────────────
-const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile }) {
+// ── Particle System Component ─────────────────────────────────────────────────
+const ParticleCanvas = memo(function ParticleCanvas({ section = 0, visible = true, isMobile = false }) {
   const canvasRef = useRef(null);
-  const stateRef  = useRef(null);
-  const rafRef    = useRef(null);
-  const timerRef  = useRef(null);
-  const mouseRef  = useRef({ x: -9999, y: -9999 });
+  const particlesRef = useRef(null);
+  const rafRef = useRef(null);
+  const mouseRef = useRef({ x: -9999, y: -9999, targetX: -9999, targetY: -9999, active: false });
+  const sectionRef = useRef(section);
+  sectionRef.current = section;
 
-  // ── Full-viewport sizing + resize ──────────────────────────────────────────
+  // ── Initialize Particle Pool ────────────────────────────────────────────────
   useEffect(() => {
-    const resize = () => {
-      const c = canvasRef.current; if (!c) return;
-      // Cap DPR to reduce GPU memory buffer & pixel shader load by up to 75% on mobile while keeping 100% crisp sharpness
-      const mob = window.innerWidth < 768;
-      const dpr = Math.min(window.devicePixelRatio || 1, mob ? 1.25 : 1.5);
-      const w = window.innerWidth, h = window.innerHeight;
-      c.width = w * dpr; c.height = h * dpr;
-      c.style.width = `${w}px`; c.style.height = `${h}px`;
-      c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const particles = [];
+
+    // Ambient floating particles
+    for (let i = 0; i < AMBIENT_COUNT; i++) {
+      particles.push({
+        type: 'ambient',
+        x: Math.random() * vw,
+        y: Math.random() * vh,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        targetX: Math.random() * vw,
+        targetY: Math.random() * vh,
+        size: 0.9 + Math.random() * 1.1,
+        color: Math.random() > 0.4 ? 'blue' : 'signal',
+        baseAlpha: 0.16 + Math.random() * 0.22,
+        alpha: 0.18,
+        pulseOffset: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.0015 + Math.random() * 0.002,
+      });
+    }
+
+    // Geometry / Reticle particles
+    const targets = getSectionTargets(sectionRef.current, vw, vh);
+    for (let i = 0; i < SHAPE_COUNT; i++) {
+      const tg = targets[i % targets.length];
+      const sx = Math.random() * vw;
+      const sy = Math.random() * vh;
+      particles.push({
+        type: 'shape',
+        x: sx,
+        y: sy,
+        vx: 0,
+        vy: 0,
+        targetX: tg.x,
+        targetY: tg.y,
+        originX: sx,
+        originY: sy,
+        size: tg.size || 1.4,
+        color: tg.color || 'signal',
+        baseAlpha: 0.45 + Math.random() * 0.35,
+        alpha: 0.5,
+        speed: tg.speed || 0.07,
+        morphStart: performance.now(),
+        morphDelay: Math.random() * 200,
+        pulseOffset: (i / SHAPE_COUNT) * Math.PI * 2,
+        pulseSpeed: 0.002,
+      });
+    }
+
+    particlesRef.current = particles;
+  }, []);
+
+  // ── Handle Section Change Transitions ───────────────────────────────────────
+  useEffect(() => {
+    if (!particlesRef.current) return;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const targets = getSectionTargets(section, vw, vh);
+    const now = performance.now();
+
+    const particles = particlesRef.current;
+    let shapeIdx = 0;
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      if (p.type === 'shape') {
+        const tg = targets[shapeIdx % targets.length];
+        p.originX = p.x;
+        p.originY = p.y;
+        p.targetX = tg.x;
+        p.targetY = tg.y;
+        p.color = tg.color;
+        p.size = tg.size;
+        p.speed = tg.speed || 0.07;
+        p.morphStart = now;
+        p.morphDelay = Math.random() * 220;
+        shapeIdx++;
+      } else {
+        // Ambient particles softly drift toward new quadrants
+        p.targetX = clamp(p.x + (Math.random() - 0.5) * 300, 20, vw - 20);
+        p.targetY = clamp(p.y + (Math.random() - 0.5) * 300, 20, vh - 20);
+      }
+    }
+  }, [section]);
+
+  // ── Window Resize and Mouse Tracking ────────────────────────────────────────
+  useEffect(() => {
+    const handleResize = () => {
+      const c = canvasRef.current;
+      if (!c) return;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.5);
+
+      c.width = vw * dpr;
+      c.height = vh * dpr;
+      c.style.width = `${vw}px`;
+      c.style.height = `${vh}px`;
+
+      const ctx = c.getContext('2d');
+      if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // Retarget shape particles on resize
+      if (particlesRef.current) {
+        const targets = getSectionTargets(sectionRef.current, vw, vh);
+        let sIdx = 0;
+        particlesRef.current.forEach((p) => {
+          if (p.type === 'shape') {
+            const tg = targets[sIdx % targets.length];
+            p.targetX = tg.x;
+            p.targetY = tg.y;
+            sIdx++;
+          }
+        });
+      }
     };
-    resize();
-    window.addEventListener('resize', resize);
-    return () => window.removeEventListener('resize', resize);
-  }, []);
 
-  // ── Global mouse tracking ─────────────────────────────────────────────────
-  useEffect(() => {
-    const onMove  = e => { mouseRef.current = { x: e.clientX, y: e.clientY }; };
-    const onLeave = () => { mouseRef.current = { x: -9999, y: -9999 }; };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseleave', onLeave);
-    return () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseleave', onLeave); };
-  }, []);
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
-  // ── Main animation effect ──────────────────────────────────────────────────
+    const handleMouseMove = (e) => {
+      mouseRef.current.targetX = e.clientX;
+      mouseRef.current.targetY = e.clientY;
+      mouseRef.current.active = true;
+    };
+
+    const handleMouseLeave = () => {
+      mouseRef.current.active = false;
+      mouseRef.current.targetX = -9999;
+      mouseRef.current.targetY = -9999;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [isMobile]);
+
+  // ── 60FPS RAF Render Loop ───────────────────────────────────────────────────
   useEffect(() => {
     if (!visible) return;
-    if (timerRef.current) clearTimeout(timerRef.current);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const c = canvasRef.current; if (!c) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 || isMobile ? 1.25 : 1.5);
-    const vw  = window.innerWidth, vh = window.innerHeight;
-    const ctx = c.getContext('2d');
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    let isRunning = true;
 
-    const isFirst = !stateRef.current;
+    const render = (time) => {
+      if (!isRunning) return;
 
-    // ── FIRST MOUNT: create particles scattered randomly, then assemble to Hero ──
-    if (isFirst) {
-      const targets = buildTargets(section);
-      if (!targets) return;
-      const particles = Array.from({ length: N }, (_, i) => {
-        const tg  = targets[i];
-        const sx  = Math.random() * vw, sy = Math.random() * vh;
-        const { qx, qy } = ctrlPt(sx, sy, tg.x, tg.y);
-        return {
-          cx: sx, cy: sy, prevCx: sx, prevCy: sy,
-          sx, sy, qx, qy, tx: tg.x, ty: tg.y,
-          domain: tg.domain, side: tg.side, shocked: false,
-          delay: Math.random() * 320,
-          dur:   ASSEMBLE_MS + Math.random() * 260,
-          done: false, rx: 0, ry: 0,
-          opacity: 0.18, tOpacity: (tg.ambient || tg.dim) ? (tg.dim ? 0.35 : 0.18) : 0.70,
-          size: 1.2 + Math.random() * 0.8, // thin, elegant, unobtrusive embers (1.2 to 2.0px)
-        };
-      });
-      stateRef.current = { section, particles, morphStart: performance.now(), phase: 'assemble', hidden: false };
-    } else {
-      // ── SUBSEQUENT SECTION CHANGE ──────────────────────────────────────────
-      stateRef.current.section = section;
-      const { particles } = stateRef.current;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-      // Projects — no scatter, just fade out smoothly and halt rendering to eliminate lag
-      if (section === 3) {
-        particles.forEach(p => {
-          p.tOpacity = 0;
-          p.finalOpacity = 0;
-          p.done = true; // stop all movement immediately
-        });
-        timerRef.current = setTimeout(() => {
-          if (stateRef.current && stateRef.current.section === 3) {
-            stateRef.current.hidden = true;
-          }
-        }, 350);
+      ctx.clearRect(0, 0, vw, vh);
+
+      // Smooth mouse lerping
+      const m = mouseRef.current;
+      m.x += (m.targetX - m.x) * 0.14;
+      m.y += (m.targetY - m.y) * 0.14;
+
+      const particles = particlesRef.current;
+      if (!particles) {
+        rafRef.current = requestAnimationFrame(render);
         return;
       }
 
-      stateRef.current.hidden = false;
-      stateRef.current.cleared = false;
-      if (canvasRef.current) canvasRef.current.style.visibility = 'visible';
-
-      // 100% scatter out on section scroll! No particle stays frozen in its old shape.
-      particles.forEach((p) => {
-        const tx2 = 40 + Math.random() * (vw - 80);
-        const ty2 = 40 + Math.random() * (vh - 80);
-        const { qx, qy } = ctrlPt(p.cx, p.cy, tx2, ty2);
-        p.sx=p.cx; p.sy=p.cy; p.qx=qx; p.qy=qy; p.tx=tx2; p.ty=ty2;
-        p.delay        = Math.random() * 160;
-        p.dur          = 650 + Math.random() * 250;
-        p.done         = false;
-        p.shocked      = false;
-        p.tOpacity     = 0.18; // Subtle, non-intrusive visibility while moving
-        p.finalOpacity = 0.18;
-      });
-      stateRef.current.morphStart = performance.now();
-      stateRef.current.phase      = 'scatter';
-
-      // ── DELAYED: query DOM and assemble (graceful timing) ─────────────────
-      const delay = section === 2 ? 30 : (section === 0 ? 100 : 850);
-      timerRef.current = setTimeout(() => {
-        const targets = buildTargets(section);
-        if (!targets) {
-          if (stateRef.current) {
-            stateRef.current.particles.forEach(p => { p.tOpacity = 0; p.finalOpacity = 0; });
-            stateRef.current.hidden = true;
-          }
-          return;
-        }
-        const st = stateRef.current; if (!st) return;
-        st.retargetedSpin   = false;
-        st.retargetedImpact = false;
-        const isFirstSkillsVisit = (section === 2 && !hasSkillsTractorRun);
-        const dists = st.particles.map((p, i) => {
-          const tg = targets[i] || targets[targets.length-1];
-          return Math.sqrt((tg.x-p.cx)**2 + (tg.y-p.cy)**2);
-        });
-        const maxD = Math.max(...dists, 1);
-        st.particles.forEach((p, i) => {
-          const tg = targets[i] || targets[targets.length-1];
-          const initialTargetX = (isFirstSkillsVisit && tg.side)
-            ? tg.x + (tg.side === 'left' ? -(isMobile ? 65 : 280) : (isMobile ? 65 : 280))
-            : tg.x;
-          const { qx, qy } = ctrlPt(p.cx, p.cy, initialTargetX, tg.y);
-          const fo = (tg.ambient || tg.dim) ? (tg.dim ? 0.35 : 0.18) : 0.70;
-          p.sx=p.cx; p.sy=p.cy; p.qx=qx; p.qy=qy; p.tx=tg.x; p.ty=tg.y;
-          p.domain       = tg.domain;
-          p.side         = tg.side;
-          p.shocked      = false;
-          // Ensure 100% of particles reach outer perimeter BEFORE 1000ms so they never meet cards halfway!
-          p.delay        = (section === 2) ? Math.random() * 80 : ((1 - dists[i]/maxD) * 260 + Math.random() * 120);
-          p.dur          = isFirstSkillsVisit ? (720 + Math.random() * 220) : (section === 2 ? (580 + Math.random() * 140) : (ASSEMBLE_MS + Math.random() * 200));
-          p.done         = false;
-          p.tOpacity     = 0.18;  // soft visibility while gliding
-          p.finalOpacity = fo;    // intensifies slightly upon arrival
-        });
-        st.morphStart = performance.now();
-        st.phase      = 'assemble';
-      }, delay);
-    }
-
-    // ── Start tick loop (only if not already running) ─────────────────────────
-    if (!rafRef.current) {
-      function tick(now) {
-        const st = stateRef.current; if (!st) return;
-        if (st.hidden) {
-          if (!st.cleared) {
-            ctx.clearRect(0, 0, c.width, c.height);
-            st.cleared = true;
-            c.style.visibility = 'hidden'; // Remove from browser paint & GPU compositing layers!
-          }
-          rafRef.current = null; // Halt animation loop completely (0% CPU/GPU overhead)
-          return;
-        }
-        st.cleared = false;
-        c.style.visibility = 'visible';
-
-        const elapsed = now - st.morphStart;
-        ctx.clearRect(0, 0, c.width, c.height);
-
-        const logCx = c.width / (2 * dpr);
-        const logCy = c.height / (2 * dpr);
-
-        const { x: mx, y: my } = mouseRef.current;
-        let allDone = true;
-        const parts = st.particles;
-        const plen = parts.length;
-        // Precalculate static frame angles to avoid 48,000 divisions per second inside the loop
-        const basePhi = (now / 2600) * Math.PI * 2;
-        const invN = (Math.PI * 2) / N;
-
-        const isSkillsAssemble = (st.section === 2 && st.phase === 'assemble' && !hasSkillsTractorRun);
-
-        if (isSkillsAssemble && elapsed >= 1700) {
-          hasSkillsTractorRun = true;
-        }
-
-        for (let i = 0; i < plen; i++) {
-          const p = parts[i];
-          // ── Bezier progress & Kinetic Tractor Beam ────────────────────────
-          if (!p.done) {
-            const lT = Math.max(0, (elapsed - p.delay) / p.dur);
-            if (lT < 1 || (isSkillsAssemble && elapsed < 1700)) allDone = false;
-            const e = easeOutExpo(Math.min(1, lT));
-            
-            p.prevCx = p.cx; 
-            p.prevCy = p.cy;
-
-            // 3-Stage Cybernetic Choreography: Orbit/Wrap -> Traction Pull -> Collision
-            let curTx = p.tx, curTy = p.ty;
-            if (isSkillsAssemble && p.side) {
-              const maxOffset = isMobile ? 65 : 280;
-              const WRAP_DUR = 1000; // 0ms to 1000ms: fluid flight out to intercept cards in continuous motion!
-              const PULL_DUR = 700; // 1000ms to 1700ms: immediate magnetic pull toward center synchronously with DOM cards
-              
-              if (elapsed < WRAP_DUR) {
-                // Stage 1: Particles sweep out to outer card boundary without any static waiting pause
-                curTx += (p.side === 'left' ? -maxOffset : maxOffset);
-                const orbitAngle = (now * 0.015) + (i * 0.35);
-                const orbitRadius = Math.max(0, (1 - (elapsed / WRAP_DUR)) * (isMobile ? 12 : 22));
-                curTx += Math.cos(orbitAngle) * orbitRadius;
-                curTy += Math.sin(orbitAngle) * orbitRadius;
-              } else if (elapsed < WRAP_DUR + PULL_DUR) {
-                // Stage 2: Electromagnetic traction! Particles & DOM cards sweep inward seamlessly
-                const pullProgress = (elapsed - WRAP_DUR) / PULL_DUR;
-                const ePull = easeOutExpo(Math.min(1, pullProgress));
-                const currentOffset = (1 - ePull) * maxOffset;
-                curTx += (p.side === 'left' ? -currentOffset : currentOffset);
-              }
-            }
-
-            // Inlined bezier (prevents 22,000 object allocations/sec)
-            const u = 1 - e;
-            p.cx = u * u * p.sx + 2 * u * e * p.qx + e * e * curTx;
-            p.cy = u * u * p.sy + 2 * u * e * p.qy + e * e * curTy;
-
-            if (lT >= 1 && (!isSkillsAssemble || elapsed >= 1700)) {
-              p.done = true;
-            }
-            // Snap brightness to full intensity upon arriving near goal (60%)
-            if (st.phase === 'assemble' && lT > 0.60 && p.finalOpacity !== undefined) {
-              p.tOpacity = p.finalOpacity;
-              p.opacity  = p.finalOpacity;
-            }
-          }
-
-          // ── Refined Executive Micro-Pulse upon Magnetic Slam (at ~1680ms real time) ─
-          if (isSkillsAssemble && !p.shocked && elapsed >= 1680 && elapsed < 1820) {
-            p.shocked = true;
-            const dx = p.cx - logCx, dy = p.cy - logCy;
-            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            // Subtle mechanical harmonic dampening (2-3px tension snap instead of chaotic explosion)
-            const burstForce = Math.min(2.2, 25 / (dist * 0.08 + 1));
-            p.rx += (dx / dist) * burstForce;
-            p.ry += (dy / dist) * burstForce;
-            p.opacity = 1; // subtle intensity spike on lock-in
-          }
-
-          // Opacity lerp — ALWAYS runs. 0.25 = ultra-fast brightening if not snapped
-          p.opacity += (p.tOpacity - p.opacity) * 0.25;
-
-          // ── Mouse Physics (Unique per section!) ────────────────────────────
-          if (p.done && mx > -9000) {
-            const mdx = p.cx + p.rx - mx, mdy = p.cy + p.ry - my;
-            const md2 = mdx*mdx + mdy*mdy;
-            
-            if (md2 < MOUSE_R*MOUSE_R && md2 > 0) {
-              const sec = st.section;
-              const f = MOUSE_STR / md2;
-
-              if (sec === 0) {
-                // 1. HERO: Magnetic Pull (particles attract to mouse)
-                p.rx -= mdx * f * 0.03;
-                p.ry -= mdy * f * 0.03;
-              } 
-              else if (sec === 2 || sec === 5) {
-                // 2. SKILLS & CONTACT: Vortex Spin (repel + orbit)
-                const angle = Math.atan2(mdy, mdx);
-                const force = Math.min(15, f * 2);
-                p.rx += mdx * f * 0.4 + Math.cos(angle + 1.57) * force;
-                p.ry += mdy * f * 0.4 + Math.sin(angle + 1.57) * force;
-              } 
-              else {
-                // 3. ABOUT & EXP: Standard Forcefield Repulsion
-                p.rx += mdx * f; 
-                p.ry += mdy * f;
-              }
-            }
-          }
-          p.rx *= 0.86; p.ry *= 0.86;
-
-          if (p.opacity < 0.01) continue;
-
-          const drawX = p.cx + p.rx, drawY = p.cy + p.ry;
-          const vx    = drawX - p.prevCx, vy = drawY - p.prevCy;
-          const speed = Math.sqrt(vx*vx + vy*vy);
-          const angle = speed > 0.5 ? Math.atan2(vy, vx) : 0;
-          const str   = Math.min(4.5, 1 + speed * 0.7);
-
-          // Idle pulse (optimized math without divisions in hot loop)
-          const pulse = p.done ? (0.70 + 0.30 * Math.sin(basePhi + i * invN)) : 1;
-
-          // ── Speed-based domain coloring (No string allocations!) ───────────
-          const speedNorm = Math.min(1, speed / 18);
-          const colorIdx  = (speedNorm * 19) | 0; // fast floor
-          const isHw      = p.domain === 'systems';
-          const baseColor = isHw ? '#3A57C4' : '#FF4400';
-          const palette   = isHw ? BLUE_SPEED_COLORS : SPEED_COLORS;
-          const dotColor  = speedNorm > 0.15 ? palette[colorIdx] : baseColor;
-
-          // ── Trail ghosts ───────────────────────────────────────────────────
-          if (speed > 1.6) {
-            ctx.fillStyle = dotColor;
-            
-            ctx.globalAlpha = p.opacity * 0.14;
-            ctx.beginPath(); ctx.arc(p.prevCx, p.prevCy, p.size * 0.9, 0, Math.PI*2); ctx.fill();
-            
-            ctx.globalAlpha = p.opacity * 0.07;
-            ctx.beginPath(); ctx.arc((p.prevCx+drawX)/2, (p.prevCy+drawY)/2, p.size*0.55, 0, Math.PI*2); ctx.fill();
-          }
-
-          // ── Main particle ──────────────────────────────────────────────────
-          ctx.globalAlpha = Math.min(1, p.opacity * pulse);
-          ctx.fillStyle   = dotColor;
-
-          if (str > 1.15) { 
-            // Only use expensive save/restore when actually rotating (fast moving)
-            ctx.save();
-            ctx.translate(drawX, drawY);
-            ctx.rotate(angle); 
-            ctx.scale(str, 1/str); 
-            ctx.beginPath(); ctx.arc(0, 0, Math.max(0.8, p.size), 0, Math.PI*2); ctx.fill();
-            ctx.restore();
-          } else {
-            // Draw normally directly at coordinate
-            ctx.beginPath(); ctx.arc(drawX, drawY, Math.max(0.8, p.size), 0, Math.PI*2); ctx.fill();
-          }
-          
-          if (p.done || speedNorm > 0.2) {
-            ctx.globalAlpha = p.opacity * (p.done ? pulse*0.10 : speedNorm*0.25);
-            ctx.beginPath(); ctx.arc(drawX, drawY, p.size*(p.done ? 4.5 : 6), 0, Math.PI*2); ctx.fill();
+      // Draw subtle connecting hairlines between nearby ambient particles
+      ctx.lineWidth = 0.5;
+      const len = particles.length;
+      for (let i = 0; i < AMBIENT_COUNT; i += 2) {
+        const p1 = particles[i];
+        for (let j = i + 1; j < Math.min(i + 8, AMBIENT_COUNT); j++) {
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < 4900) { // 70px
+            const lineAlpha = (1 - Math.sqrt(distSq) / 70) * 0.10;
+            ctx.strokeStyle = p1.color === 'signal' ? `${COLOR_SIGNAL}${lineAlpha})` : `${COLOR_BLUE}${lineAlpha})`;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
           }
         }
-
-        if (allDone && st.phase === 'assemble') st.phase = 'idle';
-        rafRef.current = requestAnimationFrame(tick);
       }
 
-      rafRef.current = requestAnimationFrame(tick);
-    }
+      // Update & Render all particles
+      for (let i = 0; i < len; i++) {
+        const p = particles[i];
+
+        if (p.type === 'ambient') {
+          // Floating Brownian drift
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 10) { p.x = 10; p.vx = Math.abs(p.vx); }
+          if (p.x > vw - 10) { p.x = vw - 10; p.vx = -Math.abs(p.vx); }
+          if (p.y < 10) { p.y = 10; p.vy = Math.abs(p.vy); }
+          if (p.y > vh - 10) { p.y = vh - 10; p.vy = -Math.abs(p.vy); }
+
+          // Gentle mouse repulsion
+          if (m.active) {
+            const dx = p.x - m.x;
+            const dy = p.y - m.y;
+            const dSq = dx * dx + dy * dy;
+            if (dSq < MOUSE_RADIUS_SQ && dSq > 1) {
+              const d = Math.sqrt(dSq);
+              const force = (1 - d / MOUSE_RADIUS) * 1.8;
+              p.x += (dx / d) * force;
+              p.y += (dy / d) * force;
+            }
+          }
+
+          const pulse = Math.sin(time * p.pulseSpeed + p.pulseOffset) * 0.08;
+          p.alpha = clamp(p.baseAlpha + pulse, 0.08, 0.45);
+
+        } else {
+          // Shape / Geometry reticle particle: smooth convergence to target
+          const elapsed = Math.max(0, time - p.morphStart - p.morphDelay);
+          const t = Math.min(1, elapsed / 1100);
+          const ease = easeOutCubic(t);
+
+          const idealX = p.originX + (p.targetX - p.originX) * ease;
+          const idealY = p.originY + (p.targetY - p.originY) * ease;
+
+          p.x += (idealX - p.x) * 0.12;
+          p.y += (idealY - p.y) * 0.12;
+
+          // Interactive magnetic hover effect on shapes
+          if (m.active) {
+            const dx = p.x - m.x;
+            const dy = p.y - m.y;
+            const dSq = dx * dx + dy * dy;
+            if (dSq < MOUSE_RADIUS_SQ && dSq > 1) {
+              const d = Math.sqrt(dSq);
+              // Subtle magnetic vortex
+              const angle = Math.atan2(dy, dx);
+              const force = (1 - d / MOUSE_RADIUS) * 3.2;
+              p.x += Math.cos(angle + 1.2) * force * 0.6 + (dx / d) * force * 0.4;
+              p.y += Math.sin(angle + 1.2) * force * 0.6 + (dy / d) * force * 0.4;
+            }
+          }
+
+          const pulse = Math.sin(time * p.pulseSpeed + p.pulseOffset) * 0.12;
+          p.alpha = clamp(p.baseAlpha + pulse, 0.25, 0.85);
+        }
+
+        // Draw the particle point
+        const colorPrefix = p.color === 'signal' ? COLOR_SIGNAL : (p.color === 'blue' ? COLOR_BLUE : COLOR_INK);
+        ctx.fillStyle = `${colorPrefix}${p.alpha})`;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, Math.max(0.75, p.size), 0, Math.PI * 2);
+        ctx.fill();
+
+        // Subtle glow halo on active shape nodes
+        if (p.type === 'shape' && p.alpha > 0.45) {
+          ctx.fillStyle = `${colorPrefix}${p.alpha * 0.15})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 3.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(render);
+    };
+
+    rafRef.current = requestAnimationFrame(render);
 
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      // Don't cancel RAF here — let it keep running across section changes
+      isRunning = false;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [visible, section, isMobile]);
+  }, [visible, isMobile]);
 
   return (
     <canvas
       ref={canvasRef}
       aria-hidden="true"
       style={{
-        position:      'fixed',
-        top:           0, left: 0,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
         pointerEvents: 'none',
-        zIndex:        1, // Drafting pins live under the content sheets (main is z-2)
-        willChange:    'transform, opacity',
-        transform:     'translateZ(0)',
+        zIndex: 1,
+        willChange: 'transform',
+        transform: 'translateZ(0)',
       }}
     />
   );

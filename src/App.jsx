@@ -23,6 +23,7 @@ const NAV_LINKS = [
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
+  const [heroReady, setHeroReady] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -30,7 +31,14 @@ export default function App() {
   const [cadMode, setCadMode] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
 
-  const handleLoaderDone = useCallback(() => setLoaded(true), []);
+  const handleLoaderDone = useCallback(() => {
+    setLoaded(true);
+    setHeroReady(true);
+  }, []);
+
+  const handleLoaderExiting = useCallback(() => {
+    setHeroReady(true);
+  }, []);
 
   /* Live Clock for Cairo/Zagazig Time */
   useEffect(() => {
@@ -131,7 +139,11 @@ export default function App() {
       {/* ── Blueprint CAD Loader ─────────────────────────────────────────── */}
       <AnimatePresence>
         {!loaded && (
-          <Loader key="loader" onComplete={handleLoaderDone} />
+          <Loader
+            key="loader"
+            onComplete={handleLoaderDone}
+            onExiting={handleLoaderExiting}
+          />
         )}
       </AnimatePresence>
 
@@ -358,7 +370,7 @@ export default function App() {
 
       {/* ── Application Sections ─────────────────────────────────────────── */}
       <main className="relative z-10">
-        <Hero scrollToSection={scrollToSection} />
+        <Hero ready={heroReady} scrollToSection={scrollToSection} />
         <About />
         <Skills />
         <Work onProjectClick={setActiveProject} />

@@ -11,7 +11,7 @@ const METRICS = [
 
 export default function About() {
   return (
-    <section id="about" className="relative px-5 md:px-14 py-20 md:py-28">
+    <section id="about" className="relative px-4 sm:px-8 md:px-14 py-16 md:py-28">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Header */}
@@ -20,7 +20,7 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          className="mb-12 pb-4 border-b border-current/15 flex items-baseline justify-between gap-4"
+          className="mb-8 md:mb-12 pb-4 border-b border-current/15 flex items-baseline justify-between gap-4"
         >
           <div>
             <span className="bp-stamp text-[#3A57C4] border-[#3A57C4] mb-2 block w-fit">
@@ -34,7 +34,7 @@ export default function About() {
         </motion.div>
 
         {/* Dossier Grid */}
-        <div className="grid lg:grid-cols-[380px_1fr] gap-10 lg:gap-14 items-start">
+        <div className="grid lg:grid-cols-[380px_1fr] gap-8 lg:gap-14 items-start">
 
           {/* Left Column: FIG.01 Portrait with 3D Tilt */}
           <motion.div
@@ -55,9 +55,9 @@ export default function About() {
                 />
 
                 {/* Title Block on Portrait */}
-                <div className="absolute bottom-6 inset-x-6 bg-inherit p-3 border border-current shadow-sm">
+                <div className="absolute bottom-5 inset-x-5 bg-inherit/95 backdrop-blur-sm p-3 border border-current shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold text-xs">FIG. 01 // DOSSIER</span>
+                    <span className="font-mono font-bold text-[0.65rem] sm:text-xs">FIG. 01 // DOSSIER</span>
                     <span className="bp-stamp !text-[0.55rem] !py-0.2 !px-1.5 text-[#0E8345] border-[#0E8345]">
                       VERIFIED
                     </span>
@@ -74,13 +74,13 @@ export default function About() {
           </motion.div>
 
           {/* Right Column: Technical Bio & BOM Cards */}
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6 }}
-              className="space-y-4 text-inherit/80 text-base sm:text-lg leading-relaxed font-body"
+              className="space-y-3 sm:space-y-4 text-inherit/80 text-sm sm:text-lg leading-relaxed font-body"
             >
               <p>
                 I am a dedicated <strong className="font-bold text-current">Flutter Mobile Developer and Computer Systems Engineer</strong> from Egypt.
@@ -94,7 +94,7 @@ export default function About() {
             </motion.div>
 
             {/* 4 BOM Metric Cards with 3D Tilt */}
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
               {METRICS.map((m, idx) => (
                 <motion.div
                   key={m.label}
@@ -106,12 +106,12 @@ export default function About() {
                   <TiltCard maxTilt={4}>
                     <div
                       onMouseEnter={playHoverTick}
-                      className="sheet-frame p-5 border border-current/15"
+                      className="sheet-frame p-4 sm:p-5 border border-current/15"
                     >
-                      <div className="font-mono font-bold text-3xl sm:text-4xl text-[#FF4400]">
+                      <div className="font-mono font-bold text-2xl sm:text-4xl text-[#FF4400]">
                         {m.val}
                       </div>
-                      <div className="font-display font-bold text-base mt-1 uppercase">
+                      <div className="font-display font-bold text-sm sm:text-base mt-1 uppercase">
                         {m.label}
                       </div>
                       <div className="text-inherit/60 text-xs font-mono mt-1">
@@ -124,12 +124,12 @@ export default function About() {
             </div>
 
             {/* Core Domain Badges */}
-            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-current/15">
-              <span className="text-xs font-mono text-[#8A91A5] mr-2">DISCIPLINES:</span>
-              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[#FF4400]">FLUTTER &amp; DART 3</span>
-              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[#3A57C4]">C / C++ &amp; EMBEDDED</span>
-              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[#0E8345]">FREERTOS &amp; IOT</span>
-              <span onMouseEnter={playHoverTick} className="bp-chip font-bold">CLEAN ARCHITECTURE</span>
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-2 border-t border-current/15">
+              <span className="text-xs font-mono text-[#8A91A5] mr-1">DISCIPLINES:</span>
+              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[#FF4400] !text-[0.62rem] sm:!text-[0.68rem]">FLUTTER &amp; DART 3</span>
+              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[#3A57C4] !text-[0.62rem] sm:!text-[0.68rem]">C / C++ &amp; EMBEDDED</span>
+              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[#0E8345] !text-[0.62rem] sm:!text-[0.68rem]">FREERTOS &amp; IOT</span>
+              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[0.62rem] sm:!text-[0.68rem]">CLEAN ARCHITECTURE</span>
             </div>
           </div>
 

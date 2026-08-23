@@ -1,10 +1,18 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 export default function TiltCard({ children, className = '', maxTilt = 4 }) {
   const cardRef = useRef(null);
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0, gx: 50, gy: 50 });
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const isTouchDevice = useRef(false);
+
+  useEffect(() => {
+    // Disable 3D tilt calculations completely on touch devices and small viewports to guarantee 120 FPS
+    isTouchDevice.current =
+      window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+  }, []);
 
   const handleMouseMove = (e) => {
+    if (isTouchDevice.current) return;
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
@@ -15,14 +23,13 @@ export default function TiltCard({ children, className = '', maxTilt = 4 }) {
 
     const rx = ((y - cy) / cy) * -maxTilt;
     const ry = ((x - cx) / cx) * maxTilt;
-    const gx = (x / rect.width) * 100;
-    const gy = (y / rect.height) * 100;
 
-    setTilt({ rx, ry, gx, gy });
+    setTilt({ rx, ry });
   };
 
   const handleMouseLeave = () => {
-    setTilt({ rx: 0, ry: 0, gx: 50, gy: 50 });
+    if (isTouchDevice.current) return;
+    setTilt({ rx: 0, ry: 0 });
   };
 
   return (
@@ -31,24 +38,16 @@ export default function TiltCard({ children, className = '', maxTilt = 4 }) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ perspective: '1000px' }}
-      className={`transition-transform duration-300 ${className}`}
+      className={`transition-transform duration-200 will-change-transform ${className}`}
     >
       <div
         style={{
           transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
-          transition: 'transform 0.15s ease-out',
+          transition: 'transform 0.12s ease-out',
         }}
         className="relative h-full w-full"
       >
         {children}
-        {/* Holographic specular light reflection */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-[inherit]"
-          style={{
-            background: `radial-gradient(circle 340px at ${tilt.gx}% ${tilt.gy}%, rgba(255, 68, 0, 0.07), transparent 70%)`,
-          }}
-          aria-hidden="true"
-        />
       </div>
     </div>
   );

@@ -1,4 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="20" fill="#0a0a0f" />
-  <text x="50" y="70" font-family="'Bebas Neue', 'DM Sans', monospace, sans-serif" font-size="65" font-weight="bold" fill="#00FFD1" text-anchor="middle">A</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <rect width="120" height="120" rx="16" fill="#080E1E" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
+  <!-- Corner CAD crosshairs -->
+  <text x="14" y="24" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="bold" fill="#FF4400">+</text>
+  <text x="100" y="24" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="bold" fill="#FF4400">+</text>
+  <text x="14" y="110" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="bold" fill="#FF4400">+</text>
+  <text x="100" y="110" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="bold" fill="#FF4400">+</text>
+  
+  <!-- Monogram A -->
+  <text x="60" y="84" font-family="'Archivo', system-ui, sans-serif" font-size="70" font-weight="900" fill="#F1F5F9" text-anchor="middle">A</text>
+  <circle cx="82" cy="78" r="6" fill="#FF4400" />
 </svg>

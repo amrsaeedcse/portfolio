@@ -159,7 +159,7 @@ export default function App() {
         </AnimatePresence>
       </Suspense>
 
-      {/* ── Blueprint Drafting Grid Atmosphere ──────────────────────────── */}
+      {/* ── Clean Blueprint Drafting Grid Atmosphere ────────────────────── */}
       <div className="bp-grid" aria-hidden="true" />
       <div className="bp-vignette" aria-hidden="true" />
 

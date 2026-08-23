@@ -51,7 +51,7 @@ export default function Experience() {
   });
 
   return (
-    <section id="experience" ref={containerRef} className="relative px-5 md:px-14 py-20 md:py-28">
+    <section id="experience" ref={containerRef} className="relative px-4 sm:px-8 md:px-14 py-16 md:py-28">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Header */}
@@ -60,7 +60,7 @@ export default function Experience() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          className="mb-12 pb-4 border-b border-current/15 flex items-baseline justify-between gap-4"
+          className="mb-8 md:mb-12 pb-4 border-b border-current/15 flex flex-col sm:flex-row sm:items-baseline justify-between gap-3"
         >
           <div>
             <span className="bp-stamp text-[#3A57C4] border-[#3A57C4] mb-2 block w-fit">
@@ -70,17 +70,17 @@ export default function Experience() {
               MILESTONES &amp; TRACK RECORD.
             </h2>
           </div>
-          <span className="font-mono text-xs text-[#8A91A5] hidden sm:inline font-bold">
+          <span className="font-mono text-xs text-[#8A91A5] font-bold">
             DWG-004 // TIMELINE
           </span>
         </motion.div>
 
         {/* Timeline Stream with Dynamic Scroll-Reactive Rail */}
-        <div className="relative max-w-4xl space-y-8 pl-8 md:pl-12">
+        <div className="relative max-w-4xl space-y-6 sm:space-y-8 pl-6 sm:pl-8 md:pl-12">
 
           {/* ── Background Static Rail ──────────────────────────────────── */}
           <div
-            className="absolute left-[13px] md:left-[17px] top-4 bottom-4 w-[2px] bg-current/15 pointer-events-none"
+            className="absolute left-[9px] sm:left-[13px] md:left-[17px] top-4 bottom-4 w-[2px] bg-current/15 pointer-events-none"
             aria-hidden="true"
           />
 
@@ -90,7 +90,7 @@ export default function Experience() {
               scaleY: smoothProgress,
               transformOrigin: 'top',
             }}
-            className="absolute left-[12px] md:left-[16px] top-4 bottom-4 w-[4px] bg-gradient-to-b from-[#FF4400] via-[#3A57C4] to-[#0E8345] shadow-[0_0_12px_rgba(255,68,0,0.5)] pointer-events-none rounded-full"
+            className="absolute left-[8px] sm:left-[12px] md:left-[16px] top-4 bottom-4 w-[4px] bg-gradient-to-b from-[#FF4400] via-[#3A57C4] to-[#0E8345] shadow-[0_0_12px_rgba(255,68,0,0.5)] pointer-events-none rounded-full"
             aria-hidden="true"
           />
 
@@ -105,11 +105,11 @@ export default function Experience() {
             >
               {/* Dynamic Luminous Datum Node */}
               <div
-                className="absolute -left-[30px] md:-left-[42px] top-5 w-5 h-5 rounded-full border-2 bg-inherit flex items-center justify-center transition-all duration-300 group-hover:scale-125 shadow-sm"
+                className="absolute -left-[24px] sm:-left-[30px] md:-left-[42px] top-4 sm:top-5 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 bg-inherit flex items-center justify-center transition-all duration-300 group-hover:scale-125 shadow-sm"
                 style={{ borderColor: m.color }}
               >
                 <div
-                  className="w-2 h-2 rounded-full transition-transform duration-300 group-hover:scale-110 animate-pulse"
+                  className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-transform duration-300 group-hover:scale-110 animate-pulse"
                   style={{ backgroundColor: m.color }}
                 />
               </div>
@@ -118,11 +118,11 @@ export default function Experience() {
               <TiltCard maxTilt={4}>
                 <div
                   onMouseEnter={playHoverTick}
-                  className="sheet-frame p-6 sm:p-8 bg-current/5 border border-current/15 shadow-md"
+                  className="sheet-frame p-5 sm:p-8 bg-current/5 border border-current/15 shadow-md"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                     <span
-                      className="bp-stamp text-xs font-bold"
+                      className="bp-stamp !text-[0.58rem] sm:text-xs font-bold"
                       style={{ borderColor: m.color, color: m.color }}
                     >
                       {m.badge}
@@ -130,24 +130,24 @@ export default function Experience() {
                     <span className="font-mono text-xs text-inherit/70 font-bold">{m.period}</span>
                   </div>
 
-                  <h3 className="font-display font-black text-xl sm:text-2xl mt-2 uppercase">
+                  <h3 className="font-display font-black text-lg sm:text-2xl mt-1.5 uppercase">
                     {m.role}
                   </h3>
                   <p className="font-mono text-xs text-[#FF4400] font-bold mt-1">
                     {m.organization}
                   </p>
 
-                  <p className="text-inherit/75 text-sm sm:text-base leading-relaxed mt-4 font-body">
+                  <p className="text-inherit/75 text-xs sm:text-base leading-relaxed mt-3 sm:mt-4 font-body">
                     {m.description}
                   </p>
 
                   {/* Tech Pills */}
-                  <div className="flex flex-wrap gap-1.5 mt-5">
+                  <div className="flex flex-wrap gap-1.5 mt-4 sm:mt-5">
                     {m.tags.map((t) => (
                       <span
                         key={t}
                         onMouseEnter={playHoverTick}
-                        className="bp-chip !text-[0.65rem] !py-0.5 !px-2.5"
+                        className="bp-chip !text-[0.6rem] sm:!text-[0.65rem] !py-0.5 !px-2 sm:!px-2.5"
                       >
                         {t}
                       </span>

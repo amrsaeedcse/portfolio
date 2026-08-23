@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PROJECTS_DATA } from '../../data/projects';
+import { EASE } from '../../lib/motionPresets';
+
+/* Some project accents are tuned for dark UIs — remap pure white to ink on paper */
+const accentOf = (c) => (c && c.toLowerCase() !== '#ffffff' ? c : '#1A1D23');
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+    transition: { staggerChildren: 0.07, delayChildren: 0.15 },
   },
-  exit: { opacity: 0, transition: { duration: 0.3 } }
+  exit: { opacity: 0, transition: { duration: 0.25 } },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    scale: 1,
-    transition: { type: 'spring', stiffness: 200, damping: 20 }
-  }
+  hidden: { opacity: 0, y: 26 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 200, damping: 22 },
+  },
 };
 
 export default function ProjectArchive({ onClose, onOpenProject }) {
@@ -26,94 +29,117 @@ export default function ProjectArchive({ onClose, onOpenProject }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-      animate={{ opacity: 1, backdropFilter: 'blur(24px)' }}
-      exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
       className="fixed inset-0 z-[100] flex flex-col items-center overflow-y-auto"
-      style={{ background: '#0a0a0ff0' }}
+      style={{
+        background: 'rgba(242,239,231,0.97)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        backgroundImage:
+          'linear-gradient(rgba(58,87,196,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(58,87,196,0.05) 1px, transparent 1px)',
+        backgroundSize: '32px 32px',
+      }}
     >
-      {/* ── HEADER ── */}
-      <div className="w-full max-w-7xl flex justify-between items-center p-8 mt-4 md:mt-12 mb-8">
+      {/* ── HEADER ─────────────────────────────────────────────────────────── */}
+      <div className="w-full max-w-7xl flex flex-col sm:flex-row gap-6 justify-between sm:items-end p-8 mt-4 md:mt-12 mb-8">
         <div>
-          <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(3rem, 6vw, 5rem)', lineHeight: 0.9, color: '#f4f4f5' }}>
-            PROJECT <span style={{ color: '#00FFD1' }}>ARCHIVE</span>
+          <p className="mono-label text-signal mb-3">[ ARCHIVE // FULL INDEX ]</p>
+          <h1 className="h-display" style={{ fontSize: 'clamp(2.8rem, 6vw, 5rem)' }}>
+            PROJECT <span className="h-outline">ARCHIVE</span>
           </h1>
-          <p style={{ fontFamily: 'DM Sans', fontSize: '0.9rem', color: '#ffffff88', letterSpacing: '0.1em', marginTop: '0.5rem' }}>
-            A COMPLETE LIST OF MY CRAFTED EXPERIENCES
+          <p className="mono-label text-ink-3 mt-3">
+            {PROJECTS_DATA.length} DOCUMENTS — ALL SHEETS STAMPED &amp; FILED
           </p>
         </div>
         <button
           onClick={onClose}
-          style={{
-            fontFamily: 'DM Sans', fontSize: '0.8rem', letterSpacing: '0.15em', textTransform: 'uppercase',
-            width: '48px', height: '48px', borderRadius: '50%', border: '1px solid #ffffff33',
-            background: 'transparent', color: '#f4f4f5', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}
-          onMouseEnter={(e) => { e.target.style.background = '#ffffff11'; }}
-          onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}
+          aria-label="Close archive"
+          className="bp-btn self-start"
         >
-          ✕
+          ✕ Close
         </button>
       </div>
 
-      {/* ── BENTO GRID ── */}
-      <motion.div 
+      {/* ── DRAWING INDEX GRID ─────────────────────────────────────────────── */}
+      <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         exit="exit"
         className="w-full max-w-7xl px-8 pb-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        {PROJECTS_DATA.map((proj, idx) => (
-          <motion.div
-            key={proj.id}
-            variants={itemVariants}
-            onMouseEnter={() => setHovered(idx)}
-            onMouseLeave={() => setHovered(null)}
-            onClick={() => onOpenProject(proj)}
-            style={{
-              position: 'relative',
-              borderRadius: '1.25rem',
-              overflow: 'hidden',
-              cursor: 'pointer',
-              background: '#ffffff05',
-              border: `1px solid ${hovered === idx ? proj.color + 'aa' : '#ffffff15'}`,
-              boxShadow: hovered === idx ? `0 0 24px ${proj.color}22` : 'none',
-              transition: 'all 0.3s ease'
-            }}
-            className="flex flex-col group"
-          >
-            {/* Image Thumbnail */}
-            <div style={{ height: '220px', width: '100%', overflow: 'hidden', position: 'relative' }}>
-              <motion.img 
-                src={proj.img} 
-                alt={proj.title}
-                animate={{ scale: hovered === idx ? 1.05 : 1 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.7)' }}
-              />
-              <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, #0a0a0f, transparent)` }} />
-            </div>
+        {PROJECTS_DATA.map((proj, idx) => {
+          const accent = accentOf(proj.color);
+          const isHovered = hovered === idx;
+          return (
+            <motion.div
+              key={proj.id}
+              variants={itemVariants}
+              onMouseEnter={() => setHovered(idx)}
+              onMouseLeave={() => setHovered(null)}
+              onClick={() => onOpenProject(proj)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onOpenProject(proj)}
+              className="sheet-frame relative flex flex-col group cursor-pointer overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+              style={{
+                background: 'var(--color-paper-2)',
+                borderColor: isHovered ? accent : undefined,
+                boxShadow: isHovered ? `0 14px 34px rgba(26,29,35,0.14)` : 'none',
+              }}
+            >
+              {/* Title strip */}
+              <div className="relative z-[4] flex items-center justify-between px-4 py-2.5 border-b border-line">
+                <span className="mono-tiny tabular-nums text-ink-3">DWG-{String(idx + 1).padStart(3, '0')}</span>
+                <span
+                  className="stamp"
+                  style={{ color: accent, fontSize: '0.48rem', transform: isHovered ? 'rotate(-2deg) scale(1.06)' : 'rotate(-2deg)' }}
+                >
+                  {proj.status}
+                </span>
+              </div>
 
-            {/* Content */}
-            <div className="p-6 flex flex-col flex-grow relative z-10 -mt-12">
-              <div style={{ display: 'inline-block', padding: '0.25rem 0.75rem', background: `${proj.color}22`, border: `1px solid ${proj.color}55`, borderRadius: '999px', fontSize: '0.65rem', color: proj.color, fontFamily: 'DM Sans', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', alignSelf: 'flex-start' }}>
-                {proj.tag}
+              {/* Figure */}
+              <div className="relative h-[200px] overflow-hidden border-b border-line">
+                <motion.img
+                  src={proj.img}
+                  alt={proj.title}
+                  animate={{ scale: isHovered ? 1.05 : 1 }}
+                  transition={{ duration: 0.55, ease: EASE }}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ filter: 'grayscale(20%) contrast(1.04)' }}
+                />
               </div>
-              <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: '2.5rem', color: '#f4f4f5', lineHeight: 1, marginBottom: '0.5rem' }}>
-                {proj.title}
-              </h2>
-              <p style={{ fontFamily: 'DM Sans', fontSize: '0.85rem', color: '#ffffff88', lineHeight: 1.6, marginBottom: '1.5rem', flexGrow: 1 }}>
-                {proj.description.slice(0, 110)}...
-              </p>
-              <div className="flex items-center gap-2 mt-auto" style={{ fontFamily: 'DM Sans', fontSize: '0.75rem', color: proj.color, letterSpacing: '0.05em' }}>
-                <span className="transform group-hover:translate-x-1 transition-transform duration-300">READ CASE STUDY →</span>
+
+              {/* Notes */}
+              <div className="relative z-[4] p-5 flex flex-col flex-grow">
+                <span
+                  className="bp-chip self-start mb-3"
+                  style={{ borderColor: `${accent}66`, color: accent, background: `${accent}0d` }}
+                >
+                  {proj.tag.split('·')[0].trim()}
+                </span>
+                <h2 className="font-display font-extrabold tracking-tight leading-tight" style={{ fontSize: '1.55rem' }}>
+                  {proj.title}
+                </h2>
+                <p className="text-[0.84rem] mt-2 mb-5 flex-grow" style={{ color: 'var(--color-ink-2)', lineHeight: 1.65 }}>
+                  {proj.description.slice(0, 110)}...
+                </p>
+                <span
+                  className="mono-label inline-flex items-center gap-2 transition-colors"
+                  style={{ color: isHovered ? accent : 'var(--color-ink-3)' }}
+                >
+                  READ CASE STUDY
+                  <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </span>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </motion.div>
     </motion.div>
   );

@@ -4,19 +4,19 @@ import { useEffect, useRef, memo } from 'react';
 const N           = 400;
 const SHAPE_N     = 320;  // exact count of points for unbroken closed perimeters
 const AMBIENT_N   = 80;   // exact count of floating ambient stars
-const SCATTER_MS  = 780;  // gentle, readable scatter burst
 const ASSEMBLE_MS = 1650; // smooth, unobtrusive convergence
 const MOUSE_R     = 72;
 const MOUSE_STR   = 1100;
 const easeOutExpo = t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
 // Pre-calculate colors to prevent 22,000 string allocations per second
+// Blueprint palette: signal-orange ramp for SW domains, construction-blue ramp for HW
 const SPEED_COLORS = Array.from({ length: 20 }, (_, i) => {
   const norm = i / 19;
-  return `rgb(${Math.round(norm*255)},255,${Math.round(209+norm*46)})`;
+  return `rgb(255,${Math.round(77 + norm * 123)},${Math.round(norm * 150)})`;
 });
-const AMBER_SPEED_COLORS = Array.from({ length: 20 }, (_, i) => {
+const BLUE_SPEED_COLORS = Array.from({ length: 20 }, (_, i) => {
   const norm = i / 19;
-  return `rgb(255,${Math.round(184 + norm*71)},${Math.round(norm*180)})`;
+  return `rgb(${Math.round(58 + norm * 82)},${Math.round(87 + norm * 78)},${Math.round(196 + norm * 44)})`;
 });
 let hasSkillsTractorRun = false; // Tracks if the kinetic tractor sequence has already executed this session
 
@@ -89,7 +89,7 @@ function sampleWord(word, n, cx, cy, scale = 1.0) {
   off.width = W; off.height = H;
   const ctx = off.getContext('2d');
   const fs  = Math.min(W * 0.20, H * 0.74);
-  ctx.font         = `${fs}px "Bebas Neue", Impact, "Arial Black", sans-serif`;
+  ctx.font         = `900 ${fs}px "Archivo", Impact, "Arial Black", sans-serif`;
   ctx.fillStyle    = '#fff';
   ctx.textAlign    = 'center';
   ctx.textBaseline = 'middle';
@@ -110,7 +110,7 @@ function sampleWord(word, n, cx, cy, scale = 1.0) {
 }
 
 // ── Build targets per section using real DOM bounding boxes ───────────────────
-function buildTargets(section, isMobile) {
+function buildTargets(section) {
   const vw = window.innerWidth, vh = window.innerHeight;
   const cx = vw / 2, cy = vh / 2;
 
@@ -143,48 +143,41 @@ function buildTargets(section, isMobile) {
   // Projects: invisible
   if (section === 3) return null;
 
-  // ── HERO: "SCROLL" hint near bottom of viewport ─────────────────────────────
+  // ── HERO: trace the title block perimeter — the drawing's headline frame ────
   if (section === 0) {
-    const pts = sampleWord('SCROLL', SHAPE_N, cx, vh * 0.94, 0.55);
-    return pad(pts.map(p => ({ ...p, dim: true })));
+    const block = document.querySelector('[data-particle-target="hero"]');
+    if (block) {
+      const r = getFlatRect(block) || block.getBoundingClientRect();
+      return pad(rectPts(r, SHAPE_N, 10));
+    }
+    const pts = sampleWord('AMR', SHAPE_N, cx, cy, 0.9);
+    return pad(pts);
   }
 
-  // ── ABOUT: trace photo frame perimeter ────────────────────────────────────
+  // ── ABOUT: trace photo figure frame ───────────────────────────────────────
   if (section === 1) {
     const photo = document.querySelector('#photo-frame-border');
     if (photo) {
       const r = getFlatRect(photo) || photo.getBoundingClientRect();
-      return pad(rectPts(r, SHAPE_N));
+      return pad(rectPts(r, SHAPE_N, 4));
     }
     return pad(ambient(SHAPE_N));
   }
 
-  // ── SKILLS: Magnetic Tractor-Beam onto individual skill cards ─────────────
+  // ── SKILLS: trace each parts-list group block ─────────────────────────────
   if (section === 2) {
-    const cards = [...document.querySelectorAll('[data-skill-card]')];
-    if (cards.length) {
-      // Temporarily clear GSAP 3D transforms on parent panel so getBoundingClientRect returns true flat coordinates!
-      const panel = cards[0]?.closest('.section-panel') || document.querySelector('.skills-panel');
-      const oldTransform = panel ? panel.style.transform : '';
-      if (panel) panel.style.transform = 'translate3d(0, 0, 0)';
-
-      const perims = cards.map(c => c.getBoundingClientRect());
-      if (panel) panel.style.transform = oldTransform;
-
+    const groups = [...document.querySelectorAll('[data-skill-group]')];
+    if (groups.length) {
+      const perims = groups.map(g => g.getBoundingClientRect());
       const totalPerim = perims.reduce((acc, r) => acc + 2 * (r.width + r.height), 0);
       const allPts = [];
-      
-      cards.forEach((c, idx) => {
+
+      groups.forEach((g, idx) => {
         const r = perims[idx];
-        const count = Math.max(12, Math.round((2 * (r.width + r.height) / (totalPerim || 1)) * SHAPE_N));
-        const pts = rectPts(r, count, 1);
-        const domain = c.getAttribute('data-domain') || (idx > 1 ? 'systems' : 'digital');
-        const side   = c.getAttribute('data-side')   || (idx % 2 === 0 ? 'left' : 'right');
-        
-        pts.forEach(p => {
-          p.domain = domain;
-          p.side   = side;
-        });
+        const count = Math.max(14, Math.round((2 * (r.width + r.height) / (totalPerim || 1)) * SHAPE_N));
+        const pts = rectPts(r, count, 3);
+        const domain = g.getAttribute('data-domain') === 'hw' ? 'systems' : 'digital';
+        pts.forEach(p => { p.domain = domain; });
         allPts.push(...pts);
       });
       return pad(allPts);
@@ -192,46 +185,25 @@ function buildTargets(section, isMobile) {
     return pad(ambient(SHAPE_N));
   }
 
-  // ── EXPERIENCE ────────────────────────────────────────────────────────────
+  // ── EXPERIENCE: flow along the revision rail ──────────────────────────────
   if (section === 4) {
-    if (isMobile) {
-      // Mobile Experience: assemble into a sharp, professional glowing laser underline directly beneath the main heading!
-      const heading = document.querySelector('#exp-mobile-heading');
-      if (heading) {
-        const r = getFlatRect(heading) || heading.getBoundingClientRect();
-        return pad(linePts(r.left + 4, r.bottom + 10, r.right - 4, r.bottom + 10, SHAPE_N));
-      }
-      return pad(linePts(vw * 0.15, vh * 0.25, vw * 0.85, vh * 0.25, SHAPE_N));
-    }
-    // Desktop Experience: flow along timeline vertical line
-    const timelineLine = document.querySelector('[data-exp-timeline]');
-    if (timelineLine) {
-      const r = getFlatRect(timelineLine) || timelineLine.getBoundingClientRect();
-      return pad(linePts(r.left + r.width/2, r.top, r.left + r.width/2, r.bottom, SHAPE_N));
+    const rail = document.querySelector('[data-exp-rail]');
+    if (rail) {
+      const r = getFlatRect(rail) || rail.getBoundingClientRect();
+      return pad(linePts(r.left + r.width / 2, r.top, r.left + r.width / 2, r.bottom, SHAPE_N));
     }
     return pad(linePts(cx, vh * 0.18, cx, vh * 0.82, SHAPE_N));
   }
 
-  // ── MOBILE CONTACT INTRO (Section 5 on mobile) ─────────────────────────────
-  if (isMobile && section === 5) {
-    // Form a compact, sleek downward-pointing arrow near bottom of viewport to prompt scrolling!
-    const tipX = cx, tipY = vh * 0.88;
-    const shaft = linePts(cx, vh * 0.81, tipX, tipY, 130);
-    const leftWing = linePts(cx - 26, vh * 0.845, tipX, tipY, 95);
-    const rightWing = linePts(cx + 26, vh * 0.845, tipX, tipY, 95);
-    return pad([...shaft, ...leftWing, ...rightWing]);
-  }
-
-  // ── CONTACT FORM: trace form inputs + button borders ───────────────────────
+  // ── CONTACT: trace work-order form field borders ──────────────────────────
   const fields = [...document.querySelectorAll(
-    '.contact-panel input, .contact-panel textarea, .contact-panel button[type="submit"]'
+    '.wo-form input, .wo-form textarea, .wo-form button[type="submit"]'
   )];
   if (fields.length) {
-    const panel = fields[0]?.closest('.section-panel') || document.querySelector('.contact-panel');
-    const oldTransform = panel ? panel.style.transform : '';
-    if (panel) panel.style.transform = 'translate3d(0, 0, 0)';
-    const rects = fields.map(f => f.getBoundingClientRect());
-    if (panel) panel.style.transform = oldTransform;
+    const rects = fields
+      .filter(f => f.getBoundingClientRect().width > 0)
+      .map(f => f.getBoundingClientRect());
+    if (!rects.length) return pad(ambient(SHAPE_N));
     return pad(multiRectPts(rects, SHAPE_N));
   }
   return pad(ambient(SHAPE_N));
@@ -247,10 +219,6 @@ function ctrlPt(sx, sy, tx, ty) {
   const sgn = Math.random() < 0.5 ? 1 : -1;
   return { qx: mx + px * arc * sgn, qy: my + py * arc * sgn };
 }
-function bezXY(sx, sy, qx, qy, tx, ty, t) {
-  const u = 1-t;
-  return { x: u*u*sx + 2*u*t*qx + t*t*tx, y: u*u*sy + 2*u*t*qy + t*t*ty };
-}
 
 // ── Component ─────────────────────────────────────────────────────────────────
 const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile }) {
@@ -265,7 +233,8 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
     const resize = () => {
       const c = canvasRef.current; if (!c) return;
       // Cap DPR to reduce GPU memory buffer & pixel shader load by up to 75% on mobile while keeping 100% crisp sharpness
-      const dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 || isMobile ? 1.25 : 1.5);
+      const mob = window.innerWidth < 768;
+      const dpr = Math.min(window.devicePixelRatio || 1, mob ? 1.25 : 1.5);
       const w = window.innerWidth, h = window.innerHeight;
       c.width = w * dpr; c.height = h * dpr;
       c.style.width = `${w}px`; c.style.height = `${h}px`;
@@ -300,7 +269,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
 
     // ── FIRST MOUNT: create particles scattered randomly, then assemble to Hero ──
     if (isFirst) {
-      const targets = buildTargets(section, isMobile);
+      const targets = buildTargets(section);
       if (!targets) return;
       const particles = Array.from({ length: N }, (_, i) => {
         const tg  = targets[i];
@@ -361,7 +330,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
       // ── DELAYED: query DOM and assemble (graceful timing) ─────────────────
       const delay = section === 2 ? 30 : (section === 0 ? 100 : 850);
       timerRef.current = setTimeout(() => {
-        const targets = buildTargets(section, isMobile);
+        const targets = buildTargets(section);
         if (!targets) {
           if (stateRef.current) {
             stateRef.current.particles.forEach(p => { p.tOpacity = 0; p.finalOpacity = 0; });
@@ -545,9 +514,9 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
           // ── Speed-based domain coloring (No string allocations!) ───────────
           const speedNorm = Math.min(1, speed / 18);
           const colorIdx  = (speedNorm * 19) | 0; // fast floor
-          const isAmber   = p.domain === 'systems';
-          const baseColor = isAmber ? '#FFB800' : '#00FFD1';
-          const palette   = isAmber ? AMBER_SPEED_COLORS : SPEED_COLORS;
+          const isHw      = p.domain === 'systems';
+          const baseColor = isHw ? '#3A57C4' : '#FF4400';
+          const palette   = isHw ? BLUE_SPEED_COLORS : SPEED_COLORS;
           const dotColor  = speedNorm > 0.15 ? palette[colorIdx] : baseColor;
 
           // ── Trail ghosts ───────────────────────────────────────────────────
@@ -595,7 +564,6 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
       if (timerRef.current) clearTimeout(timerRef.current);
       // Don't cancel RAF here — let it keep running across section changes
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, section, isMobile]);
 
   return (
@@ -606,7 +574,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ section, visible, isMobile
         position:      'fixed',
         top:           0, left: 0,
         pointerEvents: 'none',
-        zIndex:        5, // Always underneath the content elements and cards (zIndex 10+)
+        zIndex:        1, // Drafting pins live under the content sheets (main is z-2)
         willChange:    'transform, opacity',
         transform:     'translateZ(0)',
       }}

@@ -86,7 +86,7 @@ export const PROJECTS_DATA = [
     title: 'Portfolio',
     subtitle: 'High-Performance GPU-Accelerated Web Experience',
     tag: 'React · GSAP · Canvas 2D · Framer Motion',
-    color: '#00FFD1',
+    color: '#FF4400',
     img: 'assets/portfolio/cover.png',
     year: '2026',
     status: 'Live',

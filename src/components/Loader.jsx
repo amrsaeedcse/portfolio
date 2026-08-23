@@ -1,39 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const BOOT_LINES = [
-  'FLUTTER SDK ............ OK',
-  'IoT SYSTEMS ........... OK',
-  'WebGL ENGINE .......... OK',
-  'REACT CORE ............ OK',
-  'ALL SYSTEMS NOMINAL',
+  'PAPER STOCK .......... LOADED',
+  'INK RESERVOIR ........ FILLED',
+  'GRID CALIBRATION ..... 32PX / 160PX',
+  'DIMENSION CHECK ...... NOMINAL',
+  'TITLE BLOCK .......... SIGNED',
 ];
 
 const styles = `
-  /* Fonts loaded via <link> preload in index.html — no @import needed */
-
   @keyframes fadeSlideIn {
-    from { opacity: 0; transform: translateX(-12px); }
+    from { opacity: 0; transform: translateX(-10px); }
     to   { opacity: 1; transform: translateX(0); }
   }
-  @keyframes barGrow {
-    from { width: 0%; }
-    to   { width: 100%; }
-  }
-  @keyframes countUp {
-    from { --pct: 0; }
-    to   { --pct: 100; }
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 0.03; }
-    50%       { opacity: 0.09; }
+  @keyframes nameIn {
+    from { opacity: 0; transform: translateY(26px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
   @keyframes wipeOut {
     from { transform: scaleX(1); }
     to   { transform: scaleX(0); }
-  }
-  @keyframes nameIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to   { opacity: 1; transform: translateY(0); }
   }
   @keyframes shutterTop {
     from { transform: translateY(0); }
@@ -47,198 +33,191 @@ const styles = `
     from { opacity: 1; }
     to   { opacity: 0; }
   }
-  @keyframes badgeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
   @keyframes seamFlash {
-    0%   { transform: scaleX(0); opacity: 0; height: 1px; filter: drop-shadow(0 0 4px #00FFD1); }
-    35%  { transform: scaleX(1); opacity: 1; height: 2px; filter: drop-shadow(0 0 18px #00FFD1) drop-shadow(0 0 35px #00FFD1); }
-    75%  { transform: scaleX(1); opacity: 1; height: 4px; background: #ffffff; }
-    100% { transform: scaleX(1); opacity: 0; }
+    0%   { transform: scaleX(0); opacity: 0; height: 2px; }
+    30%  { transform: scaleX(1); opacity: 1; height: 3px; }
+    100% { transform: scaleX(1); opacity: 0; height: 2px; }
+  }
+  @keyframes underlineDraw {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
   }
 
   .loader-root {
     position: fixed; inset: 0; z-index: 1000;
-    font-family: 'DM Sans', sans-serif;
+    background: #F2EFE7;
+    font-family: 'Archivo', sans-serif;
+    color: #1A1D23;
   }
-  .loader-root.exiting .shutter-top {
-    border-color: #00FFD1;
-    box-shadow: 0 4px 35px rgba(0, 255, 209, 0.45);
-    animation: shutterTop 0.8s cubic-bezier(0.85,0,0.15,1) 0.2s forwards;
-    will-change: transform;
+  .loader-root::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(58,87,196,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(58,87,196,0.07) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
   }
-  .loader-root.exiting .shutter-bottom {
-    border-color: #00FFD1;
-    box-shadow: 0 -4px 35px rgba(0, 255, 209, 0.45);
-    animation: shutterBottom 0.8s cubic-bezier(0.85,0,0.15,1) 0.2s forwards;
-    will-change: transform;
-  }
-  .loader-root.exiting .content-wrapper {
-    animation: fadeOut 0.25s ease-out forwards;
-    will-change: opacity;
-  }
-  .loader-root.exiting .glow-pulse {
-    display: none; /* Immediately hide heavy blur to prevent composite lag */
-  }
+
+  .loader-root.exiting .shutter-top { animation: shutterTop 0.8s cubic-bezier(0.85,0,0.15,1) 0.18s forwards; will-change: transform; }
+  .loader-root.exiting .shutter-bottom { animation: shutterBottom 0.8s cubic-bezier(0.85,0,0.15,1) 0.18s forwards; will-change: transform; }
+  .loader-root.exiting .content-wrapper { animation: fadeOut 0.22s ease-out forwards; }
+  .loader-root.exiting .crosshair-spin { display: none; }
 
   .aperture-seam {
     position: absolute; top: calc(50vh - 1px); left: 0; right: 0;
-    height: 2px; background: #00FFD1; z-index: 1050;
+    height: 2px; background: #FF4400; z-index: 1050;
     pointer-events: none; transform: scaleX(0); opacity: 0;
     transform-origin: center;
   }
   .loader-root.exiting .aperture-seam {
-    animation: seamFlash 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
+    animation: seamFlash 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
   }
 
   .shutter-top {
     position: absolute; top: 0; left: 0;
     width: 100vw; height: 50vh;
-    background: #05050a;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    transform-origin: bottom center;
+    background: #F2EFE7;
+    border-bottom: 1px solid rgba(26,29,35,0.25);
     overflow: hidden;
+    z-index: 1010;
   }
   .shutter-bottom {
     position: absolute; top: 50vh; left: 0;
     width: 100vw; height: 50vh;
-    background: #05050a;
-    border-top: 1px solid transparent;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    transform-origin: top center;
+    background: #F2EFE7;
+    border-top: 1px solid rgba(26,29,35,0.25);
     overflow: hidden;
+    z-index: 1010;
   }
-  .shutter-telemetry-top {
-    position: absolute; bottom: 0.5rem; right: 8vw;
-    font-family: monospace; font-size: 0.62rem;
-    letter-spacing: 0.28em; color: #00FFD1bb;
-    text-transform: uppercase; opacity: 0;
-    transition: opacity 0.2s ease 0.1s;
-    text-shadow: 0 0 8px #00FFD166;
+  .loader-telemetry {
+    position: absolute;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.28em; color: #82868F; text-transform: uppercase;
+    opacity: 0; transition: opacity 0.2s ease 0.1s;
   }
-  .shutter-telemetry-bottom {
-    position: absolute; top: 0.5rem; left: 8vw;
-    font-family: monospace; font-size: 0.62rem;
-    letter-spacing: 0.28em; color: #00FFD1bb;
-    text-transform: uppercase; opacity: 0;
-    transition: opacity 0.2s ease 0.1s;
-    text-shadow: 0 0 8px #00FFD166;
-  }
-  .loader-root.exiting .shutter-telemetry-top,
-  .loader-root.exiting .shutter-telemetry-bottom {
-    opacity: 1;
-  }
+  .telemetry-top { bottom: 0.6rem; right: 8vw; }
+  .telemetry-bottom { top: 0.6rem; left: 8vw; }
+  .loader-root.exiting .loader-telemetry { opacity: 1; }
 
   .content-wrapper {
-    position: absolute; inset: 0;
+    position: absolute; inset: 0; z-index: 1020;
     display: flex; flex-direction: column;
     justify-content: center; align-items: flex-start;
     padding: 0 8vw; overflow: hidden;
   }
 
-  .grid-bg {
-    position: absolute; inset: 0;
-    pointer-events: none; overflow: hidden; opacity: 0.04;
-  }
-  .grid-line {
-    position: absolute; top: 0; bottom: 0;
-    width: 1px; background: #00FFD1;
-  }
-
   .badge {
-    position: absolute; top: 2.5rem; left: 8vw;
-    font-family: monospace; font-size: 0.65rem;
-    letter-spacing: 0.3em; color: #00FFD166;
-    text-transform: uppercase;
-    opacity: 0;
-    animation: badgeIn 0.4s ease 0.1s forwards;
+    position: absolute; top: 2.4rem; left: 8vw;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+    letter-spacing: 0.3em; color: #FF4400; text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .badge::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: #FF4400;
+    animation: blink 1.15s steps(1) infinite;
   }
 
-  .boot-block { margin-bottom: 3rem; }
+  .boot-block { margin-bottom: 2.6rem; }
   .boot-header {
-    font-family: monospace; font-size: 0.7rem;
-    color: #00FFD144; letter-spacing: 0.2em; margin-bottom: 1.5rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+    color: #82868F; letter-spacing: 0.22em; margin-bottom: 1.3rem;
   }
   .boot-line {
-    font-family: monospace;
-    font-size: clamp(0.75rem, 1.4vw, 0.9rem);
-    letter-spacing: 0.1em; margin-bottom: 0.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(0.72rem, 1.3vw, 0.85rem);
+    letter-spacing: 0.08em; margin-bottom: 0.45rem;
     display: flex; align-items: center; gap: 0.75rem;
     opacity: 0;
-    animation: fadeSlideIn 0.2s ease forwards;
+    animation: fadeSlideIn 0.22s ease forwards;
+    color: #454A54;
   }
-  .boot-line-num { color: #00FFD133; }
+  .boot-line-num { color: rgba(26,29,35,0.28); }
+  .boot-ok { color: #FF4400; }
 
-  .name-block {
-    margin-bottom: 3rem; position: relative; display: inline-block;
-  }
+  .name-block { margin-bottom: 2.6rem; position: relative; display: inline-block; }
   .wipe-overlay {
     position: absolute; inset: 0;
-    background: #00FFD1; z-index: 2;
+    background: #FF4400; z-index: 2;
     transform-origin: left center;
-    animation: wipeOut 0.7s cubic-bezier(0.87,0,0.13,1) 0s forwards;
+    animation: wipeOut 0.65s cubic-bezier(0.87,0,0.13,1) forwards;
   }
   .name-inner {
     opacity: 0;
-    animation: nameIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s forwards;
+    animation: nameIn 0.55s cubic-bezier(0.16,1,0.3,1) 0.12s forwards;
   }
   .name-big {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(5rem, 22vw, 16rem);
-    line-height: 0.88; color: #f4f4f5; letter-spacing: 0.01em;
+    font-weight: 900; font-stretch: 112%;
+    font-size: clamp(3.2rem, 11vw, 8rem);
+    line-height: 0.92; color: #1A1D23; letter-spacing: -0.015em;
+    text-transform: uppercase;
+  }
+  .name-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #1A1D23;
+  }
+  .name-underline {
+    height: 3px; background: #FF4400; margin-top: 0.9rem;
+    transform-origin: left center;
+    animation: underlineDraw 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s both;
   }
   .name-sub {
-    font-family: 'DM Sans', sans-serif;
-    font-size: clamp(0.8rem, 1.6vw, 1rem);
-    letter-spacing: 0.35em; text-transform: uppercase;
-    color: #00FFD1; margin-top: 0.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(0.62rem, 1.4vw, 0.78rem);
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: #454A54; margin-top: 0.85rem;
   }
 
-  .progress-wrapper { width: 100%; max-width: 500px; }
+  .progress-wrapper { width: 100%; max-width: 520px; }
   .progress-header {
-    display: flex; justify-content: space-between; margin-bottom: 0.6rem;
-    font-family: monospace; font-size: 0.65rem; color: #44444f;
+    display: flex; justify-content: space-between; margin-bottom: 0.55rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+    color: #82868F; letter-spacing: 0.16em;
   }
-  .progress-label { letter-spacing: 0.15em; }
-  .progress-pct { color: #00FFD1; }
+  .progress-pct { color: #FF4400; font-weight: 600; }
   .progress-track {
-    height: 1px; background: #ffffff0d;
-    border-radius: 999px; overflow: hidden;
+    position: relative;
+    height: 6px;
+    background:
+      repeating-linear-gradient(to right,
+        rgba(26,29,35,0.22) 0 1px, transparent 1px 10%);
   }
   .progress-bar {
-    height: 100%; width: 0%; border-radius: 999px;
-    background: linear-gradient(to right, #00FFD1, #00b8a9);
-    box-shadow: 0 0 12px #00FFD166;
+    position: absolute; left: 0; top: 50%; margin-top: -1px;
+    height: 2px; width: 100%;
+    transform-origin: left center;
+    background: #1A1D23;
+    will-change: transform;
   }
 
   .copyright {
-    position: absolute; bottom: 2rem; right: 8vw;
-    font-family: monospace; font-size: 0.6rem;
-    color: #22222a; letter-spacing: 0.15em;
+    position: absolute; bottom: 1.8rem; right: 8vw;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+    color: #B9B4A6; letter-spacing: 0.18em;
   }
-  .glow-pulse {
-    position: absolute; top: 20%; right: -8%;
-    width: 50vw; height: 50vh; border-radius: 50%;
-    background: #00FFD1; filter: blur(90px);
-    pointer-events: none;
-    animation: pulse 2.2s ease-in-out infinite;
+
+  /* Rotating crosshair — surveyor mark */
+  .crosshair-spin {
+    position: absolute; top: 50%; right: 12vw;
+    width: clamp(90px, 14vw, 170px); aspect-ratio: 1;
+    transform: translateY(-50%);
+    pointer-events: none; opacity: 0.85;
   }
+  @media (max-width: 767px) { .crosshair-spin { display: none; } }
 `;
 
-// Total boot animation duration: stagger * lines + line duration
-// 5 lines × 0.15s stagger + 0.2s = 0.95s base; bar takes ~same
-const BOOT_STAGGER = 150;   // ms per line
-const BOOT_DURATION = BOOT_LINES.length * BOOT_STAGGER + 300; // a bit of buffer
-const NAME_DURATION = 900;  // reduced to feel snappier (was 1200)
-const EXIT_DURATION = 1100; // slightly increased to let shutter finish cleanly (0.2s delay + 0.8s anim = 1.0s)
+// Timing mirrors the previous loader contract so App wiring stays identical
+const BOOT_STAGGER = 140;
+const BOOT_DURATION = BOOT_LINES.length * BOOT_STAGGER + 300;
+const NAME_DURATION = 900;
+const EXIT_DURATION = 1100;
 
 export default function Loader({ onComplete, onExiting, readyToExit }) {
   const [phase, setPhase] = useState('boot'); // boot | name | exiting | done
   const [pct, setPct] = useState(0);
 
-  // Progress counter tied to boot duration
   useEffect(() => {
     if (phase !== 'boot') return;
     const start = performance.now();
@@ -252,7 +231,6 @@ export default function Loader({ onComplete, onExiting, readyToExit }) {
     return () => cancelAnimationFrame(raf);
   }, [phase]);
 
-  // Advance phases
   useEffect(() => {
     const t1 = setTimeout(() => setPhase('name'), BOOT_DURATION);
     return () => clearTimeout(t1);
@@ -260,31 +238,28 @@ export default function Loader({ onComplete, onExiting, readyToExit }) {
 
   const [minTimePassed, setMinTimePassed] = useState(false);
 
-  // الشرط الأول: وقت العرض الأدنى
   useEffect(() => {
     if (phase !== 'name') return;
     const t = setTimeout(() => setMinTimePassed(true), NAME_DURATION);
     return () => clearTimeout(t);
   }, [phase]);
 
-  useEffect(() => {
-    if (phase !== 'name' || !minTimePassed || !readyToExit) return;
-    setPhase('exiting');
-  }, [phase, minTimePassed, readyToExit]);
+  /* Derived: shutters only start once minimum showtime passed AND page is ready */
+  const exiting = phase === 'name' && minTimePassed && readyToExit;
 
   useEffect(() => {
-    if (phase !== 'exiting') return;
+    if (!exiting) return;
     onExiting?.();
     const t = setTimeout(() => {
       setPhase('done');
       onComplete?.();
     }, EXIT_DURATION);
     return () => clearTimeout(t);
-  }, [phase, onComplete, onExiting]);
+  }, [exiting, onComplete, onExiting]);
 
   if (phase === 'done') return null;
 
-  const isExiting = phase === 'exiting';
+  const isExiting = exiting;
 
   return (
     <>
@@ -292,76 +267,66 @@ export default function Loader({ onComplete, onExiting, readyToExit }) {
       <div className={`loader-root${isExiting ? ' exiting' : ''}`}>
         <div className="aperture-seam" />
         <div className="shutter-top">
-          <div className="shutter-telemetry-top">[ APERTURE_DISENGAGED // UNLOCKING_HUD ]</div>
+          <div className="loader-telemetry telemetry-top">[ SHEET_01 // RELEASED ]</div>
         </div>
         <div className="shutter-bottom">
-          <div className="shutter-telemetry-bottom">[ SEC_GATE: OPEN // PROTOCOL_V3_ONLINE ]</div>
+          <div className="loader-telemetry telemetry-bottom">[ DWG_NO: AA-2026-001 // CHECKED ✓ ]</div>
         </div>
 
         <div className="content-wrapper">
-          {/* Ambient grid */}
-          <div className="grid-bg">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="grid-line" style={{ left: `${i * 8.5}%` }} />
-            ))}
-          </div>
+          <div className="badge">PORTFOLIO // DRAWING SET REV.2026</div>
 
-          {/* Badge */}
-          <div className="badge">PORTFOLIO_OS v3.0</div>
+          {/* Rotating surveyor crosshair */}
+          <svg className="crosshair-spin spin-slow" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#1A1D23" strokeWidth="1" opacity="0.35" />
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#3A57C4" strokeWidth="0.75" strokeDasharray="4 6" opacity="0.7" />
+            <line x1="50" y1="2" x2="50" y2="24" stroke="#FF4400" strokeWidth="1.4" />
+            <line x1="50" y1="76" x2="50" y2="98" stroke="#FF4400" strokeWidth="1.4" />
+            <line x1="2" y1="50" x2="24" y2="50" stroke="#FF4400" strokeWidth="1.4" />
+            <line x1="76" y1="50" x2="98" y2="50" stroke="#FF4400" strokeWidth="1.4" />
+            <circle cx="50" cy="50" r="2.4" fill="#FF4400" />
+          </svg>
 
-          {/* Boot phase */}
           {phase === 'boot' && (
             <div className="boot-block">
-              <div className="boot-header">&gt; BOOT SEQUENCE INITIATED</div>
+              <div className="boot-header">&gt; PREPARING SCHEMATIC</div>
               {BOOT_LINES.map((line, i) => (
-                <div
-                  key={i}
-                  className="boot-line"
-                  style={{
-                    animationDelay: `${i * BOOT_STAGGER}ms`,
-                    color: i === BOOT_LINES.length - 1 ? '#00FFD1' : '#00FFD188',
-                  }}
-                >
+                <div key={i} className="boot-line" style={{ animationDelay: `${i * BOOT_STAGGER}ms` }}>
                   <span className="boot-line-num">[{String(i + 1).padStart(2, '0')}]</span>
-                  {line}
+                  <span>{line}</span>
+                  <span className="boot-ok">✓</span>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Name phase */}
           {(phase === 'name' || isExiting) && (
             <div className="name-block">
               <div className="wipe-overlay" />
               <div className="name-inner">
-                <div className="name-big">AMR</div>
-                <div className="name-sub">Flutter Developer &amp; Hardware Engineer</div>
+                <div className="name-big">AMR<br /><span className="name-outline">ABDELAZEEM</span></div>
+                <div className="name-underline" />
+                <div className="name-sub">FLUTTER × HARDWARE ENGINEER</div>
               </div>
             </div>
           )}
 
-          {/* Progress bar */}
           <div className="progress-wrapper">
             <div className="progress-header">
-              <span className="progress-label">LOADING EXPERIENCE</span>
+              <span>IMPORTING DRAWING SET</span>
               <span className="progress-pct">{phase === 'boot' ? pct : 100}%</span>
             </div>
             <div className="progress-track">
               <div
                 className="progress-bar"
                 style={{
-                  width: phase === 'boot' ? `${pct}%` : '100%',
-                  transition: phase === 'boot' ? 'none' : 'width 0.3s ease',
+                  transform: `scaleX(${(phase === 'boot' ? pct : 100) / 100})`,
                 }}
               />
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="copyright">AMRSAEEDCSE © 2025</div>
-
-          {/* Glow */}
-          <div className="glow-pulse" />
+          <div className="copyright">AMRSAEEDCSE © 2026</div>
         </div>
       </div>
     </>

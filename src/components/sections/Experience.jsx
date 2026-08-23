@@ -1,62 +1,93 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { SectionHead, Reveal } from '../ui/blueprint';
+
+const ITEMS = [
+  {
+    rev: 'R1',
+    date: '2024 — NOW',
+    title: 'Mobile App Trainee',
+    org: 'DEPI — MINISTRY OF COMMUNICATIONS & IT',
+    desc: 'Intensive Flutter & Dart track under a national government initiative.',
+    tone: 'signal',
+  },
+  {
+    rev: 'R2',
+    date: 'SUMMER 2024',
+    title: 'Mobile App Trainee',
+    org: 'ITI — INFORMATION TECHNOLOGY INSTITUTE',
+    desc: 'Flutter, Dart, state management patterns and Clean Architecture.',
+    tone: 'signal',
+  },
+  {
+    rev: 'R3',
+    date: '2021 — NOW',
+    title: 'B.Sc. Computer Engineering',
+    org: 'ZAGAZIG UNIVERSITY',
+    desc: 'Computer & Systems Engineering — embedded and software focus.',
+    tone: 'blue',
+  },
+];
 
 export default function Experience() {
-  const experiences = [
-    { title: "Mobile App Trainee", org: "DEPI (Digital Pioneers Initiative)", date: "2024", desc: "Intensive training program in partnership with Ministry of CIT." },
-    { title: "Mobile App Trainee", org: "ITI", date: "Summer 2024", desc: "Summer training focusing on Flutter fundamentals and Dart." },
-    { title: "Computer Engineering Student", org: "Zagazig University", date: "2021 - Present", desc: "Studying Systems, Embedded Software, and CS fundamentals." }
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
-  };
-
   return (
-    <section id="experience" className="min-h-screen py-20 flex flex-col justify-center">
-      <div className="container mx-auto px-4">
-        <motion.h2 
-          className="text-4xl font-bold mb-12 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          Experience & Education
-        </motion.h2>
-        <motion.div 
-          className="max-w-3xl mx-auto space-y-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-        >
-          {experiences.map((exp, i) => (
-            <motion.div 
-              key={i} 
-              variants={itemVariants}
-              className="flex flex-col md:flex-row gap-4 border-l-2 border-primary pl-6 py-2 relative"
+    <section id="experience" className="relative px-5 md:px-14 py-24 md:py-36">
+      <div className="max-w-[1150px] mx-auto">
+        <SectionHead no="05" code="REVISION HISTORY" title="TRACK RECORD." />
+
+        {/* Revision rail */}
+        <div className="relative mt-12 md:mt-16 max-w-[780px]">
+          <div
+            data-exp-rail
+            className="absolute top-1 bottom-1 w-px bg-line-strong"
+            style={{ left: '15px' }}
+            aria-hidden="true"
+          />
+
+          {ITEMS.map(({ rev, date, title, org, desc, tone }, i) => (
+            <Reveal
+              key={rev}
+              delay={i * 0.07}
+              className={`relative pb-12 md:pb-14 pl-10 md:pl-16 ${i === ITEMS.length - 1 ? '!pb-0' : ''}`}
             >
-              <div className="absolute w-4 h-4 bg-primary rounded-full -left-[9px] top-4"></div>
-              <div className="md:w-1/3">
-                <div className="text-sm text-primary font-bold">{exp.date}</div>
+              {/* Datum node on the rail */}
+              <span
+                aria-hidden="true"
+                className="absolute block h-[13px] w-[13px] rotate-45 border-2 bg-paper transition-transform duration-300 hover:rotate-[135deg]"
+                style={{
+                  left: '9px',
+                  top: '4px',
+                  borderColor: tone === 'blue' ? 'var(--color-bp)' : 'var(--color-signal)',
+                }}
+              />
+
+              <div className="flex items-center gap-3 flex-wrap">
+                <span
+                  className="bp-chip tabular-nums"
+                  style={tone === 'blue'
+                    ? { borderColor: 'rgba(58,87,196,0.55)', color: 'var(--color-bp)', background: 'rgba(58,87,196,0.06)' }
+                    : { borderColor: 'rgba(255,68,0,0.55)', color: 'var(--color-signal)', background: 'rgba(255,68,0,0.06)' }}
+                >
+                  {rev}
+                </span>
+                <span className="mono-tiny text-ink-3">{date}</span>
               </div>
-              <div className="md:w-2/3">
-                <h3 className="text-xl font-bold text-foreground">{exp.title}</h3>
-                <div className="text-muted-foreground mb-2">{exp.org}</div>
-                <p className="text-sm text-muted-foreground">{exp.desc}</p>
-              </div>
-            </motion.div>
+
+              <h3 className="font-display font-extrabold tracking-tight text-[1.35rem] md:text-[1.7rem] mt-3 leading-tight">
+                {title}
+              </h3>
+              <p
+                className="mono-label mt-2"
+                style={{ color: tone === 'blue' ? 'var(--color-bp)' : 'var(--color-signal)' }}
+              >
+                {org}
+              </p>
+              <p className="text-ink-2 text-[0.92rem] leading-[1.75] mt-2 max-w-[54ch]">{desc}</p>
+            </Reveal>
           ))}
-        </motion.div>
+        </div>
+
+        <Reveal className="mt-12 select-none">
+          <span className="mono-tiny text-ink-3">FURTHER REVISIONS IN PROGRESS // UNRELEASED</span>
+        </Reveal>
       </div>
     </section>
   );

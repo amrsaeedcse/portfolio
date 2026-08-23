@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, Suspense, lazy } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Loader from './components/Loader';
 import CustomCursor from './components/ui/CustomCursor';
+import EngineeringMarquee from './components/ui/EngineeringMarquee';
 import { isSoundEnabled, toggleSound, playSwitchClick, playHoverTick } from './lib/soundFx';
 
 const ProjectDetail = lazy(() => import('./components/sections/ProjectDetail'));
@@ -371,6 +372,7 @@ export default function App() {
       {/* ── Application Sections ─────────────────────────────────────────── */}
       <main className="relative z-10">
         <Hero ready={heroReady} scrollToSection={scrollToSection} onOpenProject={setActiveProject} />
+        <EngineeringMarquee />
         <About />
         <Skills />
         <Work onProjectClick={setActiveProject} />

@@ -9,18 +9,31 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.08,
-      delayChildren: 0.1,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const wordVariants = {
+  hidden: { y: '120%', opacity: 0, rotate: 3 },
+  visible: {
+    y: '0%',
+    opacity: 1,
+    rotate: 0,
+    transition: {
+      duration: 0.75,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20, filter: 'blur(6px)' },
+  hidden: { opacity: 0, y: 25, filter: 'blur(8px)' },
   visible: {
     opacity: 1,
     y: 0,
     filter: 'blur(0px)',
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -35,7 +48,7 @@ export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
         animate={ready ? 'visible' : 'hidden'}
         className="max-w-7xl mx-auto w-full relative z-10"
       >
-        {/* ── Top Status Bar ─────────────────────────────────────────────── */}
+        {/* ── Top Status Bar with Pulse Beacon ────────────────────────────── */}
         <motion.div
           variants={itemVariants}
           className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-current/15 select-none"
@@ -56,16 +69,39 @@ export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
         </motion.div>
 
         {/* ── Main Hero Split Grid ────────────────────────────────────────── */}
-        <div className="grid lg:grid-cols-[1.2fr_0.9fr] gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-[1.2fr_0.9fr] gap-8 lg:gap-12 items-center relative">
 
-          {/* Left Column: Thesis & Actions (100% Above the Fold) */}
-          <div>
-            <motion.h1
-              variants={itemVariants}
-              className="font-display font-black text-3xl sm:text-4xl lg:text-[3.2rem] tracking-tight leading-[1.12] uppercase"
-            >
-              Architecting scalable <span className="text-[#FF4400]">Mobile Apps</span> &amp; real-time <span className="text-[#3A57C4]">Embedded Silicon</span>.
-            </motion.h1>
+          {/* Left Column: Kinetic Headline & Actions (100% Above Fold) */}
+          <div className="relative z-10">
+            {/* Kinetic Masked Headline */}
+            <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-[3.2rem] tracking-tight leading-[1.12] uppercase overflow-hidden">
+              <span className="inline-block overflow-hidden py-0.5">
+                <motion.span variants={wordVariants} className="inline-block mr-2.5">
+                  Architecting
+                </motion.span>
+              </span>
+              <span className="inline-block overflow-hidden py-0.5">
+                <motion.span variants={wordVariants} className="inline-block mr-2.5">
+                  scalable
+                </motion.span>
+              </span>
+              <span className="inline-block overflow-hidden py-0.5">
+                <motion.span variants={wordVariants} className="inline-block text-[#FF4400] mr-2.5">
+                  Mobile Apps
+                </motion.span>
+              </span>
+              <br className="hidden sm:inline" />
+              <span className="inline-block overflow-hidden py-0.5">
+                <motion.span variants={wordVariants} className="inline-block mr-2.5">
+                  &amp; real-time
+                </motion.span>
+              </span>
+              <span className="inline-block overflow-hidden py-0.5">
+                <motion.span variants={wordVariants} className="inline-block text-[#3A57C4]">
+                  Embedded Silicon.
+                </motion.span>
+              </span>
+            </h1>
 
             <motion.p
               variants={itemVariants}
@@ -128,10 +164,10 @@ export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
             </motion.div>
           </div>
 
-          {/* Right Column: Flagship Project Spotlight Card (Loadr) */}
-          <motion.div variants={itemVariants}>
-            <TiltCard maxTilt={5}>
-              <div className="sheet-frame p-6 shadow-xl relative overflow-hidden bg-current/5 flex flex-col justify-between">
+          {/* Right Column: 3D Spatial Flagship Project Spotlight Card */}
+          <motion.div variants={itemVariants} className="relative">
+            <TiltCard maxTilt={6}>
+              <div className="sheet-frame p-6 shadow-2xl relative overflow-hidden bg-current/5 flex flex-col justify-between group">
 
                 {/* Title Block Header */}
                 <div className="flex items-center justify-between pb-3 border-b border-current/15 mb-3">
@@ -146,7 +182,7 @@ export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
                   </span>
                 </div>
 
-                {/* Flagship App Image Preview */}
+                {/* Flagship App Image Preview with 3D Depth */}
                 <div
                   onClick={() => { playSwitchClick(); onOpenProject?.(flagship); }}
                   className="relative h-48 sm:h-52 overflow-hidden border border-current/20 bg-current/10 cursor-pointer group mb-4"
@@ -169,7 +205,7 @@ export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
 
                 {/* Project Specs */}
                 <div>
-                  <h3 className="font-display font-black text-xl tracking-tight uppercase">
+                  <h3 className="font-display font-black text-xl tracking-tight uppercase group-hover:text-[#FF4400] transition-colors">
                     {flagship.title}
                   </h3>
                   <p className="font-mono text-xs text-[#FF4400] font-semibold mt-0.5">
@@ -200,7 +236,7 @@ export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
                     Inspect Blueprint ↗
                   </button>
 
-                  <span className="font-mono text-[0.62rem] text-[#8A91A5]">
+                  <span className="font-mono text-[0.62rem] text-[#8A91A5] font-bold">
                     60 FPS · C-API NATIVE
                   </span>
                 </div>

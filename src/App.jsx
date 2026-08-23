@@ -370,7 +370,7 @@ export default function App() {
 
       {/* ── Application Sections ─────────────────────────────────────────── */}
       <main className="relative z-10">
-        <Hero ready={heroReady} scrollToSection={scrollToSection} />
+        <Hero ready={heroReady} scrollToSection={scrollToSection} onOpenProject={setActiveProject} />
         <About />
         <Skills />
         <Work onProjectClick={setActiveProject} />

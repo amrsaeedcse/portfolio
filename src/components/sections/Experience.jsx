@@ -1,4 +1,7 @@
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import TiltCard from '../ui/TiltCard';
+import { playHoverTick } from '../../lib/soundFx';
 
 const MILESTONES = [
   {
@@ -34,8 +37,21 @@ const MILESTONES = [
 ];
 
 export default function Experience() {
+  const containerRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start 75%', 'end 60%'],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 25,
+    restDelta: 0.001,
+  });
+
   return (
-    <section id="experience" className="relative px-5 md:px-14 py-20 md:py-28">
+    <section id="experience" ref={containerRef} className="relative px-5 md:px-14 py-20 md:py-28">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Header */}
@@ -44,18 +60,40 @@ export default function Experience() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          className="mb-12 pb-4 border-b border-[#111318]/15"
+          className="mb-12 pb-4 border-b border-current/15 flex items-baseline justify-between gap-4"
         >
-          <span className="bp-stamp text-[#3A57C4] border-[#3A57C4] mb-2 block w-fit">
-            SHEET 04 // CAREER &amp; CREDENTIALS
+          <div>
+            <span className="bp-stamp text-[#3A57C4] border-[#3A57C4] mb-2 block w-fit">
+              SHEET 04 // CAREER &amp; CREDENTIALS
+            </span>
+            <h2 className="font-display font-black text-3xl sm:text-5xl tracking-tight uppercase">
+              MILESTONES &amp; TRACK RECORD.
+            </h2>
+          </div>
+          <span className="font-mono text-xs text-[#8A91A5] hidden sm:inline font-bold">
+            DWG-004 // TIMELINE
           </span>
-          <h2 className="font-display font-black text-3xl sm:text-5xl text-[#111318] tracking-tight uppercase">
-            MILESTONES &amp; TRACK RECORD.
-          </h2>
         </motion.div>
 
-        {/* Timeline Stream */}
-        <div className="relative max-w-4xl space-y-8 pl-6 md:pl-10 border-l-2 border-[#111318]/25">
+        {/* Timeline Stream with Dynamic Scroll-Reactive Rail */}
+        <div className="relative max-w-4xl space-y-8 pl-8 md:pl-12">
+
+          {/* ── Background Static Rail ──────────────────────────────────── */}
+          <div
+            className="absolute left-[13px] md:left-[17px] top-4 bottom-4 w-[2px] bg-current/15 pointer-events-none"
+            aria-hidden="true"
+          />
+
+          {/* ── Dynamic Glowing Laser Rail (Fills with Scroll) ─────────── */}
+          <motion.div
+            style={{
+              scaleY: smoothProgress,
+              transformOrigin: 'top',
+            }}
+            className="absolute left-[12px] md:left-[16px] top-4 bottom-4 w-[4px] bg-gradient-to-b from-[#FF4400] via-[#3A57C4] to-[#0E8345] shadow-[0_0_12px_rgba(255,68,0,0.5)] pointer-events-none rounded-full"
+            aria-hidden="true"
+          />
+
           {MILESTONES.map((m, idx) => (
             <motion.div
               key={m.organization}
@@ -65,49 +103,58 @@ export default function Experience() {
               transition={{ delay: idx * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="relative group"
             >
-              {/* Glowing Datum Node */}
+              {/* Dynamic Luminous Datum Node */}
               <div
-                className="absolute -left-[32px] md:-left-[48px] top-1.5 w-4 h-4 rounded-full border-2 bg-[#F2EFE7] transition-transform duration-300 group-hover:scale-125"
+                className="absolute -left-[30px] md:-left-[42px] top-5 w-5 h-5 rounded-full border-2 bg-inherit flex items-center justify-center transition-all duration-300 group-hover:scale-125 shadow-sm"
                 style={{ borderColor: m.color }}
               >
                 <div
-                  className="w-1.5 h-1.5 rounded-full mx-auto mt-0.5"
+                  className="w-2 h-2 rounded-full transition-transform duration-300 group-hover:scale-110 animate-pulse"
                   style={{ backgroundColor: m.color }}
                 />
               </div>
 
-              {/* Milestone Card */}
-              <div className="sheet-frame p-6 sm:p-8 bg-[#EAE6DC]">
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                  <span
-                    className="bp-stamp text-xs"
-                    style={{ borderColor: m.color, color: m.color }}
-                  >
-                    {m.badge}
-                  </span>
-                  <span className="font-mono text-xs text-[#4B5162] font-bold">{m.period}</span>
-                </div>
-
-                <h3 className="font-display font-black text-xl sm:text-2xl text-[#111318] mt-2 uppercase">
-                  {m.role}
-                </h3>
-                <p className="font-mono text-xs text-[#FF4400] font-bold mt-1">
-                  {m.organization}
-                </p>
-
-                <p className="text-[#4B5162] text-sm sm:text-base leading-relaxed mt-4 font-body">
-                  {m.description}
-                </p>
-
-                {/* Tech Pills */}
-                <div className="flex flex-wrap gap-1.5 mt-5">
-                  {m.tags.map((t) => (
-                    <span key={t} className="bp-chip !text-[0.65rem] !py-0.5 !px-2.5">
-                      {t}
+              {/* Milestone Card with 3D Tilt */}
+              <TiltCard maxTilt={4}>
+                <div
+                  onMouseEnter={playHoverTick}
+                  className="sheet-frame p-6 sm:p-8 bg-current/5 border border-current/15 shadow-md"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <span
+                      className="bp-stamp text-xs font-bold"
+                      style={{ borderColor: m.color, color: m.color }}
+                    >
+                      {m.badge}
                     </span>
-                  ))}
+                    <span className="font-mono text-xs text-inherit/70 font-bold">{m.period}</span>
+                  </div>
+
+                  <h3 className="font-display font-black text-xl sm:text-2xl mt-2 uppercase">
+                    {m.role}
+                  </h3>
+                  <p className="font-mono text-xs text-[#FF4400] font-bold mt-1">
+                    {m.organization}
+                  </p>
+
+                  <p className="text-inherit/75 text-sm sm:text-base leading-relaxed mt-4 font-body">
+                    {m.description}
+                  </p>
+
+                  {/* Tech Pills */}
+                  <div className="flex flex-wrap gap-1.5 mt-5">
+                    {m.tags.map((t) => (
+                      <span
+                        key={t}
+                        onMouseEnter={playHoverTick}
+                        className="bp-chip !text-[0.65rem] !py-0.5 !px-2.5"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </TiltCard>
             </motion.div>
           ))}
         </div>

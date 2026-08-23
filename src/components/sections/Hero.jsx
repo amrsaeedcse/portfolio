@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import TiltCard from '../ui/TiltCard';
 import { playSwitchClick, playHoverTick } from '../../lib/soundFx';
+import { PROJECTS_DATA } from '../../data/projects';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -23,7 +24,9 @@ const itemVariants = {
   },
 };
 
-export default function Hero({ ready = true, scrollToSection }) {
+export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
+  const flagship = PROJECTS_DATA[0]; // Loadr Engine
+
   return (
     <section id="home" className="relative min-h-[90vh] flex flex-col justify-center px-5 md:px-14 pt-24 pb-12 overflow-hidden">
       <motion.div
@@ -53,9 +56,9 @@ export default function Hero({ ready = true, scrollToSection }) {
         </motion.div>
 
         {/* ── Main Hero Split Grid ────────────────────────────────────────── */}
-        <div className="grid lg:grid-cols-[1.25fr_0.85fr] gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-[1.2fr_0.9fr] gap-8 lg:gap-12 items-center">
 
-          {/* Left Column: Thesis & Actions (Compact, 100% Above the Fold) */}
+          {/* Left Column: Thesis & Actions (100% Above the Fold) */}
           <div>
             <motion.h1
               variants={itemVariants}
@@ -71,7 +74,7 @@ export default function Hero({ ready = true, scrollToSection }) {
               I am <strong className="text-inherit font-bold">Amr Abdelazeem</strong> — a Computer &amp; Systems Engineer bridging reactive Flutter mobile UIs with bare-metal microcontrollers. Building enterprise Flutter applications with Clean Architecture and engineering C/C++, FreeRTOS &amp; FPGA firmware.
             </motion.p>
 
-            {/* Direct Action Buttons (Prominent & Immediately Visible) */}
+            {/* Direct Action Buttons */}
             <motion.div
               variants={itemVariants}
               className="flex flex-wrap items-center gap-3 mt-6"
@@ -125,55 +128,83 @@ export default function Hero({ ready = true, scrollToSection }) {
             </motion.div>
           </div>
 
-          {/* Right Column: Executive Engineering Dossier Showcase */}
+          {/* Right Column: Flagship Project Spotlight Card (Loadr) */}
           <motion.div variants={itemVariants}>
             <TiltCard maxTilt={5}>
-              <div className="sheet-frame p-6 shadow-lg relative overflow-hidden bg-current/5">
+              <div className="sheet-frame p-6 shadow-xl relative overflow-hidden bg-current/5 flex flex-col justify-between">
+
                 {/* Title Block Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-current/15 mb-4">
-                  <span className="font-mono font-bold text-xs text-[#FF4400]">
-                    FIG. 00 // ENGINEER DOSSIER
-                  </span>
+                <div className="flex items-center justify-between pb-3 border-b border-current/15 mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-[#FF4400] animate-pulse" />
+                    <span className="font-mono font-bold text-xs text-[#FF4400]">
+                      DWG-001 // FLAGSHIP ARCHITECTURE
+                    </span>
+                  </div>
                   <span className="bp-stamp !text-[0.55rem] !py-0.2 !px-1.5 text-[#0E8345] border-[#0E8345]">
-                    VERIFIED ✓
+                    {flagship.status} · {flagship.year}
                   </span>
                 </div>
 
-                {/* Portrait & Meta */}
-                <div className="relative overflow-hidden mb-4 border border-current/20 bg-current/10">
+                {/* Flagship App Image Preview */}
+                <div
+                  onClick={() => { playSwitchClick(); onOpenProject?.(flagship); }}
+                  className="relative h-48 sm:h-52 overflow-hidden border border-current/20 bg-current/10 cursor-pointer group mb-4"
+                >
                   <img
-                    src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
-                    alt="Amr Abdelazeem"
-                    className="w-full h-56 sm:h-64 object-cover object-top transition-transform duration-700 hover:scale-[1.03]"
+                    src={flagship.img}
+                    alt={flagship.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     style={{ filter: 'grayscale(15%) contrast(1.05)' }}
                   />
-                  {/* Schematic stamp overlay */}
-                  <div className="absolute bottom-2 right-2 px-2 py-1 bg-inherit border border-current font-mono text-[0.6rem] font-bold">
-                    SPECIFICATION // 1:1
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <span className="opacity-0 group-hover:opacity-100 bp-stamp !bg-[#F2EFE7] !text-[#111318] transition-opacity font-bold">
+                      Inspect Drawing ⤢
+                    </span>
+                  </div>
+                  <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-inherit border border-current font-mono text-[0.58rem] font-bold">
+                    FIG. 01 // PRODUCTION APP
                   </div>
                 </div>
 
-                {/* Core Credentials Breakdown */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 bg-inherit border border-current/10 font-mono text-xs">
-                    <span className="text-inherit/60">DISCIPLINE</span>
-                    <span className="font-bold text-[#FF4400]">Flutter &amp; Systems Architecture</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-inherit border border-current/10 font-mono text-xs">
-                    <span className="text-inherit/60">ACADEMICS</span>
-                    <span className="font-bold">B.Sc. Computer Engineering</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-inherit border border-current/10 font-mono text-xs">
-                    <span className="text-inherit/60">FELLOWSHIPS</span>
-                    <span className="font-bold text-[#3A57C4]">DEPI &amp; ITI Scholar</span>
+                {/* Project Specs */}
+                <div>
+                  <h3 className="font-display font-black text-xl tracking-tight uppercase">
+                    {flagship.title}
+                  </h3>
+                  <p className="font-mono text-xs text-[#FF4400] font-semibold mt-0.5">
+                    {flagship.subtitle}
+                  </p>
+
+                  <p className="text-inherit/70 text-xs leading-relaxed mt-2 line-clamp-2 font-body">
+                    {flagship.description}
+                  </p>
+
+                  {/* Tech Stack Chips */}
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {flagship.tech.slice(0, 4).map((t) => (
+                      <span key={t} onMouseEnter={playHoverTick} className="bp-chip !text-[0.62rem] !py-0.5 !px-2">
+                        {t}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
-                {/* Footer Stamp */}
-                <div className="flex items-center justify-between pt-3 border-t border-current/15 mt-4 font-mono text-[0.62rem] text-[#8A91A5]">
-                  <span>DWG-000-HERO</span>
-                  <span>APPROVED: A. ABDELAZEEM</span>
+                {/* Actions & Footer Strip */}
+                <div className="flex items-center justify-between pt-4 border-t border-current/15 mt-4">
+                  <button
+                    onClick={() => { playSwitchClick(); onOpenProject?.(flagship); }}
+                    onMouseEnter={playHoverTick}
+                    className="bp-btn-primary !py-2 !px-4 !text-xs"
+                  >
+                    Inspect Blueprint ↗
+                  </button>
+
+                  <span className="font-mono text-[0.62rem] text-[#8A91A5]">
+                    60 FPS · C-API NATIVE
+                  </span>
                 </div>
+
               </div>
             </TiltCard>
           </motion.div>

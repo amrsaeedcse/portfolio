@@ -9,18 +9,35 @@ if (typeof window !== 'undefined') {
   }
 }
 
-function getAudioContext() {
+export function initAudioContext() {
   if (typeof window === 'undefined') return null;
-  if (!audioCtx) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (AudioContext) {
-      audioCtx = new AudioContext();
+  try {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        audioCtx = new AudioContext();
+      }
     }
-  }
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  } catch (err) {
+    console.debug('AudioContext init error:', err);
   }
   return audioCtx;
+}
+
+// Global user activation listeners to unlock audio instantly on first interaction
+if (typeof window !== 'undefined') {
+  const unlockAudio = () => {
+    initAudioContext();
+  };
+
+  const events = ['click', 'pointerdown', 'mousedown', 'touchstart', 'touchend', 'keydown', 'pointerover'];
+  events.forEach((evt) => {
+    window.addEventListener(evt, unlockAudio, { passive: true, capture: true });
+    document.addEventListener(evt, unlockAudio, { passive: true, capture: true });
+  });
 }
 
 export function isSoundEnabled() {
@@ -38,11 +55,11 @@ export function toggleSound() {
   return soundEnabled;
 }
 
-// 1. Mechanical Relay Switch Click (Punchy & Crisp)
+// 1. Mechanical Relay Switch Click (Punchy & Crisp) - Used on click
 export function playSwitchClick() {
   if (!soundEnabled) return;
   try {
-    const ctx = getAudioContext();
+    const ctx = initAudioContext();
     if (!ctx) return;
 
     const osc = ctx.createOscillator();
@@ -65,11 +82,11 @@ export function playSwitchClick() {
   }
 }
 
-// 2. High-Frequency Drafting Micro-blip (Clear & Audible)
+// 2. High-Frequency Drafting Micro-blip (Clear & Soft) - Used on hover
 export function playHoverTick() {
   if (!soundEnabled) return;
   try {
-    const ctx = getAudioContext();
+    const ctx = initAudioContext();
     if (!ctx) return;
 
     const osc = ctx.createOscillator();
@@ -87,62 +104,6 @@ export function playHoverTick() {
 
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.025);
-  } catch (err) {
-    console.debug('Audio error:', err);
-  }
-}
-
-// 3. Slide Air Whoosh (Sheet transition)
-export function playSlideWhoosh() {
-  if (!soundEnabled) return;
-  try {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(320, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(540, ctx.currentTime + 0.09);
-
-    gain.gain.setValueAtTime(0.18, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.11);
-  } catch (err) {
-    console.debug('Audio error:', err);
-  }
-}
-
-// 4. Harmonic Pulse Chime (Clear resonant harmonic)
-export function playPulseChime() {
-  if (!soundEnabled) return;
-  try {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
-    const now = ctx.currentTime;
-    [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now + idx * 0.035);
-
-      gain.gain.setValueAtTime(0.14, now + idx * 0.035);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.035 + 0.3);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(now + idx * 0.035);
-      osc.stop(now + idx * 0.035 + 0.3);
-    });
   } catch (err) {
     console.debug('Audio error:', err);
   }

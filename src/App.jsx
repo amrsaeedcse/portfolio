@@ -200,7 +200,7 @@ export default function App() {
             </span>
           </button>
 
-          {/* Center: Navigation Links (Cleanly separated) */}
+          {/* Center: Navigation Links */}
           <nav className="hidden lg:flex items-center gap-5 xl:gap-7">
             {NAV_LINKS.map((link) => {
               const isActive = activeSection === link.id;
@@ -221,7 +221,7 @@ export default function App() {
             })}
           </nav>
 
-          {/* Right: Telemetry & Actions (No collisions) */}
+          {/* Right: Telemetry & Actions */}
           <div className="hidden sm:flex items-center gap-2.5 flex-none">
             {/* Live Cairo Clock with clear separation */}
             {currentTime && (

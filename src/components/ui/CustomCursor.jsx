@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 export default function CustomCursor() {
   const [coords, setCoords] = useState({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Only activate on pointer devices (mice, trackpads), not touchscreens
@@ -14,7 +14,6 @@ export default function CustomCursor() {
       setCoords({ x: e.clientX, y: e.clientY });
       if (!isVisible) setIsVisible(true);
 
-      // Check if hovering interactive target
       const target = e.target;
       if (target && target.closest) {
         const isInteractive =
@@ -33,61 +32,63 @@ export default function CustomCursor() {
     const handleMouseDown = () => setIsClicking(true);
     const handleMouseUp = () => setIsClicking(false);
     const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseEnter = () => setIsVisible(true);
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
-    window.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseenter', handleMouseEnter);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
-      window.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseenter', handleMouseEnter);
     };
   }, [isVisible]);
 
   if (!isVisible) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden" aria-hidden="true">
-      {/* ── Precision Reticle Assembly (Perfect Concentric Alignment) ── */}
+    <div className="pointer-events-none fixed inset-0 z-[99999] overflow-hidden select-none" aria-hidden="true">
+      {/* ── Single Unified Concentric Assembly (Never drifts or leaves mouse) ── */}
       <div
-        className="fixed top-0 left-0 transition-transform duration-75 ease-out"
+        className="fixed top-0 left-0 flex items-center justify-center pointer-events-none"
         style={{
           transform: `translate3d(${coords.x}px, ${coords.y}px, 0) translate(-50%, -50%)`,
+          width: 0,
+          height: 0,
         }}
       >
-        {/* Center Crosshair Dot */}
+        {/* Outer Reticle Ring (Expands symmetrically in place without transform clash) */}
         <div
-          className={`w-2 h-2 rounded-full bg-[#FF4400] transition-transform duration-100 ${
-            isClicking ? 'scale-75' : isHovered ? 'scale-125' : 'scale-100'
-          }`}
-        />
-
-        {/* Outer Drafting Ring (Expands symmetrically in place) */}
-        <div
-          className={`absolute inset-0 -m-3.5 rounded-full border transition-all duration-200 ease-out flex items-center justify-center ${
+          className={`absolute rounded-full border transition-[width,height,background-color,border-color,opacity] duration-200 ease-out flex items-center justify-center ${
             isHovered
-              ? 'w-9 h-9 -m-4.5 border-[#FF4400] bg-[#FF4400]/15 scale-110'
-              : 'w-7 h-7 -m-3.5 border-current opacity-40 bg-transparent scale-100'
+              ? 'w-11 h-11 border-[var(--bp-accent,#FF4400)] bg-[var(--bp-accent,#FF4400)]/15 opacity-100'
+              : isClicking
+              ? 'w-7 h-7 border-current opacity-80 bg-transparent'
+              : 'w-8 h-8 border-current opacity-40 bg-transparent'
           }`}
         >
-          {/* Reticle Crosshair Ticks */}
-          <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-px h-1 bg-current opacity-70" />
-          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-px h-1 bg-current opacity-70" />
-          <span className="absolute -left-1 top-1/2 -translate-y-1/2 h-px w-1 bg-current opacity-70" />
-          <span className="absolute -right-1 top-1/2 -translate-y-1/2 h-px w-1 bg-current opacity-70" />
+          {/* 4 Precision CAD Ticks */}
+          <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-px h-1 bg-current opacity-60" />
+          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-px h-1 bg-current opacity-60" />
+          <span className="absolute -left-1 top-1/2 -translate-y-1/2 h-px w-1 bg-current opacity-60" />
+          <span className="absolute -right-1 top-1/2 -translate-y-1/2 h-px w-1 bg-current opacity-60" />
         </div>
 
-        {/* Real-time Coordinate HUD Badge below cursor */}
-        {isHovered && (
-          <div
-            className="absolute top-6 left-1/2 -translate-x-1/2 font-mono text-[0.52rem] text-[#FF4400] font-bold tracking-widest px-1 py-0.5 border border-[#FF4400]/50 bg-white/95 dark:bg-black/95 shadow-sm whitespace-nowrap"
-          >
-            X:{Math.round(coords.x)}mm · Y:{Math.round(coords.y)}mm
-          </div>
-        )}
+        {/* Center Crosshair Dot (Locks 100% on mouse tip) */}
+        <div
+          className={`absolute rounded-full transition-[width,height,background-color] duration-150 ${
+            isClicking
+              ? 'w-1 h-1 bg-[var(--bp-accent,#FF4400)]'
+              : isHovered
+              ? 'w-2 h-2 bg-[var(--bp-accent,#FF4400)]'
+              : 'w-1.5 h-1.5 bg-[var(--bp-accent,#FF4400)]'
+          }`}
+        />
       </div>
     </div>
   );

@@ -54,7 +54,7 @@
     background: var(--color-ink);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-signal);
+    background: #FF4400;
   }
 
   input, textarea, button, select {
@@ -73,9 +73,7 @@
   --color-ink-3: #64748B;
   --color-line: rgba(255, 255, 255, 0.12);
   --color-line-strong: rgba(255, 255, 255, 0.25);
-  --color-signal: #FF4400;
   --color-blueprint: #38BDF8;
-  --color-approved: #10B981;
 }
 
 .dark-cad .sheet-frame {
@@ -86,7 +84,7 @@
 
 .dark-cad .sheet-frame::before,
 .dark-cad .sheet-frame::after {
-  color: #38BDF8 !important;
+  color: #FF4400 !important;
 }
 
 .dark-cad .bp-stamp {
@@ -131,8 +129,8 @@
   pointer-events: none;
   z-index: 0;
   background-image:
-    linear-gradient(rgba(58, 87, 196, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(58, 87, 196, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(58, 87, 196, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(58, 87, 196, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -171,7 +169,7 @@
     font-family: var(--font-mono);
     font-size: 11px;
     line-height: 1;
-    color: var(--color-signal);
+    color: #FF4400;
     pointer-events: none;
     z-index: 5;
   }
@@ -213,8 +211,8 @@
     transition: all 0.2s ease;
   }
   .bp-btn-primary:hover {
-    background-color: var(--color-signal);
-    border-color: var(--color-signal);
+    background-color: #FF4400;
+    border-color: #FF4400;
     color: #FFFFFF;
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(255, 68, 0, 0.25);

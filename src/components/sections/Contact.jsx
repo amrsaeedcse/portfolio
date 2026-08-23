@@ -1,29 +1,21 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SectionHead, Reveal } from '../ui/blueprint';
-
-const CONTACT_LINKS = [
-  { label: 'EMAIL ADDRESS', text: 'amrabdelazeem117@gmail.com', href: 'mailto:amrabdelazeem117@gmail.com', copyable: true },
-  { label: 'WHATSAPP DIRECT', text: '+20 112 115 3059', href: 'https://wa.me/201121153059' },
-  { label: 'GITHUB PROFILE', text: 'github.com/amrsaeedcse', href: 'https://github.com/amrsaeedcse' },
-  { label: 'LINKEDIN PROFILE', text: 'linkedin.com/in/amrsaeed-cse', href: 'https://linkedin.com/in/amrsaeed-cse' },
-];
 
 export default function Contact() {
-  const [formState, setFormState] = useState('idle'); // idle | sending | success | error
+  const [formState, setFormState] = useState('idle');
   const [copied, setCopied] = useState(false);
 
-  const handleCopyEmail = (e) => {
-    e.preventDefault();
+  const handleCopyEmail = () => {
     navigator.clipboard.writeText('amrabdelazeem117@gmail.com');
     setCopied(true);
-    setTimeout(() => setCopied(false), 2400);
+    setTimeout(() => setCopied(false), 2200);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formState === 'sending') return;
     setFormState('sending');
+
     const form = e.target;
     const data = new FormData(form);
 
@@ -44,212 +36,199 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative px-5 md:px-14 pt-20 md:pt-32 pb-8 min-h-screen flex flex-col justify-between">
-      <div className="max-w-[1150px] mx-auto w-full flex-1 flex flex-col">
+    <section id="contact" className="relative px-5 md:px-14 pt-20 md:pt-28 pb-12">
+      <div className="max-w-7xl mx-auto">
 
-        <SectionHead
-          no="05"
-          code="WORK ORDER // OPEN CHANNEL REV.2026"
-          title="LET'S BUILD TOGETHER."
-          outlineWord="TOGETHER."
-        />
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 pb-4 border-b border-[#111318]/15"
+        >
+          <span className="bp-stamp text-[#FF4400] border-[#FF4400] mb-2 block w-fit">
+            SHEET 05 // WORK ORDER TRANSMISSION
+          </span>
+          <h2 className="font-display font-black text-3xl sm:text-5xl text-[#111318] tracking-tight uppercase">
+            TRANSMIT SPECIFICATIONS.
+          </h2>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-12 md:gap-16 mt-10 md:mt-14 items-start flex-1">
+        {/* Contact Grid */}
+        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-14 items-start">
 
-          {/* ── Left Column: Channel & Specs ──────────────────────────────── */}
-          <div>
-            <Reveal>
-              <p className="text-ink-2 leading-[1.85] text-[0.96rem] md:text-[1.05rem] max-w-[50ch]">
-                Available for engineering contracts, software architecture consulting, mobile app development,
-                and embedded IoT prototyping. Submit a work order or contact me directly through channels below.
-              </p>
-            </Reveal>
+          {/* Left Column: Direct Info & Socials */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="space-y-8"
+          >
+            <p className="text-[#4B5162] text-base sm:text-lg leading-relaxed max-w-lg font-body">
+              Have a mobile architecture project, an embedded IoT idea, or need an experienced Flutter &amp; Systems engineer?
+              Transmit specifications directly or log a work order — I typically respond within 24 hours.
+            </p>
 
-            <Reveal className="mt-7 flex items-center gap-3">
-              <span className="stamp text-signal font-bold">COMMUNICATION LINES OPEN</span>
-              <span className="mono-tiny text-ink-3">RESPONSE TIME: &lt; 24H</span>
-            </Reveal>
-
-            <Reveal className="mt-8">
-              <ul className="divide-y divide-line">
-                {CONTACT_LINKS.map(({ label, text, href, copyable }) => (
-                  <li key={label}>
-                    <div className="flex items-center justify-between gap-4 py-4 group">
-                      <div>
-                        <span className="mono-tiny text-ink-3 block mb-0.5">{label}</span>
-                        <a
-                          href={href}
-                          target={href.startsWith('http') ? '_blank' : undefined}
-                          rel={href.startsWith('http') ? 'noreferrer' : undefined}
-                          className="font-mono text-[0.88rem] md:text-[0.96rem] font-medium text-ink group-hover:text-signal transition-colors flex items-center gap-2"
-                        >
-                          {text}
-                          <span aria-hidden="true" className="text-signal inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                            ↗
-                          </span>
-                        </a>
-                      </div>
-
-                      {copyable && (
-                        <button
-                          onClick={handleCopyEmail}
-                          className="bp-chip !text-[0.6rem] !py-1 !px-2.5 hover:!border-signal hover:!text-signal cursor-pointer"
-                        >
-                          {copied ? 'COPIED ✓' : 'COPY'}
-                        </button>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          </div>
-
-          {/* ── Right Column: Work Order Form ─────────────────────────────── */}
-          <Reveal delay={0.08}>
-            <div className="sheet-frame p-6 md:p-9 bg-paper-2 shadow-sm relative z-[4]">
-              <div className="flex items-center justify-between border-b border-line pb-3 mb-6">
-                <span className="mono-label text-signal font-bold">TRANSMISSION TERMINAL</span>
-                <span className="mono-tiny text-ink-3">SECURE TRANSMISSION</span>
+            {/* Direct Channel Cards */}
+            <div className="space-y-3">
+              {/* Email Card */}
+              <div className="sheet-frame p-4 sm:p-5 flex items-center justify-between gap-4 bg-[#EAE6DC]">
+                <div>
+                  <span className="font-mono text-xs text-[#8A91A5] uppercase block font-bold">DIRECT EMAIL</span>
+                  <a
+                    href="mailto:amrabdelazeem117@gmail.com"
+                    className="font-mono font-bold text-sm sm:text-base text-[#111318] hover:text-[#FF4400] transition-colors"
+                  >
+                    amrabdelazeem117@gmail.com
+                  </a>
+                </div>
+                <button
+                  onClick={handleCopyEmail}
+                  className="bp-stamp cursor-pointer hover:bg-[#111318] hover:text-[#F2EFE7]"
+                >
+                  {copied ? 'COPIED ✓' : 'COPY EMAIL'}
+                </button>
               </div>
 
-              <AnimatePresence mode="wait">
-                {formState === 'success' ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="py-8 text-center"
-                  >
-                    <span className="stamp text-signal !text-sm mb-4 inline-block">RECEIVED &amp; LOGGED ✓</span>
-                    <h3 className="h-display text-2xl mt-4">WORK ORDER TRANSMITTED.</h3>
-                    <p className="text-ink-2 text-sm leading-relaxed mt-2 max-w-[38ch] mx-auto">
-                      Thank you. Your message has been logged directly into my queue. I will follow up via email within one working day.
-                    </p>
-                    <button
-                      onClick={() => setFormState('idle')}
-                      className="bp-btn bp-btn-primary mt-6 !py-2 !px-5"
-                    >
-                      File Another Work Order →
-                    </button>
-                  </motion.div>
-                ) : (
-                  <motion.form key="form" onSubmit={handleSubmit} className="wo-form flex flex-col gap-6">
-                    <input type="hidden" name="access_key" value="7ebfcffb-3b32-4752-9c44-3253b6f0414e" />
-                    <input type="hidden" name="subject" value="New Work Order Submission from Portfolio" />
-                    <input type="checkbox" name="botcheck" style={{ display: 'none' }} tabIndex={-1} aria-hidden="true" />
-
-                    <div>
-                      <label htmlFor="wo-name" className="mono-tiny text-ink-3 block mb-1">
-                        NAME / CLIENT DESIGNATION <span className="text-signal">*</span>
-                      </label>
-                      <input
-                        id="wo-name"
-                        name="name"
-                        type="text"
-                        required
-                        autoComplete="name"
-                        placeholder="e.g. Alex Vance"
-                        className="wo-input"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="wo-email" className="mono-tiny text-ink-3 block mb-1">
-                        EMAIL / RETURN ADDRESS <span className="text-signal">*</span>
-                      </label>
-                      <input
-                        id="wo-email"
-                        name="email"
-                        type="email"
-                        required
-                        autoComplete="email"
-                        placeholder="e.g. alex@company.com"
-                        className="wo-input"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="wo-message" className="mono-tiny text-ink-3 block mb-1">
-                        PROJECT SPECIFICATION &amp; SCOPE <span className="text-signal">*</span>
-                      </label>
-                      <textarea
-                        id="wo-message"
-                        name="message"
-                        rows={4}
-                        required
-                        placeholder="Describe your requirements, timeline, and platform..."
-                        className="wo-input resize-none"
-                      />
-                    </div>
-
-                    {formState === 'error' && (
-                      <div className="p-3 border border-red-500/40 bg-red-500/10 text-red-700 mono-tiny">
-                        TRANSMISSION ERROR: Please email directly to amrabdelazeem117@gmail.com
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={formState === 'sending'}
-                      className="bp-btn bp-btn-primary w-full !justify-between !py-3 !px-5 mt-2"
-                      style={{ opacity: formState === 'sending' ? 0.65 : 1, cursor: formState === 'sending' ? 'wait' : 'pointer' }}
-                    >
-                      <span>{formState === 'sending' ? 'Transmitting Data…' : 'Submit Work Order'}</span>
-                      <span aria-hidden="true">↗</span>
-                    </button>
-                  </motion.form>
-                )}
-              </AnimatePresence>
+              {/* WhatsApp Card */}
+              <div className="sheet-frame p-4 sm:p-5 flex items-center justify-between gap-4 bg-[#EAE6DC]">
+                <div>
+                  <span className="font-mono text-xs text-[#8A91A5] uppercase block font-bold">WHATSAPP DIRECT</span>
+                  <span className="font-mono font-bold text-sm sm:text-base text-[#111318]">
+                    +20 112 115 3059
+                  </span>
+                </div>
+                <a
+                  href="https://wa.me/201121153059"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bp-btn-primary !py-1.5 !px-3.5 !text-xs"
+                >
+                  Chat ↗
+                </a>
+              </div>
             </div>
-          </Reveal>
+
+            {/* Social Links */}
+            <div className="pt-4 border-t border-[#111318]/15 flex items-center gap-3">
+              <span className="text-xs font-mono text-[#8A91A5] mr-2 font-bold">CHANNELS:</span>
+              <a href="https://github.com/amrsaeedcse" target="_blank" rel="noreferrer" className="bp-chip font-bold">
+                GITHUB ↗
+              </a>
+              <a href="https://linkedin.com/in/amrsaeed-cse" target="_blank" rel="noreferrer" className="bp-chip font-bold">
+                LINKEDIN ↗
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right Column: Work Order Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="sheet-frame p-6 sm:p-8 bg-[#EAE6DC]"
+          >
+            <AnimatePresence mode="wait">
+              {formState === 'success' ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="py-12 text-center"
+                >
+                  <div className="w-12 h-12 rounded-full bg-[#0E8345]/10 border border-[#0E8345] text-[#0E8345] flex items-center justify-center mx-auto text-xl font-bold mb-4">
+                    ✓
+                  </div>
+                  <h3 className="font-display font-black text-2xl text-[#111318] uppercase">SPECIFICATION LOGGED</h3>
+                  <p className="text-[#4B5162] text-sm mt-2 max-w-sm mx-auto font-body">
+                    Thank you. Work order transmitted successfully. Response will be delivered shortly.
+                  </p>
+                  <button
+                    onClick={() => setFormState('idle')}
+                    className="bp-btn-secondary mt-6 !py-2 !px-5 !text-xs"
+                  >
+                    Transmit Another Work Order
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form key="form" onSubmit={handleSubmit} className="space-y-4">
+                  <input type="hidden" name="access_key" value="7ebfcffb-3b32-4752-9c44-3253b6f0414e" />
+                  <input type="hidden" name="subject" value="New Drawing Request" />
+                  <input type="checkbox" name="botcheck" style={{ display: 'none' }} tabIndex={-1} aria-hidden="true" />
+
+                  <div>
+                    <label htmlFor="name" className="font-mono text-xs text-[#111318] block mb-1 font-bold">
+                      REQUISITIONER NAME <span className="text-[#FF4400]">*</span>
+                    </label>
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
+                      required
+                      placeholder="e.g. Eng. Sarah Connor"
+                      className="w-full bg-[#F2EFE7] border border-[#111318]/25 rounded-none px-4 py-3 text-sm text-[#111318] focus:outline-none focus:border-[#FF4400] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="email" className="font-mono text-xs text-[#111318] block mb-1 font-bold">
+                      RETURN EMAIL <span className="text-[#FF4400]">*</span>
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      placeholder="e.g. sarah@organization.com"
+                      className="w-full bg-[#F2EFE7] border border-[#111318]/25 rounded-none px-4 py-3 text-sm text-[#111318] focus:outline-none focus:border-[#FF4400] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="message" className="font-mono text-xs text-[#111318] block mb-1 font-bold">
+                      SYSTEM SPECIFICATIONS / SCOPE <span className="text-[#FF4400]">*</span>
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows={4}
+                      required
+                      placeholder="Describe target architecture, mobile scope, or hardware timeline..."
+                      className="w-full bg-[#F2EFE7] border border-[#111318]/25 rounded-none px-4 py-3 text-sm text-[#111318] focus:outline-none focus:border-[#FF4400] font-mono resize-none"
+                    />
+                  </div>
+
+                  {formState === 'error' && (
+                    <div className="p-3 bg-red-500/10 border border-red-500 text-red-700 text-xs font-mono">
+                      Transmission error. Please email directly to amrabdelazeem117@gmail.com
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={formState === 'sending'}
+                    className="bp-btn-primary w-full !py-3.5 mt-2"
+                  >
+                    {formState === 'sending' ? 'TRANSMITTING…' : 'TRANSMIT WORK ORDER ↗'}
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
         </div>
 
-        {/* ── Engineering Title Block Footer ────────────────────────────── */}
-        <footer className="mt-16 md:mt-24 pt-4 select-none">
-          <Reveal>
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-              <p className="mono-tiny text-ink-3">
-                © 2026 AMR ABDELAZEEM — ALL DRAWINGS, SPECS &amp; REPOSITORIES ARCHIVED
-              </p>
-              <div className="flex gap-2">
-                <a href="https://github.com/amrsaeedcse" target="_blank" rel="noreferrer" className="bp-chip hover:!border-signal hover:!text-signal">
-                  GITHUB
-                </a>
-                <a href="https://linkedin.com/in/amrsaeed-cse" target="_blank" rel="noreferrer" className="bp-chip hover:!border-signal hover:!text-signal">
-                  LINKEDIN
-                </a>
-                <a href="https://wa.me/201121153059" target="_blank" rel="noreferrer" className="bp-chip hover:!border-signal hover:!text-signal">
-                  WHATSAPP
-                </a>
-              </div>
-            </div>
-
-            {/* Drawing Title Block Table */}
-            <div
-              className="grid grid-cols-2 md:grid-cols-5 border border-line-strong bg-paper-2"
-              role="contentinfo"
-              aria-label="Engineering Drawing Title Block"
-            >
-              {[
-                ['DRAWN BY', 'AMR ABDELAZEEM'],
-                ['DISCIPLINE', 'FLUTTER × HARDWARE'],
-                ['LOCATION', 'ZAGAZIG, EGYPT'],
-                ['RELEASE', 'PORTFOLIO REV.2026'],
-              ].map(([k, v]) => (
-                <div key={k} className="tb-cell">
-                  <div className="mono-tiny text-ink-3">{k}</div>
-                  <div className="mono-label font-bold text-ink mt-1 truncate">{v}</div>
-                </div>
-              ))}
-              <div className="tb-cell !bg-signal" style={{ color: '#FFF6EF' }}>
-                <div className="mono-tiny text-white/80">DRAWING SET</div>
-                <div className="mono-label font-bold mt-1 text-white">05 OF 05 // COMPLETED</div>
-              </div>
-            </div>
-          </Reveal>
+        {/* ── Title Block Footer ────────────────────────────────────────── */}
+        <footer className="mt-20 pt-6 border-t-2 border-[#111318] flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-[#4B5162]">
+          <div className="flex items-center gap-4">
+            <span className="font-bold text-[#111318]">AMR ABDELAZEEM // SYSTEMS ARCHITECT</span>
+            <span>SET OF 05 SHEETS</span>
+          </div>
+          <span>ZAGAZIG, EGYPT · 30.58° N, 31.50° E</span>
         </footer>
 
       </div>

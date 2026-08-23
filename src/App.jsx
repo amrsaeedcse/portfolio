@@ -4,7 +4,6 @@ import Loader from './components/Loader';
 
 const ProjectDetail = lazy(() => import('./components/sections/ProjectDetail'));
 const ProjectArchive = lazy(() => import('./components/sections/ProjectArchive'));
-import ParticleCanvas from './components/ui/ParticleCanvas';
 import Hero from './components/sections/Hero';
 import About from './components/sections/About';
 import Skills from './components/sections/Skills';
@@ -12,41 +11,23 @@ import Work from './components/sections/Work';
 import Experience from './components/sections/Experience';
 import Contact from './components/sections/Contact';
 
-const SECTION_IDS = ['home', 'about', 'skills', 'work', 'experience', 'contact'];
 const NAV_LINKS = [
-  ['01', 'About', 'about'],
-  ['02', 'Skills', 'skills'],
-  ['03', 'Work', 'work'],
-  ['04', 'Experience', 'experience'],
-  ['05', 'Contact', 'contact'],
+  { no: '01', label: 'About', id: 'about' },
+  { no: '02', label: 'Skills', id: 'skills' },
+  { no: '03', label: 'Work', id: 'work' },
+  { no: '04', label: 'Milestones', id: 'experience' },
+  { no: '05', label: 'Contact', id: 'contact' },
 ];
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
-  const [loaderExiting, setLoaderExiting] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1200));
-  const [activeSection, setActiveSection] = useState(0);
+  const [activeSection, setActiveSection] = useState('home');
 
   const handleLoaderDone = useCallback(() => setLoaded(true), []);
-  const handleLoaderExiting = useCallback(() => setLoaderExiting(true), []);
 
-  /* Debounced width tracking */
-  useEffect(() => {
-    let timeoutId = null;
-    const handleResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => setWindowWidth(window.innerWidth), 150);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  /* Lock page scroll while a project modal is open */
+  /* Lock page scroll when a project modal is open */
   useEffect(() => {
     if (activeProject) {
       document.body.style.overflow = 'hidden';
@@ -56,55 +37,28 @@ export default function App() {
     return () => { document.body.style.overflow = ''; };
   }, [activeProject]);
 
-  /* Always start at top of drawing set */
-  useEffect(() => {
-    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
-  }, []);
-
-  /* Accurate scroll position tracking to drive active nav link & particle canvas */
+  /* Track active section for navbar highlighting */
   useEffect(() => {
     if (!loaded) return;
-    let raf = null;
+    const ids = ['home', 'about', 'skills', 'work', 'experience', 'contact'];
 
-    const updateActiveSection = () => {
-      raf = null;
-      const scrollY = window.scrollY;
-      const vh = window.innerHeight;
-      const midPoint = scrollY + vh * 0.45;
-
-      const els = SECTION_IDS.map((id) => document.getElementById(id));
-      let current = 0;
-
-      for (let i = 0; i < els.length; i++) {
-        const el = els[i];
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 250;
+      for (const id of ids) {
+        const el = document.getElementById(id);
         if (el) {
           const top = el.offsetTop;
           const height = el.offsetHeight;
-          if (midPoint >= top && midPoint < top + height) {
-            current = i;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveSection(id);
             break;
-          } else if (midPoint >= top) {
-            current = i;
           }
         }
       }
-
-      setActiveSection((prev) => (prev === current ? prev : current));
     };
 
-    const onScroll = () => {
-      if (raf == null) raf = requestAnimationFrame(updateActiveSection);
-    };
-
-    updateActiveSection();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      if (raf != null) cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [loaded]);
 
   const scrollToSection = useCallback((id) => {
@@ -115,28 +69,26 @@ export default function App() {
     }
     const el = document.getElementById(id);
     if (el) {
-      const navOffset = 64;
+      const navOffset = 70;
       const elementPosition = el.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - navOffset;
-
       window.scrollTo({
-        top: offsetPosition,
+        top: elementPosition - navOffset,
         behavior: 'smooth',
       });
     }
   }, []);
 
   return (
-    <div className="grain" style={{ minHeight: '100vh', backgroundColor: 'var(--color-paper)' }}>
+    <div className="relative min-h-screen bg-[#F2EFE7] text-[#111318]">
 
-      {/* Initial Shutter Loader */}
+      {/* ── Blueprint CAD Loader ─────────────────────────────────────────── */}
       <AnimatePresence>
         {!loaded && (
-          <Loader key="loader" onComplete={handleLoaderDone} onExiting={handleLoaderExiting} readyToExit />
+          <Loader key="loader" onComplete={handleLoaderDone} />
         )}
       </AnimatePresence>
 
-      {/* Project Detail & Archive Modals */}
+      {/* ── Project Modals ──────────────────────────────────────────────── */}
       <Suspense fallback={null}>
         <AnimatePresence mode="wait">
           {activeProject === 'ARCHIVE' ? (
@@ -147,79 +99,99 @@ export default function App() {
         </AnimatePresence>
       </Suspense>
 
-      {/* Fixed Blueprint Paper Atmosphere */}
-      <div className="bp-grid-bg" aria-hidden="true" />
+      {/* ── Blueprint Drafting Grid Atmosphere ──────────────────────────── */}
+      <div className="bp-grid" aria-hidden="true" />
       <div className="bp-vignette" aria-hidden="true" />
 
-      {/* 60FPS Reactive Blueprint Particle Field */}
-      <ParticleCanvas
-        section={activeSection}
-        visible={loaderExiting || loaded}
-        isMobile={windowWidth < 768}
-      />
-
-      {/* ── Fixed Navigation Bar ─────────────────────────────────────────── */}
-      <nav
-        className="fixed top-0 inset-x-0 z-50 border-b border-line"
+      {/* ── Left Edge Drawing Ruler (Desktop) ───────────────────────────── */}
+      <div
+        className="fixed left-0 top-0 bottom-0 w-[14px] z-40 pointer-events-none hidden md:block"
+        aria-hidden="true"
         style={{
-          background: 'rgba(242, 239, 231, 0.92)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          backgroundImage:
+            'repeating-linear-gradient(to bottom, transparent 0 39px, rgba(17,19,24,0.25) 39px 41px)',
+          backgroundRepeat: 'repeat-y',
         }}
       >
-        <div className="h-16 px-5 md:px-14 flex items-center justify-between gap-6">
+        <div
+          className="absolute top-0 bottom-0 right-0 w-[7px]"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(to bottom, transparent 0 9px, rgba(17,19,24,0.12) 9px 11px)',
+            backgroundRepeat: 'repeat-y',
+          }}
+        />
+      </div>
+
+      {/* ── Fixed Header Navbar ─────────────────────────────────────────── */}
+      <header className="fixed top-0 inset-x-0 z-50 px-5 md:px-14 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between border-b-2 border-[#111318] px-5 py-2.5 bg-[#F2EFE7]/92 backdrop-blur-xl">
+
+          {/* Brand Mark */}
           <button
             onClick={() => scrollToSection('home')}
-            className="flex items-baseline gap-2 group text-left cursor-pointer"
+            className="flex items-baseline gap-2 cursor-pointer text-left group"
           >
-            <span className="font-display font-black text-[1.1rem] tracking-tight text-ink">
-              AMR<span className="text-signal">.</span>SAEED
+            <span className="font-display font-black text-lg tracking-tight text-[#111318]">
+              AMR<span className="text-[#FF4400]">.</span>SAEED
             </span>
-            <span className="mono-tiny text-ink-3 hidden sm:inline">[CSE]</span>
+            <span className="font-mono text-[0.62rem] text-[#8A91A5] font-bold hidden sm:inline">
+              [CSE // DWG-SET]
+            </span>
           </button>
 
-          <div className="hidden md:flex items-center gap-7">
-            {NAV_LINKS.map(([no, label, id]) => {
-              const idx = SECTION_IDS.indexOf(id);
-              const isActive = activeSection === idx;
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-6">
+            {NAV_LINKS.map((link) => {
+              const isActive = activeSection === link.id;
               return (
                 <button
-                  key={id}
-                  onClick={() => scrollToSection(id)}
+                  key={link.id}
+                  onClick={() => scrollToSection(link.id)}
                   className="flex items-baseline gap-1.5 transition-colors cursor-pointer"
-                  style={{ color: isActive ? 'var(--color-signal)' : 'var(--color-ink-2)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-ink)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = isActive ? 'var(--color-signal)' : 'var(--color-ink-2)'; }}
+                  style={{ color: isActive ? '#FF4400' : '#4B5162' }}
                 >
-                  <span className="font-mono text-[0.58rem] tabular-nums opacity-75 font-semibold">{no}</span>
-                  <span className={`font-mono text-[0.68rem] tracking-[0.16em] uppercase font-semibold ${isActive ? 'border-b-2 border-signal pb-0.5' : ''}`}>
-                    {label}
+                  <span className="font-mono text-[0.6rem] font-bold tabular-nums opacity-75">{link.no}</span>
+                  <span className={`font-mono text-[0.72rem] tracking-[0.14em] uppercase font-bold ${isActive ? 'border-b-2 border-[#FF4400] pb-0.5' : ''}`}>
+                    {link.label}
                   </span>
                 </button>
               );
             })}
+          </nav>
+
+          {/* Right Action CTAs */}
+          <div className="hidden sm:flex items-center gap-3">
             <a
               href="assets/Amr_Abdelazeem_Resume.pdf"
               download="Amr_Abdelazeem_Resume.pdf"
-              className="bp-btn !py-1.5 !px-3.5 ml-2 !text-[0.66rem]"
+              className="bp-btn-secondary !py-1.5 !px-3.5 !text-[0.68rem]"
             >
               Resume ↓
             </a>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="bp-btn-primary !py-1.5 !px-3.5 !text-[0.68rem]"
+            >
+              Work Order ↗
+            </button>
           </div>
 
-          {/* Mobile hamburger button */}
+          {/* Mobile Hamburger Toggle */}
           <button
-            className="md:hidden touch-target cursor-pointer"
-            aria-label="Open menu"
             onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open menu"
+            className="md:hidden p-2 text-[#111318] hover:bg-[#EAE6DC] transition-colors"
           >
-            <span className="flex flex-col gap-1.5 items-end">
-              <span className="block w-6 h-[2px] bg-ink" />
-              <span className="block w-4 h-[2px] bg-signal" />
+            <span className="flex flex-col gap-1 w-5">
+              <span className="h-0.5 w-full bg-[#111318]" />
+              <span className="h-0.5 w-full bg-[#FF4400]" />
+              <span className="h-0.5 w-full bg-[#111318]" />
             </span>
           </button>
+
         </div>
-      </nav>
+      </header>
 
       {/* ── Mobile Fullscreen Menu ────────────────────────────────────────── */}
       <AnimatePresence>
@@ -229,86 +201,64 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[60] flex flex-col bg-paper"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(58,87,196,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(58,87,196,0.06) 1px, transparent 1px)',
-              backgroundSize: '32px 32px',
-            }}
+            className="fixed inset-0 z-[100] bg-[#F2EFE7] flex flex-col justify-between p-6 border-8 border-[#111318]"
           >
-            <div className="h-16 px-5 flex items-center justify-between border-b border-line">
-              <span className="mono-label text-signal font-bold">[ DRAWING INDEX ]</span>
+            <div className="flex items-center justify-between pb-6 border-b border-[#111318]">
+              <div className="font-mono font-bold text-[#FF4400] text-sm">
+                [ DRAWING INDEX ]
+              </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                aria-label="Close menu"
-                className="touch-target font-mono text-xl font-bold"
-                style={{ color: 'var(--color-signal)' }}
+                className="p-2 text-[#111318] font-mono text-xl font-bold"
               >
                 ✕
               </button>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center px-8 gap-3">
-              {[['00', 'Home', 'home'], ...NAV_LINKS].map(([no, label, id], i) => (
-                <motion.button
-                  key={id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 * i, duration: 0.35 }}
-                  onClick={() => scrollToSection(id)}
-                  className="text-left flex items-baseline gap-4 py-2 cursor-pointer"
+            <div className="flex flex-col gap-4 py-8">
+              {[{ no: '00', label: 'Home', id: 'home' }, ...NAV_LINKS].map((link) => (
+                <button
+                  key={link.id}
+                  onClick={() => scrollToSection(link.id)}
+                  className="text-left flex items-baseline gap-3"
                 >
-                  <span className="font-mono text-sm tabular-nums font-bold" style={{ color: 'var(--color-signal)' }}>
-                    {no}
+                  <span className="font-mono font-bold text-sm text-[#FF4400]">{link.no}</span>
+                  <span className="font-display font-black text-3xl text-[#111318] hover:text-[#FF4400] transition-colors uppercase">
+                    {link.label}
                   </span>
-                  <span className="h-display text-3xl sm:text-4xl text-ink">{label}</span>
-                </motion.button>
+                </button>
               ))}
             </div>
 
-            <div className="px-8 pb-10">
+            <div className="space-y-3 pt-6 border-t border-[#111318]">
               <a
                 href="assets/Amr_Abdelazeem_Resume.pdf"
                 download="Amr_Abdelazeem_Resume.pdf"
-                className="bp-btn bp-btn-primary w-full !py-3"
+                className="bp-btn-secondary w-full text-center"
               >
-                Download Complete Resume ↓
+                Download Resume PDF ↓
               </a>
-              <p className="mono-tiny text-ink-3 text-center mt-5">AMRSAEEDCSE © 2026</p>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="bp-btn-primary w-full"
+              >
+                Transmit Work Order ↗
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ── Left Edge Drawing Ruler (Desktop Only) ────────────────────────── */}
-      <div
-        className="edge-ruler fixed left-0 top-0 bottom-0 w-[14px] z-40 pointer-events-none hidden md:block"
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(to bottom, transparent 0 39px, var(--color-line-strong) 39px 41px)',
-          backgroundRepeat: 'repeat-y',
-        }}
-      >
-        <div
-          className="absolute top-0 bottom-0 right-0 w-[7px]"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(to bottom, transparent 0 9px, var(--color-line) 9px 11px)',
-            backgroundRepeat: 'repeat-y',
-          }}
-        />
-      </div>
-
-      {/* ── Drawing Set Sections ─────────────────────────────────────────── */}
-      <main className="relative z-[2]">
-        <Hero ready={loaderExiting || loaded} scrollToSection={scrollToSection} />
+      {/* ── Application Sections ─────────────────────────────────────────── */}
+      <main className="relative z-10">
+        <Hero scrollToSection={scrollToSection} />
         <About />
         <Skills />
         <Work onProjectClick={setActiveProject} />
         <Experience />
         <Contact />
       </main>
+
     </div>
   );
 }

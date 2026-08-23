@@ -1,100 +1,130 @@
 import { motion } from 'framer-motion';
-import { SectionHead, Reveal } from '../ui/blueprint';
-import { staggerParent, riseChild } from '../../lib/motionPresets';
 
-const STATS = [
-  { value: '3+', label: 'YEARS CODING', desc: 'Continuous engineering practice' },
-  { value: '10+', label: 'PROJECTS SHIPPED', desc: 'Mobile, IoT & Full-Stack' },
-  { value: '02', label: 'SCHOLARSHIPS // ITI & DEPI', desc: 'Ministry of Communications' },
-  { value: 'B.SC', label: 'COMPUTER ENGINEERING', desc: 'Systems & Embedded focus' },
+const METRICS = [
+  { val: '03+', label: 'Years Experience', desc: 'Software architecture & hardware engineering' },
+  { val: '10+', label: 'Shipped Systems', desc: 'Enterprise apps, IoT nodes & RISC CPUs' },
+  { val: '02', label: 'Scholarships', desc: 'Selected for prestigious DEPI & ITI programs' },
+  { val: 'B.Sc.', label: 'Computer Engineering', desc: 'Faculty of Engineering, Zagazig University' },
 ];
 
 export default function About() {
   return (
-    <section id="about" className="relative px-5 md:px-14 py-20 md:py-32">
-      <div className="max-w-[1150px] mx-auto">
-        <SectionHead no="01" code="PERSONNEL FILE // DWG.01" title="ENGINEER AT HEART." outlineWord="AT" />
+    <section id="about" className="relative px-5 md:px-14 py-20 md:py-28">
+      <div className="max-w-7xl mx-auto">
 
-        <div className="grid md:grid-cols-[320px_1fr] gap-10 md:gap-16 items-start mt-10 md:mt-14">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 pb-4 border-b border-[#111318]/15 flex items-baseline justify-between gap-4"
+        >
+          <div>
+            <span className="bp-stamp text-[#3A57C4] border-[#3A57C4] mb-2 block w-fit">
+              SHEET 01 // PERSONNEL SPECIFICATION
+            </span>
+            <h2 className="font-display font-black text-3xl sm:text-5xl text-[#111318] tracking-tight uppercase">
+              ABOUT THE ENGINEER.
+            </h2>
+          </div>
+          <span className="font-mono text-xs text-[#8A91A5] hidden sm:inline">DWG-001 // SEC-01</span>
+        </motion.div>
 
-          {/* ── FIG.01 — Photograph ─────────────────────────────── */}
-          <Reveal className="relative max-w-[340px] md:max-w-none mx-auto w-full">
-            <figure id="photo-frame-border" className="sheet-frame relative overflow-hidden bg-paper-2 shadow-sm">
+        {/* Dossier Grid */}
+        <div className="grid lg:grid-cols-[380px_1fr] gap-10 lg:gap-14 items-start">
+
+          {/* Left Column: FIG.01 Portrait */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="relative mx-auto lg:mx-0 w-full max-w-[360px]"
+          >
+            <div className="sheet-frame p-3 shadow-md relative group">
               <img
                 src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
                 alt="Amr Abdelazeem"
                 loading="lazy"
-                className="w-full aspect-[4/5] object-cover block transition-transform duration-700 hover:scale-[1.02]"
-                style={{ filter: 'grayscale(12%) contrast(1.05)' }}
+                className="w-full aspect-[4/5] object-cover border border-[#111318]/15"
+                style={{ filter: 'grayscale(15%) contrast(1.05)' }}
               />
-              <figcaption className="absolute bottom-0 inset-x-0 z-[4] flex items-center justify-between px-3.5 py-2.5 border-t border-line bg-paper/95 backdrop-blur-sm">
-                <span className="mono-tiny text-signal font-semibold">FIG. 01</span>
-                <span className="mono-tiny text-ink-2">AMR ABDELAZEEM</span>
-                <span className="mono-tiny text-ink-3">ENG // SCALE 1:1</span>
-              </figcaption>
-            </figure>
 
-            {/* Dimension Callout Annotation */}
-            <div className="hidden lg:flex absolute top-0 bottom-0 -right-8 flex-col items-center gap-1.5 select-none" aria-hidden="true" style={{ color: '#82868F' }}>
-              <span className="w-px h-6 bg-current" />
-              <span className="mono-tiny whitespace-nowrap" style={{ writingMode: 'vertical-rl' }}>180 MM // NOMINAL</span>
-              <span className="w-px flex-1 bg-current" />
-              <span className="w-2.5 h-px bg-current self-center" />
-            </div>
-          </Reveal>
-
-          {/* ── Dossier Details ─────────────────────────────────────────────── */}
-          <div className="min-w-0">
-            <Reveal>
-              <div className="space-y-4 text-ink-2 leading-[1.85] text-[0.95rem] md:text-[1.03rem]">
-                <p>
-                  I am a <strong className="text-ink font-semibold">Computer &amp; Systems Engineer</strong> specializing in{' '}
-                  <span className="text-signal font-medium">Flutter Mobile Architecture</span> and{' '}
-                  <span className="text-bp font-medium">Embedded Systems / IoT</span>.
-                </p>
-                <p>
-                  My engineering philosophy is rooted in Clean Architecture and robust design principles.
-                  I don&apos;t build fragile UI wrappers — I construct resilient end-to-end applications that withstand high concurrency,
-                  handle complex asynchronous platform channels, and communicate flawlessly with real microcontrollers and cloud endpoints.
-                </p>
+              {/* Title Block on Portrait */}
+              <div className="absolute bottom-6 inset-x-6 bg-[#F2EFE7] p-3 border border-[#111318] shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono font-bold text-xs text-[#111318]">FIG. 01 // DOSSIER</span>
+                  <span className="bp-stamp !text-[0.55rem] !py-0.2 !px-1.5 text-[#0E8345] border-[#0E8345]">
+                    VERIFIED
+                  </span>
+                </div>
+                <div className="font-display font-black text-sm text-[#111318] mt-1">
+                  AMR ABDELAZEEM
+                </div>
+                <div className="font-mono text-[0.62rem] text-[#FF4400] font-bold">
+                  COMPUTER &amp; SYSTEMS ENGINEER
+                </div>
               </div>
-            </Reveal>
+            </div>
+          </motion.div>
 
-            {/* Stats matrix */}
+          {/* Right Column: Technical Bio & BOM Cards */}
+          <div className="space-y-8">
             <motion.div
-              variants={staggerParent}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              className="tb-grid mt-8 grid border border-line-strong bg-paper-2"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-4 text-[#4B5162] text-base sm:text-lg leading-relaxed font-body"
             >
-              {STATS.map(({ value, label, desc }) => {
-                const hasPlus = /\+$/.test(value);
-                const num = value.replace(/\+$/, '');
-                return (
-                  <motion.div key={label} variants={riseChild} className="p-4 md:p-5">
-                    <div className="font-display font-extrabold text-[1.85rem] md:text-[2.1rem] leading-none tracking-tight text-ink">
-                      {num}
-                      {hasPlus && <span className="text-signal">+</span>}
-                    </div>
-                    <div className="mono-label text-ink font-medium mt-2 leading-tight">{label}</div>
-                    <div className="mono-tiny text-ink-3 mt-1 leading-snug">{desc}</div>
-                  </motion.div>
-                );
-              })}
+              <p>
+                I am a dedicated <strong className="text-[#111318] font-bold">Flutter Mobile Developer and Computer Systems Engineer</strong> from Egypt.
+                My unique engineering edge lies in mastering the complete computing stack — from user-facing reactive mobile UIs down to memory registers,
+                real-time operating system schedulers, and microcontroller buses.
+              </p>
+              <p>
+                Whether architecting enterprise Flutter applications with Clean Architecture and BLoC, or writing low-latency C/C++ firmware
+                for ESP32 sensor networks and synthesizing 32-bit pipelined RISC CPUs on FPGAs, I build systems engineered for speed and reliability.
+              </p>
             </motion.div>
 
-            {/* Technical focus tags */}
-            <Reveal className="mt-8 flex flex-wrap items-center gap-2">
-              <span className="mono-tiny text-ink-3 mr-2">CORE DISCIPLINES:</span>
-              <span className="bp-chip bp-chip--signal">FLUTTER &amp; DART 3</span>
-              <span className="bp-chip bp-chip--signal">CLEAN ARCHITECTURE</span>
-              <span className="bp-chip bp-chip--blue">C / C++ &amp; EMBEDDED</span>
-              <span className="bp-chip bp-chip--blue">ESP32 &amp; FREERTOS</span>
-              <span className="bp-chip">NODE.JS &amp; REST APIS</span>
-            </Reveal>
+            {/* 4 BOM Metric Cards */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              {METRICS.map((m, idx) => (
+                <motion.div
+                  key={m.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ delay: idx * 0.08, duration: 0.5 }}
+                  className="sheet-frame p-5 border border-[#111318]/15 bg-[#EAE6DC]"
+                >
+                  <div className="font-mono font-bold text-3xl sm:text-4xl text-[#FF4400]">
+                    {m.val}
+                  </div>
+                  <div className="font-display font-bold text-[#111318] text-base mt-1 uppercase">
+                    {m.label}
+                  </div>
+                  <div className="text-[#4B5162] text-xs font-mono mt-1">
+                    {m.desc}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Core Domain Badges */}
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#111318]/15">
+              <span className="text-xs font-mono text-[#8A91A5] mr-2">DISCIPLINES:</span>
+              <span className="bp-chip font-bold !text-[#FF4400]">FLUTTER &amp; DART 3</span>
+              <span className="bp-chip font-bold !text-[#3A57C4]">C / C++ &amp; EMBEDDED</span>
+              <span className="bp-chip font-bold !text-[#0E8345]">FREERTOS &amp; IOT</span>
+              <span className="bp-chip font-bold">CLEAN ARCHITECTURE</span>
+            </div>
           </div>
+
         </div>
+
       </div>
     </section>
   );

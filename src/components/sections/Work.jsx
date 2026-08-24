@@ -6,7 +6,7 @@ import { playSwitchClick, playHoverTick } from '../../lib/soundFx';
 
 export default function Work({ onProjectClick }) {
   const targetRef = useRef(null);
-  const featured = PROJECTS_DATA.slice(0, 4);
+  const featured = PROJECTS_DATA.slice(0, 5);
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -14,14 +14,14 @@ export default function Work({ onProjectClick }) {
   });
 
   // Smooth horizontal translation across devices
-  const xTransform = useTransform(scrollYProgress, [0, 1], ['0%', '-78%']);
+  const xTransform = useTransform(scrollYProgress, [0, 1], ['0%', '-83.5%']);
   const smoothX = useSpring(xTransform, { damping: 28, stiffness: 130, restDelta: 0.001 });
 
   return (
-    <section id="work" ref={targetRef} className="relative h-[380vh]">
+    <section id="work" ref={targetRef} className="relative h-[460vh]">
 
       {/* ── Sticky Pinned Viewport Container (Active on Mobile & Desktop) ─ */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center px-3 sm:px-8 md:px-14">
+      <div className="sticky top-[3vh] h-screen w-full overflow-hidden flex flex-col justify-center px-3 sm:px-8 md:px-14">
 
         {/* ── Section Title & Progress Bar ───────────────────────────────── */}
         <div className="max-w-7xl mx-auto w-full mb-3 sm:mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 select-none pb-2.5 sm:pb-4 border-b border-current/15">
@@ -42,7 +42,7 @@ export default function Work({ onProjectClick }) {
           {/* Progress Line */}
           <div className="flex items-center gap-3 sm:gap-4">
             <span className="font-mono text-[0.65rem] sm:text-xs text-inherit/70 font-bold">
-              04 DRAWINGS + ARCHIVE
+              05 DRAWINGS + ARCHIVE
             </span>
             <div className="w-28 sm:w-40 h-1.5 sm:h-2 bg-current/10 border border-current overflow-hidden">
               <motion.div
@@ -74,7 +74,7 @@ export default function Work({ onProjectClick }) {
                           DWG-00{idx + 1}
                         </span>
                         <span className="font-mono text-[0.65rem] sm:text-[0.7rem] text-inherit/70">
-                          ASSEMBLY // 0{idx + 1} OF 04
+                          ASSEMBLY // 0{idx + 1} OF 05
                         </span>
                       </div>
                       <span className="bp-stamp !text-[0.55rem] sm:!text-[0.6rem] !py-0.5 !px-2 text-[#0E8345] border-[#0E8345] font-bold">
@@ -84,7 +84,7 @@ export default function Work({ onProjectClick }) {
 
                     {/* Body */}
                     <div className="flex-1 grid lg:grid-cols-[1.15fr_1fr] min-h-0">
-                      
+
                       {/* Left: Specs & Info */}
                       <div className="p-4 sm:p-7 flex flex-col justify-between overflow-hidden">
                         <div>

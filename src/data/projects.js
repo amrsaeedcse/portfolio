@@ -48,7 +48,7 @@ export const PROJECTS_DATA = [
     tag: 'Flutter · Node.js · MongoDB · Socket.io',
     category: 'fullstack',
     color: '#FF4400',
-    img: 'assets/batrina/hero.webp',
+    img: 'assets/batrina/3- Home.png',
     year: '2026',
     status: 'Shipped',
     description:
@@ -84,9 +84,154 @@ export const PROJECTS_DATA = [
       { label: 'LinkedIn Demonstration', url: 'https://www.linkedin.com/posts/amr-saeed-cse_flutter-nodejs-mongodb-ugcPost-7452397423475384320-1sYN/' }
     ],
     screenshots: [
-      'assets/batrina/hero.webp',
       'assets/batrina/3- Home.png',
-      'assets/batrina/Gemini_Generated_Image_d6zbovd6zbovd6zb.jpg'
+      'assets/batrina/1- Onboarding.png',
+      'assets/batrina/2- Authentication.png',
+      'assets/batrina/4- Categories.png',
+      'assets/batrina/5- Product.png',
+      'assets/batrina/6- Product White.png',
+      'assets/batrina/7- Wishlist.png',
+      'assets/batrina/8- Cart.png',
+      'assets/batrina/9- Shipping.png',
+      'assets/batrina/10- Order Details.png',
+      'assets/batrina/11- Chat.png',
+      'assets/batrina/12- Profile.png',
+      'assets/batrina/13- Languages.png',
+      'assets/batrina/14- Profile Arabic.png',
+      'assets/batrina/15- Add Product.png',
+      'assets/batrina/16- Edit Product.png'
+    ],
+  },
+  {
+    id: 'souq-corner',
+    title: 'Souq Corner',
+    subtitle: 'Localized Real-Time Social Marketplace & In-Stream Chat',
+    tag: 'Flutter 3.9+ · Firebase · Node.js · Vercel',
+    category: 'mobile',
+    color: '#0E8345',
+    img: 'assets/souq_corner/home.png',
+    year: '2026',
+    status: 'Shipped',
+    description:
+      'An enterprise-grade, localized, real-time social marketplace platform built with Flutter, Firebase, and Node.js. Engineered for zero-latency communication, offline resilience, and Android system-level background execution. Features product-isolated chat threads, high-fidelity waveform voice notes (1.0x/1.5x/2.0x playback), in-stream price negotiation with atomic Mark-as-Sold and Rate-Seller deal completion, public seller profiles with Firestore 1-per-buyer verified reviews, Android system inline quick reply notifications, adaptive RTL/LTR layout mirroring, and strict Clean Architecture.',
+    tech: [
+      'Flutter 3.9+',
+      'Dart 3.9+',
+      'Cloud Firestore',
+      'Firebase Auth',
+      'Firebase FCM',
+      'Node.js Serverless',
+      'Vercel Cloud',
+      'BLoC / Cubit',
+      'GetIt & Injectable',
+      'Waveform Audio Player',
+      'Android BroadcastReceiver',
+      'i18n & RTL Localization'
+    ],
+    features: [
+      'Real-Time Chat & Isolated Threads: Inquiring about distinct products with the same seller routes to isolated conversations (userId1 + userId2 + productId) preventing context collisions',
+      'Waveform Voice Notes & Playback: High-fidelity AAC/m4a microphone recording with waveform visualizer and 1.0x / 1.5x / 2.0x playback scrubbers',
+      'In-Stream Price Negotiation: Live proposal cards with seller accept/reject actions, atomic "Mark as Sold" transactions, and direct buyer review prompts',
+      'Verified Seller Profiles & 1-Review Policy: Atomic recalculation of rating averages and 1-per-buyer review spam protection in Firestore subcollections',
+      'Android System-Level Quick Reply: Custom native broadcast receiver for background inline replies directly from notification shades',
+      'Adaptive RTL/LTR Localization: Comprehensive Arabic & English locale support with dynamic right-to-left layout flipping'
+    ],
+    github: 'https://github.com/amrsaeedcse/souq_corner',
+    demos: [],
+    screenshots: [
+      'assets/souq_corner/home.png',
+      'assets/souq_corner/home (2).png',
+      'assets/souq_corner/home (3).png',
+      'assets/souq_corner/pr_details.png',
+      'assets/souq_corner/chats_screen.png',
+      'assets/souq_corner/chat.png',
+      'assets/souq_corner/chat (2).png',
+      'assets/souq_corner/chat (3).png',
+      'assets/souq_corner/chat (4).png',
+      'assets/souq_corner/outer_reply.png',
+      'assets/souq_corner/search_products.png',
+      'assets/souq_corner/add_listing_screen.png',
+      'assets/souq_corner/rate_user.png',
+      'assets/souq_corner/rate_user_2.png',
+      'assets/souq_corner/profile_tab.png',
+      'assets/souq_corner/splash.png',
+      'assets/souq_corner/login.png'
+    ],
+  },
+  {
+    id: 'ai-todo',
+    title: 'Smart AI Voice Todo',
+    subtitle: 'Task System with Gemini AI Voice Intent & Background Isolates',
+    tag: 'Flutter 3.24+ · Node.js · MongoDB · Google Gemini',
+    category: 'fullstack',
+    color: '#8B5CF6',
+    img: 'assets/ai_todo/hero.webp',
+    year: '2026',
+    status: 'Shipped',
+    description:
+      'An enterprise-grade, full-stack intelligent Task & Productivity application with multi-lingual AI voice intent parsing, background notification actionable commands, cross-isolate UI synchronizations, and cinematic glassmorphic aesthetics. Built with Flutter Clean Architecture (BLoC/Cubit) and backed by a high-throughput Node.js, Express & MongoDB REST API server with dual JWT access/refresh token rotation.',
+    tech: [
+      'Flutter 3.24+',
+      'Dart 3.5+',
+      'Google Gemini AI (Flash-Lite)',
+      'Node.js & Express',
+      'MongoDB Atlas & Mongoose',
+      'BLoC / Cubit',
+      'Background Isolates',
+      'Android ActionBroadcastReceiver',
+      'Dio QueuedInterceptors',
+      'flutter_secure_storage',
+      'Clean Architecture',
+      'go_router'
+    ],
+    features: [
+      'Intelligent Gemini AI Voice Engine: Natural spoken intent parsing in Arabic and English with strict JSON schema extraction for titles, descriptions, and ISO 8601 deadlines',
+      'Direct Background Notification Action: Custom Android 12+ ActionBroadcastReceiver executes "Mark as Done ✅" via background isolate REST API without foregrounding the app',
+      'Cross-Isolate Real-Time Sync: IsolateNameServer pings the active UI isolate within 1ms to instantly check off tasks and strike through text live on screen',
+      'Zero-Deadlock Token Interceptor: Dio QueuedInterceptorsWrapper pauses concurrent 401s, executes single /auth/refresh rotation, and auto-retries queued requests',
+      '6-Layer Cinematic UI & Haptics: Radial neon mesh glows, orbital cosmic stardust particles, spotlight deep-link highlights, and smart relative date formatting',
+      'Hardware-Level Security: Sensitive tokens stored strictly inside Android Keystore & iOS Keychain via FlutterSecureStorage'
+    ],
+    github: 'https://github.com/amrsaeedcse/ai_todo_app',
+    demos: [],
+    screenshots: [
+      'assets/ai_todo/hero.webp',
+      'assets/ai_todo/ChatGPT Image Sep 9, 2025, 11_29_07 AM.png',
+      'assets/ai_todo/Gemini_Generated_Image_u2yiku2yiku2yiku.jpg'
+    ],
+  },
+  {
+    id: 'mips-32',
+    title: 'MIPS-32 Pipelined CPU',
+    subtitle: '5-Stage Hardware Architecture with Hazard Forwarding',
+    tag: 'VHDL · ModelSim · Quartus · FPGA',
+    category: 'hardware',
+    color: '#F59E0B',
+    img: 'assets/mips-32/MIPS32_Block.png',
+    year: '2023',
+    status: 'Academic',
+    description:
+      'A hardware realization of a 32-bit pipelined MIPS RISC processor designed and synthesized in VHDL for FPGA deployment. Architected with a classic 5-stage pipeline: Instruction Fetch (IF), Instruction Decode (ID), Execution (EX), Memory Access (MEM), and Write-Back (WB). Features a dedicated hardware forwarding unit and hazard detection circuitry to resolve data dependencies without stalling, branch prediction logic, a 32-word 32-bit dual-port Register File, and a comprehensive ALU capable of arithmetic, bitwise logical, shift, and comparison operations.',
+    tech: [
+      'VHDL Hardware Description',
+      'Quartus Prime',
+      'ModelSim Simulation',
+      'FPGA Synthesis',
+      'Computer Architecture',
+      'Digital Logic Design'
+    ],
+    features: [
+      '5-Stage Pipelined Datapath: Instruction Fetch, Decode, Execute, Memory, and Writeback stages running in parallel',
+      'Hardware Hazard & Forwarding Unit: Resolves Read-After-Write (RAW) data hazards seamlessly with minimum pipeline stalls',
+      'Branch Prediction & Flushes: Resolves control hazards with branch evaluation and pipeline clearing',
+      '32-bit Dual-Port Register File: Supports simultaneous two-register reads and one write in a single clock cycle',
+      'Full Instruction Set Coverage: Arithmetic (ADD, SUB), Logical (AND, OR, XOR, NOR), Memory (LW, SW), and Branching (BEQ, BNE, J)'
+    ],
+    github: 'https://github.com/amrsaeedcse/mips-32',
+    demos: [],
+    screenshots: [
+      'assets/mips-32/MIPS32_Block.png',
+      'assets/mips-32/MIPS32_multi-cycle_diagram.png'
     ],
   },
   {
@@ -125,75 +270,6 @@ export const PROJECTS_DATA = [
       'assets/GreenGuardian/cover.webp',
       'assets/GreenGuardian/GreenGuardian.png',
       'assets/GreenGuardian/Blynk.png'
-    ],
-  },
-  {
-    id: 'mips-32',
-    title: 'MIPS-32 Pipelined CPU',
-    subtitle: '5-Stage Hardware Architecture with Hazard Forwarding',
-    tag: 'VHDL · ModelSim · Quartus · FPGA',
-    category: 'hardware',
-    color: '#F59E0B',
-    img: 'assets/mips-32/MIPS32_Block.png',
-    year: '2023',
-    status: 'Academic',
-    description:
-      'A hardware realization of a 32-bit pipelined MIPS RISC processor designed and synthesized in VHDL for FPGA deployment. Architected with a classic 5-stage pipeline: Instruction Fetch (IF), Instruction Decode (ID), Execution (EX), Memory Access (MEM), and Write-Back (WB). Features a dedicated hardware forwarding unit and hazard detection circuitry to resolve data dependencies without stalling, branch prediction logic, a 32-word 32-bit dual-port Register File, and a comprehensive ALU capable of arithmetic, bitwise logical, shift, and comparison operations.',
-    tech: [
-      'VHDL Hardware Description',
-      'Quartus Prime',
-      'ModelSim Simulation',
-      'FPGA Synthesis',
-      'Computer Architecture',
-      'Digital Logic Design'
-    ],
-    features: [
-      '5-Stage Pipelined Datapath: Instruction Fetch, Decode, Execute, Memory, and Writeback stages running in parallel',
-      'Hardware Hazard & Forwarding Unit: Resolves Read-After-Write (RAW) data hazards seamlessly with minimum pipeline stalls',
-      'Branch Prediction & Flushes: Resolves control hazards with branch evaluation and pipeline clearing',
-      '32-bit Dual-Port Register File: Supports simultaneous two-register reads and one write in a single clock cycle',
-      'Full Instruction Set Coverage: Arithmetic (ADD, SUB), Logical (AND, OR, XOR, NOR), Memory (LW, SW), and Branching (BEQ, BNE, J)'
-    ],
-    github: 'https://github.com/amrsaeedcse/mips-32',
-    demos: [],
-    screenshots: [
-      'assets/mips-32/MIPS32_Block.png',
-      'assets/mips-32/MIPS32_multi-cycle_diagram.png'
-    ],
-  },
-  {
-    id: 'ai-todo',
-    title: 'AI Smart Task Planner',
-    subtitle: 'Intelligent Task Orchestration with OpenAI Integration',
-    tag: 'Flutter · OpenAI API · Clean Architecture',
-    category: 'mobile',
-    color: '#8B5CF6',
-    img: 'assets/ai_todo/hero.webp',
-    year: '2024',
-    status: 'Shipped',
-    description:
-      'An intelligent task management and productivity application that uses OpenAI GPT models to deconstruct high-level goals into actionable, prioritized subtasks. Built with Flutter adhering to Clean Architecture principles with BLoC state management and offline-first persistence using Hive. Generates automated daily summaries, workload estimations, and smart scheduling recommendations.',
-    tech: [
-      'Flutter',
-      'Dart 3',
-      'OpenAI GPT API',
-      'BLoC / Cubit',
-      'Hive Local DB',
-      'Clean Architecture',
-      'Offline First'
-    ],
-    features: [
-      'AI-Powered Goal Decomposition: Automatically breaks complex multi-step objectives into bite-sized actionable tasks',
-      'Smart Priority & Time Estimation: Uses machine intelligence to suggest optimal execution orders',
-      'Offline-First Synchronized Storage: Fast local caching using Hive NoSQL storage',
-      'Interactive Progress Analytics: Dynamic charts tracking completion rates and productivity momentum'
-    ],
-    github: 'https://github.com/amrsaeedcse/ai_todo_app',
-    demos: [],
-    screenshots: [
-      'assets/ai_todo/hero.webp',
-      'assets/ai_todo/ChatGPT Image Sep 9, 2025, 11_29_07 AM.png',
-      'assets/ai_todo/Gemini_Generated_Image_u2yiku2yiku2yiku.jpg'
     ],
   },
   {

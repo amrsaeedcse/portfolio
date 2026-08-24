@@ -173,7 +173,9 @@ export default function Work({ onProjectClick }) {
                       <img
                         src={proj.img}
                         alt={proj.title}
-                        loading="lazy"
+                        loading={idx < 2 ? "eager" : "lazy"}
+                        decoding="async"
+                        fetchPriority={idx === 0 ? "high" : "auto"}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         style={{ filter: 'contrast(1.05)' }}
                       />
@@ -429,7 +431,9 @@ export default function Work({ onProjectClick }) {
                           <img
                             src={proj.img}
                             alt={proj.title}
-                            loading="lazy"
+                            loading={idx < 2 ? "eager" : "lazy"}
+                            decoding="async"
+                            fetchPriority={idx === 0 ? "high" : "auto"}
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             style={{ filter: 'grayscale(15%) contrast(1.05)' }}
                           />

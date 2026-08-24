@@ -6,7 +6,7 @@ export const PROJECTS_DATA = [
     tag: 'Flutter · Python · Native Channels · FFmpeg',
     category: 'mobile',
     color: '#3B82F6',
-    img: 'assets/loadr/loadr.png',
+    img: 'assets/loadr/loadr.webp',
     year: '2026',
     status: 'Shipped',
     description:
@@ -38,7 +38,7 @@ export const PROJECTS_DATA = [
       { label: 'LinkedIn Showcase 02', url: 'https://www.linkedin.com/posts/amr-saeed-cse_flutter-python-softwareengineering-ugcPost-7481524462291636224-ffxS/' }
     ],
     screenshots: [
-      'assets/loadr/loadr.png'
+      'assets/loadr/loadr.webp'
     ],
   },
   {
@@ -48,7 +48,7 @@ export const PROJECTS_DATA = [
     tag: 'Flutter · Node.js · MongoDB · Socket.io',
     category: 'fullstack',
     color: '#FF4400',
-    img: 'assets/batrina/3- Home.png',
+    img: 'assets/batrina/3- Home.webp',
     year: '2026',
     status: 'Shipped',
     description:
@@ -84,22 +84,22 @@ export const PROJECTS_DATA = [
       { label: 'LinkedIn Demonstration', url: 'https://www.linkedin.com/posts/amr-saeed-cse_flutter-nodejs-mongodb-ugcPost-7452397423475384320-1sYN/' }
     ],
     screenshots: [
-      'assets/batrina/3- Home.png',
-      'assets/batrina/1- Onboarding.png',
-      'assets/batrina/2- Authentication.png',
-      'assets/batrina/4- Categories.png',
-      'assets/batrina/5- Product.png',
-      'assets/batrina/6- Product White.png',
-      'assets/batrina/7- Wishlist.png',
-      'assets/batrina/8- Cart.png',
-      'assets/batrina/9- Shipping.png',
-      'assets/batrina/10- Order Details.png',
-      'assets/batrina/11- Chat.png',
-      'assets/batrina/12- Profile.png',
-      'assets/batrina/13- Languages.png',
-      'assets/batrina/14- Profile Arabic.png',
-      'assets/batrina/15- Add Product.png',
-      'assets/batrina/16- Edit Product.png'
+      'assets/batrina/3- Home.webp',
+      'assets/batrina/1- Onboarding.webp',
+      'assets/batrina/2- Authentication.webp',
+      'assets/batrina/4- Categories.webp',
+      'assets/batrina/5- Product.webp',
+      'assets/batrina/6- Product White.webp',
+      'assets/batrina/7- Wishlist.webp',
+      'assets/batrina/8- Cart.webp',
+      'assets/batrina/9- Shipping.webp',
+      'assets/batrina/10- Order Details.webp',
+      'assets/batrina/11- Chat.webp',
+      'assets/batrina/12- Profile.webp',
+      'assets/batrina/13- Languages.webp',
+      'assets/batrina/14- Profile Arabic.webp',
+      'assets/batrina/15- Add Product.webp',
+      'assets/batrina/16- Edit Product.webp'
     ],
   },
   {
@@ -109,7 +109,7 @@ export const PROJECTS_DATA = [
     tag: 'Flutter 3.9+ · Firebase · Node.js · Vercel',
     category: 'mobile',
     color: '#0E8345',
-    img: 'assets/souq_corner/home.png',
+    img: 'assets/souq_corner/home.webp',
     year: '2026',
     status: 'Shipped',
     description:
@@ -139,23 +139,23 @@ export const PROJECTS_DATA = [
     github: 'https://github.com/amrsaeedcse/souq_corner',
     demos: [],
     screenshots: [
-      'assets/souq_corner/home.png',
-      'assets/souq_corner/home (2).png',
-      'assets/souq_corner/home (3).png',
-      'assets/souq_corner/pr_details.png',
-      'assets/souq_corner/chats_screen.png',
-      'assets/souq_corner/chat.png',
-      'assets/souq_corner/chat (2).png',
-      'assets/souq_corner/chat (3).png',
-      'assets/souq_corner/chat (4).png',
-      'assets/souq_corner/outer_reply.png',
-      'assets/souq_corner/search_products.png',
-      'assets/souq_corner/add_listing_screen.png',
-      'assets/souq_corner/rate_user.png',
-      'assets/souq_corner/rate_user_2.png',
-      'assets/souq_corner/profile_tab.png',
-      'assets/souq_corner/splash.png',
-      'assets/souq_corner/login.png'
+      'assets/souq_corner/home.webp',
+      'assets/souq_corner/home (2).webp',
+      'assets/souq_corner/home (3).webp',
+      'assets/souq_corner/pr_details.webp',
+      'assets/souq_corner/chats_screen.webp',
+      'assets/souq_corner/chat.webp',
+      'assets/souq_corner/chat (2).webp',
+      'assets/souq_corner/chat (3).webp',
+      'assets/souq_corner/chat (4).webp',
+      'assets/souq_corner/outer_reply.webp',
+      'assets/souq_corner/search_products.webp',
+      'assets/souq_corner/add_listing_screen.webp',
+      'assets/souq_corner/rate_user.webp',
+      'assets/souq_corner/rate_user_2.webp',
+      'assets/souq_corner/profile_tab.webp',
+      'assets/souq_corner/splash.webp',
+      'assets/souq_corner/login.webp'
     ],
   },
   {
@@ -165,7 +165,7 @@ export const PROJECTS_DATA = [
     tag: 'Flutter 3.24+ · Node.js · MongoDB · Google Gemini',
     category: 'fullstack',
     color: '#8B5CF6',
-    img: 'assets/ai_todo/home2.png',
+    img: 'assets/ai_todo/home2.webp',
     year: '2026',
     status: 'Shipped',
     description:
@@ -195,13 +195,13 @@ export const PROJECTS_DATA = [
     github: 'https://github.com/amrsaeedcse/ai_todo_app',
     demos: [],
     screenshots: [
-      'assets/ai_todo/home2.png',
-      'assets/ai_todo/home.png',
-      'assets/ai_todo/edit_todo.png',
-      'assets/ai_todo/profile.png',
-      'assets/ai_todo/sign_in.png',
-      'assets/ai_todo/sign_up.png',
-      'assets/ai_todo/reser_pass.png'
+      'assets/ai_todo/home2.webp',
+      'assets/ai_todo/home.webp',
+      'assets/ai_todo/edit_todo.webp',
+      'assets/ai_todo/profile.webp',
+      'assets/ai_todo/sign_in.webp',
+      'assets/ai_todo/sign_up.webp',
+      'assets/ai_todo/reser_pass.webp'
     ],
   },
   {
@@ -211,7 +211,7 @@ export const PROJECTS_DATA = [
     tag: 'VHDL · ModelSim · Quartus · FPGA',
     category: 'hardware',
     color: '#F59E0B',
-    img: 'assets/mips-32/MIPS32_Block.png',
+    img: 'assets/mips-32/MIPS32_Block.webp',
     year: '2023',
     status: 'Academic',
     description:
@@ -234,8 +234,8 @@ export const PROJECTS_DATA = [
     github: 'https://github.com/amrsaeedcse/mips-32',
     demos: [],
     screenshots: [
-      'assets/mips-32/MIPS32_Block.png',
-      'assets/mips-32/MIPS32_multi-cycle_diagram.png'
+      'assets/mips-32/MIPS32_Block.webp',
+      'assets/mips-32/MIPS32_multi-cycle_diagram.webp'
     ],
   },
   {
@@ -272,8 +272,8 @@ export const PROJECTS_DATA = [
     demos: [],
     screenshots: [
       'assets/GreenGuardian/cover.webp',
-      'assets/GreenGuardian/GreenGuardian.png',
-      'assets/GreenGuardian/Blynk.png'
+      'assets/GreenGuardian/GreenGuardian.webp',
+      'assets/GreenGuardian/Blynk.webp'
     ],
   },
   {
@@ -283,7 +283,7 @@ export const PROJECTS_DATA = [
     tag: 'Flutter · Audio Player · BLoC',
     category: 'mobile',
     color: '#1DB954',
-    img: 'assets/spoify-app/Gemini_Generated_Image_27hq3827hq3827hq.jpg',
+    img: 'assets/spoify-app/Gemini_Generated_Image_27hq3827hq3827hq.webp',
     year: '2024',
     status: 'Shipped',
     description:
@@ -297,8 +297,8 @@ export const PROJECTS_DATA = [
     github: 'https://github.com/amrsaeedcse/spotify',
     demos: [],
     screenshots: [
-      'assets/spoify-app/Gemini_Generated_Image_27hq3827hq3827hq.jpg',
-      'assets/spoify-app/Screenshot 2025-08-13 063102.png'
+      'assets/spoify-app/Gemini_Generated_Image_27hq3827hq3827hq.webp',
+      'assets/spoify-app/Screenshot 2025-08-13 063102.webp'
     ],
   },
   {
@@ -308,7 +308,7 @@ export const PROJECTS_DATA = [
     tag: 'Flutter · Firebase · Stripe / Paymob',
     category: 'mobile',
     color: '#0EA5E9',
-    img: 'assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.jpg',
+    img: 'assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.webp',
     year: '2024',
     status: 'Shipped',
     description:
@@ -322,8 +322,8 @@ export const PROJECTS_DATA = [
     github: 'https://github.com/amrsaeedcse/ecommerce-app',
     demos: [],
     screenshots: [
-      'assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.jpg',
-      'assets/eccomerce-app/Screenshot 2025-08-13 040331.png'
+      'assets/eccomerce-app/Gemini_Generated_Image_cjsjaicjsjaicjsj.webp',
+      'assets/eccomerce-app/Screenshot 2025-08-13 040331.webp'
     ],
   },
   {
@@ -333,7 +333,7 @@ export const PROJECTS_DATA = [
     tag: 'Flutter · REST API · Custom UI',
     category: 'mobile',
     color: '#EC4899',
-    img: 'assets/drink-app/Gemini_Generated_Image_u6zljzu6zljzu6zl (2).jpg',
+    img: 'assets/drink-app/Gemini_Generated_Image_u6zljzu6zljzu6zl (2).webp',
     year: '2024',
     status: 'Shipped',
     description:
@@ -347,7 +347,7 @@ export const PROJECTS_DATA = [
     github: 'https://github.com/OmarAfifi-CSE/depi-flutter-graduation-project',
     demos: [],
     screenshots: [
-      'assets/drink-app/Gemini_Generated_Image_u6zljzu6zljzu6zl (2).jpg'
+      'assets/drink-app/Gemini_Generated_Image_u6zljzu6zljzu6zl (2).webp'
     ],
   },
   {
@@ -357,7 +357,7 @@ export const PROJECTS_DATA = [
     tag: 'React 19 · Vite · Framer Motion · Canvas 2D',
     category: 'web',
     color: '#3A57C4',
-    img: 'assets/portfolio/cover.png',
+    img: 'assets/portfolio/cover.webp',
     year: '2026',
     status: 'Live',
     description:
@@ -371,7 +371,7 @@ export const PROJECTS_DATA = [
     github: 'https://github.com/amrsaeedcse/portfolio',
     demos: [],
     screenshots: [
-      'assets/portfolio/cover.png'
+      'assets/portfolio/cover.webp'
     ],
   },
 ];

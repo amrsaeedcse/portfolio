@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { PROJECTS_DATA } from '../../data/projects';
 import TiltCard from '../ui/TiltCard';
@@ -7,154 +7,136 @@ import { playSwitchClick, playHoverTick } from '../../lib/soundFx';
 export default function Work({ onProjectClick }) {
   const targetRef = useRef(null);
   const mobileScrollRef = useRef(null);
+  const [mobileIndex, setMobileIndex] = useState(0);
   const featured = PROJECTS_DATA.slice(0, 5);
-  const [mobileActiveIdx, setMobileActiveIdx] = useState(0);
 
+  // Desktop Pinned Scroll Physics
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ['start start', 'end end'],
   });
 
-  // Smooth horizontal translation for desktop
   const xTransform = useTransform(scrollYProgress, [0, 1], ['0%', '-83.5%']);
   const smoothX = useSpring(xTransform, { damping: 28, stiffness: 130, restDelta: 0.001 });
 
-  // Handle mobile horizontal scroll with finger
-  const handleMobileScroll = (e) => {
-    const el = e.currentTarget;
-    const cardWidth = el.offsetWidth * 0.85;
-    const index = Math.round(el.scrollLeft / cardWidth);
-    setMobileActiveIdx(Math.min(Math.max(index, 0), featured.length));
+  // Handle Mobile Horizontal Touch Scroll Tracking
+  const handleMobileScroll = () => {
+    if (!mobileScrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = mobileScrollRef.current;
+    const totalItems = featured.length + 1;
+    const maxScroll = scrollWidth - clientWidth;
+    if (maxScroll > 0) {
+      const idx = Math.min(
+        totalItems - 1,
+        Math.max(0, Math.round((scrollLeft / maxScroll) * (totalItems - 1)))
+      );
+      setMobileIndex(idx);
+    }
   };
 
-  const scrollToCard = (idx) => {
+  const scrollToMobileCard = (index) => {
     playSwitchClick();
-    if (mobileScrollRef.current) {
-      const cardWidth = mobileScrollRef.current.offsetWidth * 0.86;
-      mobileScrollRef.current.scrollTo({
-        left: idx * cardWidth,
-        behavior: 'smooth',
-      });
+    if (!mobileScrollRef.current) return;
+    const cards = mobileScrollRef.current.children;
+    if (cards[index]) {
+      cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
   };
 
   return (
-    <>
-      {/* ══════════════════════════════════════════════════════════════════════
-          MOBILE VIEW: Direct Finger Touch-Swipe Reel (Left & Right)
-          ══════════════════════════════════════════════════════════════════════ */}
-      <section id="work" className="block md:hidden py-8 px-3 bg-inherit border-b border-current/15">
+    <div id="work" className="relative">
+
+      {/* ══════════════════════════════════════════════════════════════════════════
+          1. MOBILE VIEW: Natural Horizontal Touch-Swipe Reel (md:hidden)
+          Allows smooth finger swiping directly horizontally without vertical trap
+          ══════════════════════════════════════════════════════════════════════════ */}
+      <section className="block md:hidden py-10 px-3 sm:px-6 overflow-hidden">
         
-        {/* Mobile Header & Controls */}
-        <div className="mb-3 px-1 flex flex-col gap-2 select-none border-b border-current/15 pb-3">
-          <div className="flex items-center justify-between">
+        {/* Mobile Section Header */}
+        <div className="w-full mb-4 pb-3 border-b border-current/15 select-none">
+          <div className="flex items-center justify-between gap-2 mb-1.5">
             <span className="bp-stamp text-[#FF4400] border-[#FF4400] !text-[0.6rem] !py-0.5 !px-2 font-bold">
-              SHEET 03 // DRAWINGS
+              SHEET 03 // DRAWING REEL
             </span>
-            <span className="font-mono text-[0.65rem] text-[#3A57C4] font-bold animate-pulse">
-              👉 اسحب بصباعك يمين وشمال 👈
+            <span className="font-mono text-[0.68rem] text-[#3A57C4] font-bold flex items-center gap-1">
+              SWIPE HORIZONTALLY ← →
             </span>
           </div>
-
-          <div className="flex items-center justify-between">
+          
+          <div className="flex items-end justify-between gap-2 mt-1">
             <h2 className="font-display font-black text-2xl tracking-tight uppercase">
               FEATURED DRAWINGS.
             </h2>
-
-            {/* Mobile Arrow Buttons for quick tapping */}
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => scrollToCard(Math.max(0, mobileActiveIdx - 1))}
-                disabled={mobileActiveIdx === 0}
-                className="w-8 h-8 flex items-center justify-center border border-current font-bold text-sm disabled:opacity-30 disabled:cursor-not-allowed bg-current/5 active:bg-[#FF4400] active:text-white"
-                aria-label="Previous drawing"
-              >
-                ←
-              </button>
-              <button
-                onClick={() => scrollToCard(Math.min(featured.length, mobileActiveIdx + 1))}
-                disabled={mobileActiveIdx === featured.length}
-                className="w-8 h-8 flex items-center justify-center border border-current font-bold text-sm disabled:opacity-30 disabled:cursor-not-allowed bg-current/5 active:bg-[#FF4400] active:text-white"
-                aria-label="Next drawing"
-              >
-                →
-              </button>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between text-[0.65rem] font-mono text-inherit/70">
-            <span>05 BLUEPRINTS + ARCHIVE</span>
-            <span className="text-[#FF4400] font-bold">
-              CARD {mobileActiveIdx + 1} OF {featured.length + 1}
+            <span className="font-mono text-[0.65rem] text-inherit/70 font-bold whitespace-nowrap">
+              0{mobileIndex + 1} / 0{featured.length + 1}
             </span>
           </div>
         </div>
 
-        {/* ── Direct Finger Touch Scroll Track ──────────────────────────── */}
+        {/* Mobile Horizontal Touch Track */}
         <div
           ref={mobileScrollRef}
           onScroll={handleMobileScroll}
-          className="flex overflow-x-auto snap-x snap-mandatory gap-3.5 pb-4 pt-1 px-1 no-scrollbar scroll-smooth -mx-3 px-3 touch-pan-x will-change-scroll"
-          style={{ WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory' }}
+          className="w-full overflow-x-auto flex items-stretch gap-3.5 pb-4 pt-1 snap-x snap-mandatory scroll-smooth no-scrollbar touch-pan-x pl-1 pr-4"
         >
           {featured.map((proj, idx) => (
             <div
-              key={proj.id}
-              className="w-[85vw] max-w-[360px] snap-center flex-none"
+              key={`mobile-${proj.id}`}
+              className="w-[87vw] max-w-[420px] flex-none snap-center"
             >
               <div className="h-full sheet-frame overflow-hidden shadow-lg flex flex-col justify-between border border-current/20 bg-inherit rounded-sm">
-                
-                {/* Top Card Strip */}
+
+                {/* Top Strip */}
                 <div className="flex items-center justify-between px-3.5 py-2 border-b border-current/15 bg-current/5">
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-xs text-[#FF4400]">
                       DWG-00{idx + 1}
                     </span>
                     <span className="font-mono text-[0.62rem] text-inherit/70">
-                      ASSEMBLY 0{idx + 1}
+                      ASSEMBLY // 0{idx + 1} OF 05
                     </span>
                   </div>
-                  <span className="bp-stamp !text-[0.55rem] !py-0.5 !px-2 text-[#0E8345] border-[#0E8345] font-bold">
+                  <span className="bp-stamp !text-[0.55rem] !py-0.5 !px-1.5 text-[#0E8345] border-[#0E8345] font-bold">
                     {proj.status} · {proj.year}
                   </span>
                 </div>
 
-                {/* Card Content */}
+                {/* Body */}
                 <div className="p-4 flex flex-col justify-between flex-1">
                   <div>
-                    <span className="font-mono text-[0.62rem] text-[#3A57C4] font-bold block mb-0.5 uppercase tracking-wide">
+                    <span className="font-mono text-[0.62rem] text-[#3A57C4] font-bold block mb-0.5 uppercase">
                       {proj.tag}
                     </span>
-                    <h3 className="font-display font-black text-xl tracking-tight uppercase line-clamp-1">
+                    <h3 className="font-display font-black text-xl tracking-tight uppercase leading-tight">
                       {proj.title}
                     </h3>
-                    <p className="font-mono text-xs text-[#FF4400] font-semibold mt-0.5 line-clamp-1">
+                    <p className="font-mono text-[0.72rem] text-[#FF4400] font-semibold mt-0.5">
                       {proj.subtitle}
                     </p>
 
-                    {/* Screenshot Preview */}
+                    {/* Image Preview */}
                     <div
                       onClick={() => { playSwitchClick(); onProjectClick(proj); }}
-                      className="my-3 relative h-40 overflow-hidden border border-current/20 bg-current/10 cursor-pointer shadow-inner group rounded-sm"
+                      className="my-3 relative h-44 overflow-hidden border border-current/20 bg-current/10 cursor-pointer shadow-inner group rounded-sm"
                     >
                       <img
                         src={proj.img}
                         alt={proj.title}
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        style={{ filter: 'grayscale(5%) contrast(1.05)' }}
+                        style={{ filter: 'grayscale(10%) contrast(1.05)' }}
                       />
                       <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-inherit/95 backdrop-blur-sm font-mono text-[0.58rem] font-bold border border-current">
-                        FIG. 0{idx + 1} // TAP TO EXPAND ⤢
+                        FIG. 0{idx + 1} // SCHEMATIC ⤢
                       </div>
                     </div>
 
-                    <p className="text-inherit/80 text-xs leading-relaxed line-clamp-3 font-body">
+                    <p className="text-inherit/75 text-xs leading-relaxed mt-2 line-clamp-3 font-body">
                       {proj.description}
                     </p>
 
-                    {/* Tech Chips */}
-                    <div className="flex flex-wrap gap-1 mt-3 max-h-[50px] overflow-hidden">
+                    {/* Tech Pills */}
+                    <div className="flex flex-wrap gap-1 mt-3">
                       {proj.tech.slice(0, 4).map((t) => (
                         <span
                           key={t}
@@ -166,13 +148,13 @@ export default function Work({ onProjectClick }) {
                     </div>
                   </div>
 
-                  {/* Buttons */}
-                  <div className="grid grid-cols-2 gap-2 pt-3 border-t border-current/15 mt-3">
+                  {/* Action Buttons */}
+                  <div className="grid grid-cols-2 gap-2 pt-3 border-t border-current/15 mt-3.5">
                     <button
                       onClick={() => { playSwitchClick(); onProjectClick(proj); }}
-                      className="bp-btn-primary !py-2.5 !px-2 !text-xs min-h-[40px] justify-center text-center font-bold"
+                      className="bp-btn-primary !py-2.5 !px-3 !text-xs min-h-[40px] justify-center text-center font-bold"
                     >
-                      Inspect Drawing ↗
+                      Inspect ↗
                     </button>
                     {proj.github ? (
                       <a
@@ -180,14 +162,14 @@ export default function Work({ onProjectClick }) {
                         target="_blank"
                         rel="noreferrer"
                         onClick={playSwitchClick}
-                        className="bp-btn-secondary !py-2.5 !px-2 !text-xs min-h-[40px] flex items-center justify-center font-bold"
+                        className="bp-btn-secondary !py-2.5 !px-3 !text-xs min-h-[40px] flex items-center justify-center font-bold"
                       >
                         GitHub ↗
                       </a>
                     ) : (
                       <button
                         onClick={() => { playSwitchClick(); onProjectClick(proj); }}
-                        className="bp-btn-secondary !py-2.5 !px-2 !text-xs min-h-[40px] justify-center text-center font-bold"
+                        className="bp-btn-secondary !py-2.5 !px-3 !text-xs min-h-[40px] justify-center text-center font-bold"
                       >
                         Specs ℹ
                       </button>
@@ -197,25 +179,25 @@ export default function Work({ onProjectClick }) {
 
                 {/* Footer */}
                 <div className="flex items-center justify-between px-3.5 py-1.5 border-t border-current/15 font-mono text-[0.58rem] text-[#8A91A5]">
-                  <span>DRAWN: A. ABDELAZEEM</span>
-                  <span>APPROVED ✓</span>
+                  <span>DRAWN BY: A. ABDELAZEEM</span>
+                  <span>YEAR: {proj.year}</span>
                 </div>
 
               </div>
             </div>
           ))}
 
-          {/* Archive Card on Mobile */}
-          <div className="w-[85vw] max-w-[360px] snap-center flex-none">
-            <div className="h-full sheet-frame p-6 text-center shadow-lg flex flex-col items-center justify-center border border-current/20 bg-inherit rounded-sm min-h-[440px]">
-              <span className="bp-stamp text-[#FF4400] border-[#FF4400] mb-2 font-bold !text-xs">
+          {/* Complete Archive Card on Mobile */}
+          <div className="w-[87vw] max-w-[420px] flex-none snap-center">
+            <div className="h-full sheet-frame p-6 text-center shadow-lg flex flex-col items-center justify-center border border-current/20 bg-inherit rounded-sm min-h-[420px]">
+              <span className="bp-stamp text-[#FF4400] border-[#FF4400] mb-2 font-bold !text-[0.62rem]">
                 ARCHIVE // COMPLETE INDEX
               </span>
               <h3 className="font-display font-black text-2xl mt-1 uppercase">
                 ALL {PROJECTS_DATA.length} BLUEPRINTS.
               </h3>
-              <p className="text-inherit/70 text-xs mt-2 leading-relaxed font-body">
-                Inspect all mobile apps, IoT firmware, VHDL CPU schematics, and full-stack systems.
+              <p className="text-inherit/70 text-xs mt-2 leading-relaxed font-body max-w-xs">
+                Inspect all mobile apps, IoT firmware repositories, VHDL processor schematics, and full-stack platforms.
               </p>
               <button
                 onClick={() => { playSwitchClick(); onProjectClick('ARCHIVE'); }}
@@ -227,32 +209,36 @@ export default function Work({ onProjectClick }) {
           </div>
         </div>
 
-        {/* Interactive Indicator Dots on Mobile */}
+        {/* Mobile Dot Navigation Indicators */}
         <div className="flex items-center justify-center gap-1.5 mt-2">
           {Array.from({ length: featured.length + 1 }).map((_, i) => (
             <button
-              key={i}
-              onClick={() => scrollToCard(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                mobileActiveIdx === i ? 'w-7 bg-[#FF4400]' : 'w-2 bg-current/25'
+              key={`dot-${i}`}
+              onClick={() => scrollToMobileCard(i)}
+              aria-label={`Go to drawing ${i + 1}`}
+              className={`h-2 transition-all duration-300 rounded-full ${
+                mobileIndex === i
+                  ? 'w-7 bg-[#FF4400]'
+                  : 'w-2 bg-current/20 hover:bg-current/40'
               }`}
-              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
 
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          DESKTOP VIEW: Cinematic Pinned 460vh Horizontal Scroll Reel
-          ══════════════════════════════════════════════════════════════════════ */}
-      <section id="work-desktop" ref={targetRef} className="hidden md:block relative h-[460vh]">
 
-        {/* Sticky Pinned Viewport Container */}
+      {/* ══════════════════════════════════════════════════════════════════════════
+          2. DESKTOP VIEW: 100% Exact Original Pinned Reel (hidden md:block)
+          Preserved down to the exact pixel and spring physics as requested
+          ══════════════════════════════════════════════════════════════════════════ */}
+      <section ref={targetRef} className="relative hidden md:block h-[460vh]">
+
+        {/* ── Sticky Pinned Viewport Container ────────────────────────────── */}
         <div className="sticky top-[3vh] h-screen w-full overflow-hidden flex flex-col justify-center px-8 md:px-14">
 
-          {/* Section Title & Progress Bar */}
-          <div className="max-w-7xl mx-auto w-full mb-6 flex items-end justify-between gap-2.5 select-none pb-4 border-b border-current/15">
+          {/* ── Section Title & Progress Bar ───────────────────────────────── */}
+          <div className="max-w-7xl mx-auto w-full mb-3 sm:mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 select-none pb-2.5 sm:pb-4 border-b border-current/15">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="bp-stamp text-[#FF4400] border-[#FF4400] !text-[0.6rem] !py-0.5 !px-2">
@@ -281,7 +267,7 @@ export default function Work({ onProjectClick }) {
             </div>
           </div>
 
-          {/* Smooth Horizontal Panning Track */}
+          {/* ── Smooth Horizontal Panning Track (Desktop Only) ──────────────── */}
           <div className="w-full flex items-center overflow-visible">
             <motion.div
               style={{ x: smoothX }}
@@ -289,7 +275,7 @@ export default function Work({ onProjectClick }) {
             >
               {featured.map((proj, idx) => (
                 <div
-                  key={proj.id}
+                  key={`desktop-${proj.id}`}
                   className="w-[680px] lg:w-[860px] h-[500px] lg:h-[520px] flex-none"
                 >
                   <TiltCard maxTilt={4} className="h-full w-full">
@@ -376,7 +362,7 @@ export default function Work({ onProjectClick }) {
                         </div>
 
                         {/* Right: Desktop Full Schematic */}
-                        <div className="relative h-full w-full border-l border-current/15 overflow-hidden bg-current/5 group">
+                        <div className="relative h-full w-full hidden lg:block border-l border-current/15 overflow-hidden bg-current/5 group">
                           <img
                             src={proj.img}
                             alt={proj.title}
@@ -403,7 +389,7 @@ export default function Work({ onProjectClick }) {
                 </div>
               ))}
 
-              {/* Complete Archive Card at End of Reel */}
+              {/* ── Complete Archive Card at End of Reel ─────────────────────── */}
               <div className="w-[460px] lg:w-[500px] h-[500px] lg:h-[520px] flex-none">
                 <TiltCard maxTilt={4} className="h-full w-full">
                   <div className="h-full sheet-frame p-10 text-center shadow-xl flex flex-col items-center justify-center border border-current/20 bg-inherit">
@@ -433,6 +419,7 @@ export default function Work({ onProjectClick }) {
         </div>
 
       </section>
-    </>
+
+    </div>
   );
 }

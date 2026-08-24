@@ -165,7 +165,7 @@ export const PROJECTS_DATA = [
     tag: 'Flutter 3.24+ · Node.js · MongoDB · Google Gemini',
     category: 'fullstack',
     color: '#8B5CF6',
-    img: 'assets/ai_todo/hero.webp',
+    img: 'assets/ai_todo/home.png',
     year: '2026',
     status: 'Shipped',
     description:
@@ -195,11 +195,13 @@ export const PROJECTS_DATA = [
     github: 'https://github.com/amrsaeedcse/ai_todo_app',
     demos: [],
     screenshots: [
-      'assets/ai_todo/hero.webp',
-      'assets/ai_todo/im1.png',
-      'assets/ai_todo/im2.png',
-      'assets/ai_todo/im3.png',
-      'assets/ai_todo/Gemini_Generated_Image_u2yiku2yiku2yiku.jpg'
+      'assets/ai_todo/home.png',
+      'assets/ai_todo/home2.png',
+      'assets/ai_todo/edit_todo.png',
+      'assets/ai_todo/profile.png',
+      'assets/ai_todo/sign_in.png',
+      'assets/ai_todo/sign_up.png',
+      'assets/ai_todo/reser_pass.png'
     ],
   },
   {

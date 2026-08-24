@@ -7,6 +7,7 @@ import { playSwitchClick, playHoverTick } from '../../lib/soundFx';
 export default function Work({ onProjectClick }) {
   const targetRef = useRef(null);
   const mobileCarouselRef = useRef(null);
+  const cardRefs = useRef([]);
   const [activeMobileIdx, setActiveMobileIdx] = useState(0);
   const featured = PROJECTS_DATA.slice(0, 5);
 
@@ -19,35 +20,55 @@ export default function Work({ onProjectClick }) {
   const xTransform = useTransform(scrollYProgress, [0, 1], ['0%', '-83.5%']);
   const smoothX = useSpring(xTransform, { damping: 28, stiffness: 130, restDelta: 0.001 });
 
-  // Scroll to card index on mobile
+  // Scroll to exact card on mobile with precise alignment
   const scrollMobileTo = (idx) => {
     playSwitchClick();
     if (!mobileCarouselRef.current) return;
-    const container = mobileCarouselRef.current;
-    const cardWidth = container.clientWidth * 0.88 + 16;
-    container.scrollTo({
-      left: idx * cardWidth,
-      behavior: 'smooth',
-    });
-    setActiveMobileIdx(idx);
-  };
-
-  // Track active slide on mobile scroll
-  const handleMobileScroll = () => {
-    if (!mobileCarouselRef.current) return;
-    const container = mobileCarouselRef.current;
-    const cardWidth = container.clientWidth * 0.88 + 16;
-    const currentIdx = Math.round(container.scrollLeft / cardWidth);
-    if (currentIdx !== activeMobileIdx) {
-      setActiveMobileIdx(currentIdx);
+    const targetCard = cardRefs.current[idx];
+    if (targetCard) {
+      targetCard.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest',
+      });
+      setActiveMobileIdx(idx);
     }
   };
+
+  // Track active slide on mobile scroll using IntersectionObserver
+  useEffect(() => {
+    const container = mobileCarouselRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = Number(entry.target.dataset.index);
+            if (!isNaN(idx)) {
+              setActiveMobileIdx(idx);
+            }
+          }
+        });
+      },
+      {
+        root: container,
+        threshold: 0.6,
+      }
+    );
+
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section id="work" className="relative">
 
       {/* ══════════════════════════════════════════════════════════════════════
-          📱 MOBILE LAYOUT (< md): Free Vertical Scrolling + Fluid Touch Carousel
+          📱 MOBILE LAYOUT (< md): 1-by-1 Snapping Carousel + Free Vertical Page Flow
           ══════════════════════════════════════════════════════════════════════ */}
       <div className="block md:hidden py-10 px-3 sm:px-6">
 
@@ -57,25 +78,25 @@ export default function Work({ onProjectClick }) {
             <span className="bp-stamp text-[#FF4400] border-[#FF4400] !text-[0.6rem] !py-0.5 !px-2">
               SHEET 03 // DRAWINGS
             </span>
-            <div className="flex items-center gap-1.5 font-mono text-[0.65rem] text-[#3A57C4] font-bold">
-              <span>{Math.min(activeMobileIdx + 1, featured.length + 1)}</span>
-              <span>/</span>
-              <span>{featured.length + 1}</span>
+            <div className="flex items-center gap-1.5 font-mono text-[0.68rem] font-bold">
+              <span className="text-[#FF4400]">DWG 0{activeMobileIdx + 1}</span>
+              <span className="text-inherit/40">/</span>
+              <span className="text-inherit/70">0{featured.length + 1}</span>
             </div>
           </div>
           <h2 className="font-display font-black text-2xl tracking-tight uppercase mt-1">
             FEATURED DRAWINGS.
           </h2>
           <div className="flex items-center justify-between mt-2">
-            <p className="font-mono text-[0.65rem] text-inherit/70">
-              05 BLUEPRINTS + ARCHIVE
-            </p>
-            {/* Quick Tap Navigation Arrows */}
-            <div className="flex items-center gap-1.5">
+            <span className="font-mono text-[0.65rem] text-[#3A57C4] font-bold tracking-wider">
+              SWIPE ONE BY ONE ⇄
+            </span>
+            {/* Quick Step Navigation Arrows */}
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => scrollMobileTo(Math.max(0, activeMobileIdx - 1))}
                 disabled={activeMobileIdx === 0}
-                className="px-2 py-0.5 border border-current/25 font-mono text-xs disabled:opacity-30 active:bg-current/10"
+                className="w-7 h-7 flex items-center justify-center border border-current/25 font-mono text-xs disabled:opacity-20 active:bg-current/10"
                 aria-label="Previous Drawing"
               >
                 ←
@@ -83,7 +104,7 @@ export default function Work({ onProjectClick }) {
               <button
                 onClick={() => scrollMobileTo(Math.min(featured.length, activeMobileIdx + 1))}
                 disabled={activeMobileIdx === featured.length}
-                className="px-2 py-0.5 border border-current/25 font-mono text-xs disabled:opacity-30 active:bg-current/10"
+                className="w-7 h-7 flex items-center justify-center border border-current/25 font-mono text-xs disabled:opacity-20 active:bg-current/10"
                 aria-label="Next Drawing"
               >
                 →
@@ -92,22 +113,32 @@ export default function Work({ onProjectClick }) {
           </div>
         </div>
 
-        {/* ── Fluid Horizontal Carousel Container (NO touch-pan-x lock) ── */}
+        {/* ── Strict 1-by-1 Snap Horizontal Track (No vertical capture lock) ── */}
         <div
           ref={mobileCarouselRef}
-          onScroll={handleMobileScroll}
-          style={{ overscrollBehaviorX: 'contain' }}
-          className="overflow-x-auto flex gap-3.5 pb-3 pt-1 -mx-3 px-3 scrollbar-none scroll-smooth"
+          style={{
+            scrollSnapType: 'x mandatory',
+            scrollPaddingLeft: '1rem',
+            scrollPaddingRight: '1rem',
+            overscrollBehaviorX: 'contain',
+          }}
+          className="overflow-x-auto snap-x snap-mandatory flex gap-4 pb-3 pt-1 -mx-3 px-4 scrollbar-none scroll-smooth"
         >
           {featured.map((proj, idx) => (
             <div
               key={proj.id}
-              className="w-[86vw] max-w-[340px] h-[510px] flex-none"
+              ref={(el) => (cardRefs.current[idx] = el)}
+              data-index={idx}
+              style={{
+                scrollSnapAlign: 'center',
+                scrollSnapStop: 'always',
+              }}
+              className="w-[88vw] max-w-[345px] h-[515px] flex-none snap-center"
             >
-              <div className="h-full sheet-frame overflow-hidden shadow-md flex flex-col justify-between border border-current/20 bg-inherit rounded-sm">
+              <div className="h-full sheet-frame overflow-hidden shadow-lg flex flex-col justify-between border border-current/20 bg-inherit rounded-sm">
 
                 {/* Top Strip */}
-                <div className="flex items-center justify-between px-3 py-2 border-b border-current/15 bg-current/5">
+                <div className="flex items-center justify-between px-3.5 py-2 border-b border-current/15 bg-current/5">
                   <div className="flex items-center gap-1.5">
                     <span className="font-mono font-bold text-xs text-[#FF4400]">
                       DWG-00{idx + 1}
@@ -124,7 +155,7 @@ export default function Work({ onProjectClick }) {
                 {/* Body Content */}
                 <div className="p-3.5 flex-1 flex flex-col justify-between overflow-hidden">
                   <div>
-                    <span className="font-mono text-[0.6rem] text-[#3A57C4] font-bold block uppercase truncate">
+                    <span className="font-mono text-[0.62rem] text-[#3A57C4] font-bold block uppercase truncate">
                       {proj.tag}
                     </span>
                     <h3 className="font-display font-black text-lg tracking-tight uppercase mt-0.5">
@@ -208,8 +239,16 @@ export default function Work({ onProjectClick }) {
           ))}
 
           {/* Archive Card on Mobile */}
-          <div className="w-[82vw] max-w-[320px] h-[510px] flex-none">
-            <div className="h-full sheet-frame p-6 text-center shadow-md flex flex-col items-center justify-center border border-current/20 bg-inherit rounded-sm">
+          <div
+            ref={(el) => (cardRefs.current[featured.length] = el)}
+            data-index={featured.length}
+            style={{
+              scrollSnapAlign: 'center',
+              scrollSnapStop: 'always',
+            }}
+            className="w-[88vw] max-w-[345px] h-[515px] flex-none snap-center"
+          >
+            <div className="h-full sheet-frame p-6 text-center shadow-lg flex flex-col items-center justify-center border border-current/20 bg-inherit rounded-sm">
               <span className="bp-stamp text-[#FF4400] border-[#FF4400] mb-2 font-bold !text-[0.65rem]">
                 ARCHIVE // INDEX
               </span>
@@ -230,22 +269,22 @@ export default function Work({ onProjectClick }) {
 
         </div>
 
-        {/* Mobile Interactive Indicator Dots (Tap to Switch) */}
-        <div className="flex items-center justify-center gap-1.5 mt-2">
+        {/* Mobile Interactive Indicator Dots (1-by-1 Paging) */}
+        <div className="flex items-center justify-center gap-2 mt-2">
           {featured.map((_, i) => (
             <button
               key={i}
               onClick={() => scrollMobileTo(i)}
               className={`h-1.5 rounded-full transition-all duration-200 ${
-                activeMobileIdx === i ? 'w-5 bg-[#FF4400]' : 'w-1.5 bg-current/30'
+                activeMobileIdx === i ? 'w-6 bg-[#FF4400]' : 'w-2 bg-current/25'
               }`}
-              aria-label={`Go to slide ${i + 1}`}
+              aria-label={`Go to drawing ${i + 1}`}
             />
           ))}
           <button
             onClick={() => scrollMobileTo(featured.length)}
             className={`h-1.5 rounded-full transition-all duration-200 ${
-              activeMobileIdx === featured.length ? 'w-5 bg-[#3A57C4]' : 'w-1.5 bg-current/30'
+              activeMobileIdx === featured.length ? 'w-6 bg-[#3A57C4]' : 'w-2 bg-current/25'
             }`}
             aria-label="Go to archive"
           />

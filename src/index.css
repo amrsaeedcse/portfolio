@@ -262,14 +262,4 @@
     border-color: var(--color-ink);
     color: var(--color-ink);
   }
-
-  /* No Scrollbar Utility for Touch Swipe */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
 }
-

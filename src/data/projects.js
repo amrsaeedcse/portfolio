@@ -196,7 +196,9 @@ export const PROJECTS_DATA = [
     demos: [],
     screenshots: [
       'assets/ai_todo/hero.webp',
-      'assets/ai_todo/ChatGPT Image Sep 9, 2025, 11_29_07 AM.png',
+      'assets/ai_todo/im1.png',
+      'assets/ai_todo/im2.png',
+      'assets/ai_todo/im3.png',
       'assets/ai_todo/Gemini_Generated_Image_u2yiku2yiku2yiku.jpg'
     ],
   },

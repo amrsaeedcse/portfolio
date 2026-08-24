@@ -29,6 +29,21 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
   const activeImage = allImages[selectedIdx] || img;
   const isMobileProject = category === 'mobile' || tag?.toLowerCase().includes('flutter');
 
+  // Preload adjacent images into browser memory cache for 0ms instant switching
+  useEffect(() => {
+    if (allImages.length <= 1) return;
+    const preload = (index) => {
+      if (index >= 0 && index < allImages.length) {
+        const i = new Image();
+        i.src = allImages[index];
+      }
+    };
+    preload(selectedIdx + 1);
+    preload(selectedIdx + 2);
+    preload(selectedIdx - 1);
+    if (selectedIdx === 0) preload(allImages.length - 1);
+  }, [selectedIdx, allImages]);
+
   const handlePrev = useCallback(() => {
     playSwitchClick();
     setSelectedIdx((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
@@ -39,7 +54,7 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
     setSelectedIdx((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
   }, [allImages.length]);
 
-  // Keep active thumbnail in view
+  // Keep active thumbnail centered in filmstrip
   useEffect(() => {
     if (thumbnailScrollRef.current) {
       const activeEl = thumbnailScrollRef.current.children[selectedIdx];
@@ -67,21 +82,23 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 30 }}
-      transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-[200] overflow-y-auto bg-[#F2EFE7]/98 backdrop-blur-2xl text-[#111318]"
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-[200] overflow-y-auto bg-[#F2EFE7]/98 backdrop-blur-md text-[#111318] will-change-transform"
+      style={{ transform: 'translateZ(0)' }}
     >
       {/* ── Banner Cover ─────────────────────────────────────────────────── */}
-      <div className="relative h-[26vh] sm:h-[32vh] min-h-[190px] sm:min-h-[230px] border-b border-[#111318] overflow-hidden bg-[#E1DCCE]">
+      <div className="relative h-[24vh] sm:h-[30vh] min-h-[180px] sm:min-h-[220px] border-b border-[#111318] overflow-hidden bg-[#E1DCCE]">
         <img
           src={img}
           alt={title}
-          className="w-full h-full object-cover opacity-20"
+          decoding="async"
+          className="w-full h-full object-cover opacity-20 pointer-events-none select-none"
           style={{ filter: 'grayscale(40%)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#F2EFE7] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#F2EFE7] via-transparent to-transparent pointer-events-none" />
 
         {/* Top Controls */}
         <div className="absolute top-4 sm:top-6 left-4 sm:left-6 right-4 sm:right-6 max-w-7xl mx-auto flex items-center justify-between z-10">
@@ -138,15 +155,15 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
                   )}
                   <button
                     onClick={() => { playSwitchClick(); setLightboxOpen(true); }}
-                    className="bp-stamp !py-0.5 !px-2 !text-[0.6rem] !bg-[#F2EFE7] !text-[#111318] hover:border-[#FF4400] transition-colors cursor-pointer"
+                    className="bp-stamp !py-0.5 !px-2 !text-[0.6rem] !bg-[#F2EFE7] !text-[#111318] hover:border-[#FF4400] transition-colors cursor-pointer font-bold"
                   >
                     ZOOM ⤢
                   </button>
                 </div>
               </div>
 
-              {/* Main Showcase Viewport Container */}
-              <div className="relative rounded-lg overflow-hidden border border-[#111318] bg-[#111318]/5 h-[340px] sm:h-[420px] lg:h-[460px] flex items-center justify-center p-3 sm:p-5 select-none">
+              {/* Main Showcase Viewport Container (GPU Hardware Accelerated) */}
+              <div className="relative rounded-lg overflow-hidden border border-[#111318] bg-[#111318]/5 h-[340px] sm:h-[420px] lg:h-[460px] flex items-center justify-center p-3 sm:p-5 select-none contain-paint">
                 
                 {/* CAD Grid Texture */}
                 <div
@@ -157,25 +174,19 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
                   }}
                 />
 
-                {/* Active Image Render */}
-                <AnimatePresence mode="wait">
-                  <motion.div
+                {/* Instant Crossfade Render (No mode="wait" blocking delays) */}
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <img
                     key={activeImage}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.2 }}
-                    className="relative w-full h-full flex items-center justify-center"
-                  >
-                    <img
-                      src={activeImage}
-                      alt={`${title} schematic ${selectedIdx + 1}`}
-                      className={`max-h-full max-w-full object-contain drop-shadow-md rounded ${
-                        isMobileProject ? 'border border-[#111318]/30 shadow-lg' : ''
-                      }`}
-                    />
-                  </motion.div>
-                </AnimatePresence>
+                    src={activeImage}
+                    alt={`${title} schematic ${selectedIdx + 1}`}
+                    decoding="async"
+                    fetchpriority="high"
+                    className={`max-h-full max-w-full object-contain drop-shadow-md rounded transition-opacity duration-150 ${
+                      isMobileProject ? 'border border-[#111318]/30 shadow-lg' : ''
+                    }`}
+                  />
+                </div>
 
                 {/* Left/Right Navigation Floating Buttons */}
                 {allImages.length > 1 && (
@@ -222,7 +233,9 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
                           <img
                             src={src}
                             alt={`Thumbnail ${idx + 1}`}
-                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover pointer-events-none"
                           />
                           <div className="absolute bottom-0 right-0 px-1 py-0.2 bg-[#111318] text-[#F2EFE7] font-mono text-[0.5rem] font-bold">
                             {idx + 1}
@@ -341,7 +354,8 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[320] bg-black/90 p-4 sm:p-8 backdrop-blur-md overflow-y-auto flex flex-col justify-between"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[320] bg-black/90 p-4 sm:p-8 backdrop-blur-sm overflow-y-auto flex flex-col justify-between"
           >
             <div className="max-w-6xl mx-auto w-full">
               <div className="flex items-center justify-between text-white pb-4 mb-6 border-b border-white/20">
@@ -374,7 +388,9 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
                     <img
                       src={src}
                       alt={`Tile ${idx + 1}`}
-                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform"
+                      loading="lazy"
+                      decoding="async"
+                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform pointer-events-none"
                     />
                     <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/80 font-mono text-[0.6rem] text-white font-bold border border-white/20">
                       #{idx + 1}
@@ -394,7 +410,8 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-between p-4 sm:p-6 backdrop-blur-md select-none"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-between p-4 sm:p-6 backdrop-blur-sm select-none"
           >
             {/* Top Lightbox Header */}
             <div className="w-full max-w-6xl flex items-center justify-between text-white font-mono text-xs z-10">
@@ -417,6 +434,7 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
               <img
                 src={activeImage}
                 alt="Expanded schematic"
+                decoding="async"
                 className="max-w-full max-h-[80vh] object-contain border border-white/20 shadow-2xl rounded"
               />
 

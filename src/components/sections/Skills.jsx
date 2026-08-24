@@ -6,63 +6,182 @@ import { playSwitchClick, playHoverTick } from '../../lib/soundFx';
 const SKILL_CATEGORIES = [
   {
     id: 'mobile',
-    label: 'Mobile Architecture',
+    label: 'Mobile Development',
     shortLabel: 'Mobile',
-    code: 'SW // CORE',
+    code: 'SW // MOBILE',
     dotColor: '#3B82F6',
-    skills: [
-      { name: 'Flutter Framework', level: 'EXPERT', desc: 'Cross-platform native compilation, custom render objects & engine hooks' },
-      { name: 'Dart 3 Language', level: 'ADVANCED', desc: 'Pattern matching, records, isolates, asynchronous reactive streams' },
-      { name: 'Clean Architecture', level: 'EXPERT', desc: 'Strict separation of Presentation, Domain, and Data layers' },
-      { name: 'BLoC & Cubit State', level: 'EXPERT', desc: 'Predictable, unidirectional reactive event-to-state stream pipelines' },
-      { name: 'Native Platform Channels', level: 'SPECIALIST', desc: 'C/C++ APIs & Native Android/iOS method channel bridging' },
-      { name: 'Firebase & Cloud Messaging', level: 'ADVANCED', desc: 'Authentication, Cloud Firestore, Cloud Storage, and FCM Push' },
-      { name: 'Offline-First & Hive DB', level: 'ADVANCED', desc: 'High-speed local NoSQL binary storage with encrypted box schemas' },
-      { name: 'REST & GraphQL Client', level: 'ADVANCED', desc: 'Dio client, token refresh interceptors, queue locks & caching' },
+    clusters: [
+      {
+        title: 'Cross-Platform Frameworks & Languages',
+        stamp: 'CORE ENGINES',
+        tags: ['Flutter', 'React Native', 'Dart 3', 'Python', 'Java', 'JavaScript (ES6+)', 'SQL'],
+        desc: 'Developing high-performance, cross-platform mobile apps across iOS and Android with custom widget trees, native compile hooks, and fluid 60fps UI.',
+      },
+      {
+        title: 'Software Architecture & Design Patterns',
+        stamp: 'ARCHITECTURE',
+        tags: ['Clean Architecture', 'MVVM', 'Custom Hooks Pattern', 'SOLID Principles', 'Repository Pattern', 'GetIt'],
+        desc: 'Structuring scalable multi-module codebases with strict separation across Presentation, Domain, Data, and DataSource layers.',
+      },
+      {
+        title: 'State Management & Reactive Systems',
+        stamp: 'REACTIVE FLOW',
+        tags: ['BLoC / Cubit', 'Provider', 'Riverpod', 'Redux Toolkit (RTK)', 'Context API', 'Zustand'],
+        desc: 'Designing predictable unidirectional state flows, managing widget/component lifecycles, and decoupling business logic cleanly from UI layers.',
+      },
+      {
+        title: 'Native Channels & Python Integration',
+        stamp: 'SYSTEM HOOKS',
+        tags: ['MethodChannel', 'Embedded Python in Flutter', 'Java / Android Bridge', 'Share Intent Receiving', 'Background Isolates'],
+        desc: 'Bridging Flutter with native Android Java layers, executing embedded Python runtimes natively via C-API, receiving OS share intents, and running background isolates.',
+      },
+      {
+        title: 'Networking, REST & Secure Storage',
+        stamp: 'DATA & STORAGE',
+        tags: ['Dio Client', 'Axios', 'REST APIs', 'JWT Interceptors', 'SharedPreferences', 'FlutterSecureStorage', 'SQLite (SQL)', 'AsyncStorage'],
+        desc: 'Building robust network layers with automatic token refresh locks, secure Keystore/Keychain encryption, and local SharedPreferences/SQLite SQL persistence.',
+      },
+      {
+        title: 'Deep Linking, Notifications & Cloud',
+        stamp: 'DEEP LINKS & PUSH',
+        tags: ['Deep Linking (App Links)', 'FCM Push Notifications', 'Action Notifications', 'Firebase Suite', 'Socket.io'],
+        desc: 'Implementing cryptographic Deep Links (.well-known/assetlinks.json), handling foreground/background actionable push notifications, and real-time database listeners.',
+      },
+    ],
+  },
+  {
+    id: 'backend',
+    label: 'Web & Backend',
+    shortLabel: 'Backend & Web',
+    code: 'SRV // WEB',
+    dotColor: '#0E8345',
+    clusters: [
+      {
+        title: 'REST APIs & Server Development',
+        stamp: 'REST APIS',
+        tags: ['Node.js', 'Express', 'Modular Routing', 'Custom Middlewares', 'REST Architecture'],
+        desc: 'Building clean and organized RESTful backend services, handling HTTP requests, custom middleware validation, and controllers.',
+      },
+      {
+        title: 'Database Modeling (SQL & NoSQL)',
+        stamp: 'DATABASE',
+        tags: ['SQL (Relational)', 'MongoDB Atlas', 'Mongoose', 'Schema Design', 'CRUD Operations', 'Indexing'],
+        desc: 'Working with relational SQL databases and NoSQL document schemas in MongoDB, modeling data relationships, and writing optimized queries.',
+      },
+      {
+        title: 'Frontend Web & Responsive UI',
+        stamp: 'WEB INTERFACES',
+        tags: ['React', 'Vanilla CSS3', 'TailwindCSS', 'Vite', 'Framer Motion'],
+        desc: 'Developing modern responsive web applications, interactive portfolios, component systems, and clean UI styling.',
+      },
+      {
+        title: 'Real-Time WebSockets & Live Chat',
+        stamp: 'REAL-TIME',
+        tags: ['Socket.io', 'Bidirectional Events', 'Room Isolation', 'Typing Presence'],
+        desc: 'Building low-latency in-app chat systems, live presence indicators, typing indicators, and room event broadcasting.',
+      },
+      {
+        title: 'Authentication & API Security',
+        stamp: 'SECURITY',
+        tags: ['JWT (Access / Refresh)', 'Bcrypt Password Hashing', 'Token Rotation', 'CORS Middleware'],
+        desc: 'Securing API endpoints with Access and Refresh tokens, encrypting passwords with Bcrypt, and handling CORS policies.',
+      },
+      {
+        title: 'Cloud Deployment & Deep Links Hosting',
+        stamp: 'DEPLOYMENT',
+        tags: ['Vercel', 'Deep Linking (assetlinks.json)', 'Serverless Hosting', 'Environment Variables'],
+        desc: 'Deploying backend APIs and frontend web apps to Vercel, hosting cryptographic assetlinks.json for deep links, and configuring environment variables.',
+      },
     ],
   },
   {
     id: 'embedded',
     label: 'Hardware & IoT',
-    shortLabel: 'Hardware',
-    code: 'HW // SYS',
+    shortLabel: 'Hardware & IoT',
+    code: 'HW // SYSTEMS',
     dotColor: '#FFB800',
-    skills: [
-      { name: 'C / C++ Embedded', level: 'ADVANCED', desc: 'Memory pointers, bitwise register manipulation, and low-level drivers' },
-      { name: 'ESP32 & STM32 MCUs', level: 'ADVANCED', desc: 'Wi-Fi/BLE stacks, hardware interrupts, timers, and ADC calibrations' },
-      { name: 'FreeRTOS Real-Time OS', level: 'PROFICIENT', desc: 'Preemptive multitasking, semaphores, mutexes, and event queues' },
-      { name: 'VHDL & FPGA Design', level: 'ACADEMIC', desc: '5-stage pipelined RISC datapath, hazard units & synthesizable RTL' },
-      { name: 'Hardware Protocols', level: 'ADVANCED', desc: 'UART, I2C, SPI serial buses, signal analyzers, and debugging' },
-      { name: 'Sensors & Actuators', level: 'ADVANCED', desc: 'DHT22, Capacitive probes, Relay drivers, and PWM motor control' },
-    ],
-  },
-  {
-    id: 'backend',
-    label: 'Backend & Cloud',
-    shortLabel: 'Backend',
-    code: 'SRV // NET',
-    dotColor: '#0E8345',
-    skills: [
-      { name: 'Node.js & Express.js', level: 'ADVANCED', desc: 'High-throughput REST API controllers, middleware, and services' },
-      { name: 'MongoDB & Mongoose', level: 'ADVANCED', desc: 'ACID transactions, schemas, compound indexing, and aggregations' },
-      { name: 'Socket.io Real-Time', level: 'PROFICIENT', desc: 'Low-latency bidirectional WebSocket rooms & presence tracking' },
-      { name: 'JWT & Dual Token Auth', level: 'ADVANCED', desc: 'Access/Refresh token rotation, bcrypt salting, and OAuth2 security' },
-      { name: 'React 19 & Vite', level: 'PROFICIENT', desc: 'Modern responsive web frontend development & state synchronization' },
+    clusters: [
+      {
+        title: 'C / C++ Programming for Hardware',
+        stamp: 'PROGRAMMING',
+        tags: ['C Language', 'C++ (OOP & Logic)', 'Microcontroller Code', 'Pointers & Memory'],
+        desc: 'Writing structured and efficient C and C++ programs for microcontrollers, handling logic, memory, and algorithms.',
+      },
+      {
+        title: 'Microcontrollers & IoT Development',
+        stamp: 'MICROCONTROLLERS',
+        tags: ['ESP32', 'Arduino IDE', 'STM32', 'GPIO Pins', 'Analog Sensors (ADC)', 'Wi-Fi / BLE'],
+        desc: 'Building connected IoT projects using ESP32 and Arduino, reading analog sensor data, and controlling outputs over Wi-Fi/Bluetooth.',
+      },
+      {
+        title: 'Real-Time Operating Systems (FreeRTOS)',
+        stamp: 'REAL-TIME OS',
+        tags: ['FreeRTOS', 'Task Scheduling', 'Queues', 'Semaphores', 'Multitasking'],
+        desc: 'Creating multi-tasking embedded applications with FreeRTOS, managing task priorities and sharing data across tasks safely.',
+      },
+      {
+        title: 'Digital Logic & Computer Architecture',
+        stamp: 'FPGA & CPU',
+        tags: ['VHDL', 'MIPS Pipelined CPU', 'Digital Logic Design', 'ModelSim', 'Quartus Prime'],
+        desc: 'Designing and simulating digital circuits and pipelined RISC processor architectures in VHDL using Quartus and ModelSim.',
+      },
+      {
+        title: 'Hardware Communication Protocols',
+        stamp: 'PROTOCOLS',
+        tags: ['UART', 'I2C', 'SPI', 'MQTT Protocol', 'Serial Communication'],
+        desc: 'Connecting sensors, displays, and modules to microcontrollers over standard serial buses (UART, I2C, SPI) and MQTT.',
+      },
+      {
+        title: 'Sensors, Actuators & Circuit Wiring',
+        stamp: 'CIRCUIT DESIGN',
+        tags: ['Relay Modules', 'PWM Control', 'Soil Moisture Sensors', 'DHT22 Sensors', 'OLED Displays'],
+        desc: 'Wiring sensors and actuators with microcontrollers, controlling relays, reading environmental data, and driving OLED screens.',
+      },
     ],
   },
   {
     id: 'tools',
-    label: 'DevOps & Toolchain',
-    shortLabel: 'Tools',
-    code: 'ENV // DEV',
+    label: 'Tools & Ecosystem',
+    shortLabel: 'Tools & DevOps',
+    code: 'ENV // TOOLING',
     dotColor: '#8B5CF6',
-    skills: [
-      { name: 'Git & GitHub CI/CD', level: 'ADVANCED', desc: 'Gitflow branching strategies, actions, and automated builds' },
-      { name: 'Linux & Bash Scripting', level: 'ADVANCED', desc: 'Command-line system administration, shell scripts, and daemons' },
-      { name: 'PlatformIO & Arduino', level: 'ADVANCED', desc: 'Microcontroller build toolchains, library management, and flashing' },
-      { name: 'Quartus Prime & ModelSim', level: 'PROFICIENT', desc: 'FPGA compilation, timing analysis, and RTL waveform simulation' },
-      { name: 'Postman & API Testing', level: 'ADVANCED', desc: 'Automated test collections, environments, and mock servers' },
-      { name: 'Figma UI/UX Design', level: 'PROFICIENT', desc: 'Design system components, responsive prototypes, and dev handoff' },
+    clusters: [
+      {
+        title: 'Version Control & Code Management',
+        stamp: 'VERSION CONTROL',
+        tags: ['Git', 'GitHub', 'Branching & PRs', 'Merge Workflows', 'Repository Hosting'],
+        desc: 'Managing project codebases, tracking versions, collaborating via feature branches, and handling pull requests on GitHub.',
+      },
+      {
+        title: 'API Testing & Documentation',
+        stamp: 'TESTING',
+        tags: ['Postman', 'Environment Variables', 'API Collections', 'Endpoint Testing'],
+        desc: 'Testing and debugging REST API endpoints, managing environment variables, and organizing API request collections.',
+      },
+      {
+        title: 'Command Line & Operating Systems',
+        stamp: 'TERMINAL',
+        tags: ['Linux (Basic CLI)', 'Terminal Commands', 'Package Managers', 'SSH Basics'],
+        desc: 'Navigating Linux systems through terminal commands, managing packages, and running development environments.',
+      },
+      {
+        title: 'UI/UX Design Inspection',
+        stamp: 'DESIGN TO CODE',
+        tags: ['Figma', 'UI Inspection', 'Asset Export', 'Spacing & Color Tokens', 'Design-to-Code'],
+        desc: 'Inspecting Figma design files, measuring paddings and font sizes, exporting assets, and translating designs to code.',
+      },
+      {
+        title: 'Hardware & Simulation Toolchains',
+        stamp: 'HARDWARE TOOLS',
+        tags: ['PlatformIO', 'Arduino IDE', 'Quartus Prime', 'ModelSim', 'Serial Monitor'],
+        desc: 'Compiling and flashing code to microcontrollers, serial debugging, and running VHDL hardware simulations.',
+      },
+      {
+        title: 'Development Environments & IDEs',
+        stamp: 'IDEs & EDITORS',
+        tags: ['VS Code', 'Android Studio', 'Gradle Basics', 'Extensions & Tooling'],
+        desc: 'Configuring modern development editors, managing extensions, debugging applications, and building release packages.',
+      },
     ],
   },
 ];
@@ -97,7 +216,7 @@ export default function Skills() {
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: currentCategory.dotColor }} />
             <span className="font-bold text-inherit">{currentCategory.code}</span>
             <span className="text-inherit/40">//</span>
-            <span className="text-[#FF4400] font-bold">{currentCategory.skills.length} MODULES</span>
+            <span className="text-[#FF4400] font-bold">{currentCategory.clusters.length} DOMAIN CLUSTERS</span>
           </div>
         </motion.div>
 
@@ -148,7 +267,7 @@ export default function Skills() {
           </div>
         </div>
 
-        {/* ── Skills Bento Grid (Refined Components) ───────────────────────── */}
+        {/* ── Grouped Domain Clusters Bento Grid ────────────────────────────── */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -156,47 +275,58 @@ export default function Skills() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -14 }}
             transition={{ duration: 0.22 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-5"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
           >
-            {currentCategory.skills.map((skill, idx) => (
+            {currentCategory.clusters.map((cluster, idx) => (
               <motion.div
-                key={skill.name}
+                key={cluster.title}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.025, duration: 0.2 }}
+                transition={{ delay: idx * 0.03, duration: 0.2 }}
+                className="h-full"
               >
                 <TiltCard maxTilt={4} className="h-full">
                   <div
                     onMouseEnter={playHoverTick}
-                    className="sheet-frame p-4 sm:p-5 border border-current/15 flex flex-col justify-between group h-full hover:border-[#FF4400] transition-colors shadow-sm bg-inherit min-h-[145px] sm:min-h-[155px] relative"
+                    className="sheet-frame p-5 sm:p-6 border border-current/15 flex flex-col justify-between group h-full hover:border-[#FF4400] transition-colors shadow-sm bg-inherit relative min-h-[220px]"
                   >
                     <div>
-                      {/* Title & Badge */}
-                      <div className="flex items-start justify-between gap-2.5 mb-2 sm:mb-2.5">
+                      {/* Top Header & Stamp */}
+                      <div className="flex items-start justify-between gap-2 mb-3 pb-2 border-b border-current/10">
                         <span className="font-display font-black text-base sm:text-lg group-hover:text-[#FF4400] transition-colors uppercase tracking-tight leading-snug">
-                          {skill.name}
+                          {cluster.title}
                         </span>
-                        <span className={`bp-stamp !text-[0.58rem] sm:!text-[0.62rem] !py-0.5 !px-2 flex-none font-bold ${
-                          skill.level === 'EXPERT'
-                            ? 'text-[#FF4400] border-[#FF4400]'
-                            : skill.level === 'SPECIALIST'
-                            ? 'text-[#3A57C4] border-[#3A57C4]'
-                            : 'text-current border-current group-hover:border-[#FF4400] group-hover:text-[#FF4400]'
-                        }`}>
-                          {skill.level}
+                        <span className="bp-stamp !text-[0.55rem] sm:!text-[0.58rem] !py-0.5 !px-2 flex-none font-bold text-[#3A57C4] border-[#3A57C4] group-hover:border-[#FF4400] group-hover:text-[#FF4400] transition-colors">
+                          {cluster.stamp}
                         </span>
                       </div>
 
-                      {/* Description */}
+                      {/* Clustered Tech Chips */}
+                      <div className="flex flex-wrap gap-1.5 mb-3.5">
+                        {cluster.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className={`px-2 py-0.5 font-mono text-[0.65rem] font-bold rounded border transition-colors ${
+                              tag === 'Flutter' || tag === 'React Native' || tag === 'Node.js' || tag === 'C Language' || tag === 'C++ (OOP & Logic)' || tag === 'Java' || tag === 'Python' || tag === 'SQL' || tag === 'SQL (Relational)' || tag === 'Git'
+                                ? 'bg-[#FF4400]/10 border-[#FF4400]/40 text-[#FF4400]'
+                                : 'bg-current/5 border-current/15 text-inherit'
+                            }`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Focused Engineering Description */}
                       <p className="text-inherit/80 text-xs font-mono leading-relaxed">
-                        {skill.desc}
+                        {cluster.desc}
                       </p>
                     </div>
 
                     {/* Bottom Hairline Datum */}
-                    <div className="mt-3.5 pt-2 border-t border-current/10 flex items-center justify-between text-[0.6rem] font-mono text-inherit/50">
-                      <span>MODULE // 0{idx + 1}</span>
-                      <span className="text-[#FF4400] font-bold">● VERIFIED</span>
+                    <div className="mt-4 pt-2.5 border-t border-current/10 flex items-center justify-between text-[0.6rem] font-mono text-inherit/50">
+                      <span>CLUSTER // 0{idx + 1}</span>
+                      <span className="text-[#FF4400] font-bold">● ACTIVE PRODUCTION</span>
                     </div>
                   </div>
                 </TiltCard>

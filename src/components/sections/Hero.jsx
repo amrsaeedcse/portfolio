@@ -113,7 +113,7 @@ export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
               variants={itemVariants}
               className="text-inherit/75 text-xs sm:text-base leading-relaxed mt-3.5 max-w-2xl font-body"
             >
-              I am <strong className="text-inherit font-bold">Amr Abdelazeem</strong> — a Computer &amp; Systems Engineer bridging reactive Flutter mobile UIs with bare-metal microcontrollers. Building enterprise Flutter applications with Clean Architecture and engineering C/C++, FreeRTOS &amp; FPGA firmware.
+              I am <strong className="text-inherit font-bold">Amr Abdelazeem</strong> — a Computer &amp; Systems Engineer bridging reactive Flutter &amp; React Native mobile applications with microcontrollers and cloud systems. Building enterprise mobile apps with Clean Architecture and engineering C/C++, FreeRTOS &amp; FPGA systems.
             </motion.p>
 
             {/* Direct Action Buttons with Adaptive Touch Ergonomics */}

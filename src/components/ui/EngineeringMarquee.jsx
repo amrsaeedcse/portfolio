@@ -1,17 +1,20 @@
 import { motion } from 'framer-motion';
 
 const TICKER_ITEMS = [
-  'FLUTTER 3.x',
-  'CLEAN ARCHITECTURE',
-  'DART ISOLATES',
-  '60 FPS NATIVE CANVAS',
-  'ESP32 & FREERTOS KERNEL',
-  'VHDL / FPGA 32-BIT RISC CPU',
+  'FLUTTER & DART 3',
+  'REACT NATIVE',
+  'CLEAN ARCHITECTURE & MVVM',
+  'BLOC / CUBIT & REDUX',
+  'NODE.JS & EXPRESS REST APIS',
+  'MONGODB ATLAS & SQL',
+  'DEEP LINKING & APP LINKS',
+  'JAVA & ANDROID CHANNELS',
+  'EMBEDDED PYTHON IN FLUTTER',
+  'ESP32 & ARDUINO IOT',
+  'C / C++ & FREERTOS',
+  'VHDL / FPGA RISC CPU',
   'ZAGAZIG SYSTEMS ENGINEERING',
   'DEPI & ITI SCHOLAR',
-  'HIVE NOSQL LOCAL DB',
-  'NATIVE C-API BRIDGING',
-  'ARM FFMPEG REMUXING',
 ];
 
 export default function EngineeringMarquee() {
@@ -26,7 +29,7 @@ export default function EngineeringMarquee() {
           transition={{
             repeat: Infinity,
             ease: 'linear',
-            duration: 25,
+            duration: 28,
           }}
           className="flex items-center gap-8 whitespace-nowrap"
         >

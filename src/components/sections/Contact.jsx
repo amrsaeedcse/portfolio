@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Contact() {
+const Contact = memo(function Contact() {
   const [formState, setFormState] = useState('idle');
   const [copied, setCopied] = useState(false);
 
@@ -235,4 +235,6 @@ export default function Contact() {
       </div>
     </section>
   );
-}
+});
+
+export default Contact;

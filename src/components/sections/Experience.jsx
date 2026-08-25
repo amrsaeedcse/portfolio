@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, memo } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import TiltCard from '../ui/TiltCard';
 import { playHoverTick } from '../../lib/soundFx';
@@ -36,7 +36,7 @@ const MILESTONES = [
   },
 ];
 
-export default function Experience() {
+const Experience = memo(function Experience() {
   const containerRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -162,4 +162,6 @@ export default function Experience() {
       </div>
     </section>
   );
-}
+});
+
+export default Experience;

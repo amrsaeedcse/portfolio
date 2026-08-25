@@ -1,6 +1,6 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import TiltCard from '../ui/TiltCard';
-import { playHoverTick } from '../../lib/soundFx';
 
 const METRICS = [
   { val: '03+', label: 'Years Experience', desc: 'Software architecture & hardware engineering' },
@@ -9,7 +9,7 @@ const METRICS = [
   { val: 'B.Sc.', label: 'Computer Engineering', desc: 'Faculty of Engineering, Zagazig University' },
 ];
 
-export default function About() {
+const About = memo(function About() {
   return (
     <section id="about" className="relative px-4 sm:px-8 md:px-14 py-16 md:py-28">
       <div className="max-w-7xl mx-auto">
@@ -47,9 +47,10 @@ export default function About() {
             <TiltCard maxTilt={6}>
               <div className="sheet-frame p-3 shadow-md relative group">
                 <img
-                  src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.jpg"
+                  src="assets/about_me/WhatsApp Image 2025-08-06 at 19.10.21_4322cf4b.webp"
                   alt="Amr Abdelazeem"
                   loading="lazy"
+                  decoding="async"
                   className="w-full aspect-[4/5] object-cover border border-current/15"
                   style={{ filter: 'grayscale(15%) contrast(1.05)' }}
                 />
@@ -98,39 +99,55 @@ export default function About() {
               {METRICS.map((m, idx) => (
                 <motion.div
                   key={m.label}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ delay: idx * 0.08, duration: 0.5 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.08 }}
                 >
                   <TiltCard maxTilt={4}>
-                    <div
-                      onMouseEnter={playHoverTick}
-                      className="sheet-frame p-4 sm:p-5 border border-current/15"
-                    >
-                      <div className="font-mono font-bold text-2xl sm:text-4xl text-[#FF4400]">
-                        {m.val}
+                    <div className="sheet-frame p-4 sm:p-5 h-full flex flex-col justify-between shadow-sm bg-current/5">
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-mono font-bold text-[0.65rem] text-[#3A57C4]">
+                            SPEC 0{idx + 1}
+                          </span>
+                          <span className="bp-chip !text-[0.55rem] !py-0.2 !px-1.5 font-bold">
+                            PASS ✓
+                          </span>
+                        </div>
+                        <div className="font-display font-black text-2xl sm:text-3xl text-[#FF4400]">
+                          {m.val}
+                        </div>
+                        <div className="font-display font-bold text-xs sm:text-sm tracking-tight uppercase mt-1">
+                          {m.label}
+                        </div>
                       </div>
-                      <div className="font-display font-bold text-sm sm:text-base mt-1 uppercase">
-                        {m.label}
-                      </div>
-                      <div className="text-inherit/60 text-xs font-mono mt-1">
+                      <p className="font-mono text-[0.65rem] sm:text-xs text-inherit/70 mt-2">
                         {m.desc}
-                      </div>
+                      </p>
                     </div>
                   </TiltCard>
                 </motion.div>
               ))}
             </div>
 
-            {/* Core Domain Badges */}
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-2 border-t border-current/15">
-              <span className="text-xs font-mono text-[#8A91A5] mr-1">DISCIPLINES:</span>
-              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[#FF4400] !text-[0.62rem] sm:!text-[0.68rem]">FLUTTER &amp; DART 3</span>
-              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[#3A57C4] !text-[0.62rem] sm:!text-[0.68rem]">C / C++ &amp; EMBEDDED</span>
-              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[#0E8345] !text-[0.62rem] sm:!text-[0.68rem]">FREERTOS &amp; IOT</span>
-              <span onMouseEnter={playHoverTick} className="bp-chip font-bold !text-[0.62rem] sm:!text-[0.68rem]">CLEAN ARCHITECTURE</span>
-            </div>
+            {/* Engineering Mission Quote Block */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="sheet-frame p-4 sm:p-5 bg-current/5 border-l-4 border-l-[#FF4400]"
+            >
+              <div className="font-mono text-xs text-[#FF4400] font-bold mb-1">
+                ENGINEERING PHILOSOPHY // 01
+              </div>
+              <p className="font-body text-xs sm:text-sm italic text-inherit/85 leading-relaxed">
+                "Writing clean, testable Flutter code backed by solid low-level systems principles —
+                delivering zero-jank 60fps animations, resilient offline state, and bulletproof software reliability."
+              </p>
+            </motion.div>
+
           </div>
 
         </div>
@@ -138,4 +155,6 @@ export default function About() {
       </div>
     </section>
   );
-}
+});
+
+export default About;

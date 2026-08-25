@@ -1,10 +1,10 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, memo } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { PROJECTS_DATA } from '../../data/projects';
 import TiltCard from '../ui/TiltCard';
 import { playSwitchClick, playHoverTick } from '../../lib/soundFx';
 
-export default function Work({ onProjectClick }) {
+const Work = memo(function Work({ onProjectClick }) {
   const targetRef = useRef(null);
   const mobileCarouselRef = useRef(null);
   const cardRefs = useRef([]);
@@ -489,4 +489,6 @@ export default function Work({ onProjectClick }) {
 
     </section>
   );
-}
+});
+
+export default Work;

@@ -1,35 +1,52 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect, memo } from 'react';
 
-export default function TiltCard({ children, className = '', maxTilt = 4 }) {
+const TiltCard = memo(function TiltCard({ children, className = '', maxTilt = 4 }) {
   const cardRef = useRef(null);
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const innerRef = useRef(null);
   const isTouchDevice = useRef(false);
+  const rafId = useRef(null);
 
   useEffect(() => {
     // Disable 3D tilt calculations completely on touch devices and small viewports to guarantee 120 FPS
     isTouchDevice.current =
-      window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+      typeof window !== 'undefined' &&
+      (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768);
+
+    return () => {
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
   }, []);
 
   const handleMouseMove = (e) => {
     if (isTouchDevice.current) return;
     const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
+    const inner = innerRef.current;
+    if (!card || !inner) return;
 
-    const rx = ((y - cy) / cy) * -maxTilt;
-    const ry = ((x - cx) / cx) * maxTilt;
+    if (rafId.current) cancelAnimationFrame(rafId.current);
 
-    setTilt({ rx, ry });
+    rafId.current = requestAnimationFrame(() => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+
+      const rx = ((y - cy) / cy) * -maxTilt;
+      const ry = ((x - cx) / cx) * maxTilt;
+
+      inner.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+    });
   };
 
   const handleMouseLeave = () => {
     if (isTouchDevice.current) return;
-    setTilt({ rx: 0, ry: 0 });
+    if (rafId.current) cancelAnimationFrame(rafId.current);
+
+    const inner = innerRef.current;
+    if (inner) {
+      inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    }
   };
 
   return (
@@ -41,8 +58,9 @@ export default function TiltCard({ children, className = '', maxTilt = 4 }) {
       className={`transition-transform duration-200 will-change-transform ${className}`}
     >
       <div
+        ref={innerRef}
         style={{
-          transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+          transform: 'rotateX(0deg) rotateY(0deg)',
           transition: 'transform 0.12s ease-out',
         }}
         className="relative h-full w-full"
@@ -51,4 +69,6 @@ export default function TiltCard({ children, className = '', maxTilt = 4 }) {
       </div>
     </div>
   );
-}
+});
+
+export default TiltCard;

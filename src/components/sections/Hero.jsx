@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import TiltCard from '../ui/TiltCard';
 import { playSwitchClick, playHoverTick } from '../../lib/soundFx';
@@ -43,7 +44,7 @@ const itemVariants = {
   },
 };
 
-export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
+const Hero = memo(function Hero({ ready = true, scrollToSection, onOpenProject }) {
   const flagship = PROJECTS_DATA[0]; // Loadr Engine
 
   return (
@@ -255,4 +256,6 @@ export default function Hero({ ready = true, scrollToSection, onOpenProject }) {
       </motion.div>
     </section>
   );
-}
+});
+
+export default Hero;

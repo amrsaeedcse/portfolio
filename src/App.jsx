@@ -70,28 +70,31 @@ export default function App() {
     return () => { document.body.style.overflow = ''; };
   }, [activeProject]);
 
-  /* Track active section for navbar highlighting */
+  /* Track active section for navbar highlighting with IntersectionObserver (0 layout reflows) */
   useEffect(() => {
     if (!loaded) return;
     const ids = ['home', 'about', 'skills', 'work', 'experience', 'contact'];
 
-    const handleScroll = () => {
-      const scrollPos = window.scrollY + 250;
-      for (const id of ids) {
-        const el = document.getElementById(id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPos >= top && scrollPos < top + height) {
-            setActiveSection(id);
-            break;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
           }
-        }
+        });
+      },
+      {
+        rootMargin: '-25% 0px -45% 0px',
+        threshold: 0,
       }
-    };
+    );
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, [loaded]);
 
   const scrollToSection = useCallback((id) => {

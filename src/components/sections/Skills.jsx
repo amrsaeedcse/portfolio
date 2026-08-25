@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TiltCard from '../ui/TiltCard';
 import { playSwitchClick, playHoverTick } from '../../lib/soundFx';
@@ -186,7 +186,7 @@ const SKILL_CATEGORIES = [
   },
 ];
 
-export default function Skills() {
+const Skills = memo(function Skills() {
   const [activeTab, setActiveTab] = useState('mobile');
   const currentCategory = SKILL_CATEGORIES.find((c) => c.id === activeTab) || SKILL_CATEGORIES[0];
 
@@ -338,4 +338,6 @@ export default function Skills() {
       </div>
     </section>
   );
-}
+});
+
+export default Skills;

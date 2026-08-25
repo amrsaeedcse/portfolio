@@ -1,9 +1,9 @@
 import { useEffect, useRef, memo } from 'react';
 
-const PARTICLE_COUNT = 150;
-const PROXIMITY_DIST = 90;
+const PARTICLE_COUNT = 130;
+const PROXIMITY_DIST = 85;
 const PROXIMITY_DIST_SQ = PROXIMITY_DIST * PROXIMITY_DIST;
-const MOUSE_RADIUS = 130;
+const MOUSE_RADIUS = 120;
 const MOUSE_RADIUS_SQ = MOUSE_RADIUS * MOUSE_RADIUS;
 
 // Blueprint colors with alpha
@@ -20,13 +20,14 @@ const ParticleCanvas = memo(function ParticleCanvas({ visible = true, isMobile =
   const rafRef = useRef(null);
   const mouseRef = useRef({ x: -9999, y: -9999, active: false });
   const scrollRef = useRef({ lastY: 0, velocity: 0 });
+  const isIntersectingRef = useRef(true);
 
   // ── Initialize Particles Pool ───────────────────────────────────────────────
   useEffect(() => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    const count = isMobile ? Math.floor(PARTICLE_COUNT * 0.55) : PARTICLE_COUNT;
+    const count = isMobile ? Math.floor(PARTICLE_COUNT * 0.45) : PARTICLE_COUNT;
     const particles = [];
 
     for (let i = 0; i < count; i++) {
@@ -34,9 +35,9 @@ const ParticleCanvas = memo(function ParticleCanvas({ visible = true, isMobile =
       particles.push({
         x: Math.random() * vw,
         y: Math.random() * vh,
-        vx: (Math.random() - 0.5) * 0.45,
-        vy: (Math.random() - 0.5) * 0.45,
-        size: 1.0 + Math.random() * 1.4,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        size: 1.0 + Math.random() * 1.3,
         color: isOrange ? 'orange' : 'blue',
         baseAlpha: 0.20 + Math.random() * 0.35,
         alpha: 0.3,
@@ -48,23 +49,41 @@ const ParticleCanvas = memo(function ParticleCanvas({ visible = true, isMobile =
     particlesRef.current = particles;
   }, [isMobile]);
 
+  // ── Intersection Observer: Stop Animation Loop when Scrolled Out of View ───
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersectingRef.current = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, []);
+
   // ── Global Event Listeners (Mouse & Scroll Velocity) ────────────────────────
   useEffect(() => {
     let lastScrollTime = performance.now();
 
     const handleScroll = () => {
+      if (!isIntersectingRef.current) return;
       const now = performance.now();
       const dt = Math.max(1, now - lastScrollTime);
       const currentY = window.scrollY;
       const dy = currentY - scrollRef.current.lastY;
 
       // Scroll velocity mapped with dampening
-      scrollRef.current.velocity = clamp(dy / dt * 14, -18, 18);
+      scrollRef.current.velocity = clamp(dy / dt * 12, -15, 15);
       scrollRef.current.lastY = currentY;
       lastScrollTime = now;
     };
 
     const handleMouseMove = (e) => {
+      if (!isIntersectingRef.current) return;
       mouseRef.current.x = e.clientX;
       mouseRef.current.y = e.clientY;
       mouseRef.current.active = true;
@@ -81,7 +100,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ visible = true, isMobile =
       if (!c) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.5);
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 1.25);
 
       c.width = vw * dpr;
       c.height = vh * dpr;
@@ -106,18 +125,24 @@ const ParticleCanvas = memo(function ParticleCanvas({ visible = true, isMobile =
     };
   }, [isMobile]);
 
-  // ── 60FPS Fluid Render Loop ─────────────────────────────────────────────────
+  // ── 60FPS Fluid Render Loop (Auto-sleeps when offscreen) ───────────────────
   useEffect(() => {
     if (!visible) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     let isRunning = true;
 
     const render = (time) => {
       if (!isRunning) return;
+
+      // When canvas is scrolled out of viewport, skip expensive physics & render
+      if (!isIntersectingRef.current) {
+        rafRef.current = requestAnimationFrame(render);
+        return;
+      }
 
       const vw = window.innerWidth;
       const vh = window.innerHeight;
@@ -151,7 +176,7 @@ const ParticleCanvas = memo(function ParticleCanvas({ visible = true, isMobile =
 
           if (distSq < PROXIMITY_DIST_SQ) {
             const dist = Math.sqrt(distSq);
-            const lineAlpha = (1 - dist / PROXIMITY_DIST) * 0.16;
+            const lineAlpha = (1 - dist / PROXIMITY_DIST) * 0.15;
             const strokeColor = p1.color === 'orange' ? `${COLOR_ORANGE}${lineAlpha})` : `${COLOR_BLUE}${lineAlpha})`;
 
             ctx.strokeStyle = strokeColor;
@@ -186,10 +211,9 @@ const ParticleCanvas = memo(function ParticleCanvas({ visible = true, isMobile =
           if (distSq < MOUSE_RADIUS_SQ && distSq > 1) {
             const dist = Math.sqrt(distSq);
             const force = (1 - dist / MOUSE_RADIUS);
-            // Gentle magnetic attraction + slight vortex swirl
             const angle = Math.atan2(dy, dx);
-            p.x += Math.cos(angle + 1.4) * force * 1.8 - (dx / dist) * force * 1.2;
-            p.y += Math.sin(angle + 1.4) * force * 1.8 - (dy / dist) * force * 1.2;
+            p.x += Math.cos(angle + 1.4) * force * 1.6 - (dx / dist) * force * 1.1;
+            p.y += Math.sin(angle + 1.4) * force * 1.6 - (dy / dist) * force * 1.1;
           }
         }
 
@@ -198,20 +222,12 @@ const ParticleCanvas = memo(function ParticleCanvas({ visible = true, isMobile =
         p.alpha = clamp(p.baseAlpha + pulse, 0.15, 0.75);
 
         // ── Draw Particle Node ────────────────────────────────────────────────
-        const colorPrefix = p.color === 'orange' ? COLOR_ORANGE : COLOR_BLUE;
-        ctx.fillStyle = `${colorPrefix}${p.alpha})`;
+        const nodeColor = p.color === 'orange' ? `${COLOR_ORANGE}${p.alpha})` : `${COLOR_BLUE}${p.alpha})`;
+        ctx.fillStyle = nodeColor;
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, Math.max(0.75, p.size), 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
-
-        // Subtle glowing halo on prominent particles
-        if (p.alpha > 0.4) {
-          ctx.fillStyle = `${colorPrefix}${p.alpha * 0.15})`;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 3.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
       }
 
       rafRef.current = requestAnimationFrame(render);
@@ -229,17 +245,8 @@ const ParticleCanvas = memo(function ParticleCanvas({ visible = true, isMobile =
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        pointerEvents: 'none',
-        zIndex: 1,
-        willChange: 'transform',
-        transform: 'translateZ(0)',
-      }}
+      className="absolute inset-0 pointer-events-none z-0 will-change-transform"
+      style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.8s ease' }}
     />
   );
 });

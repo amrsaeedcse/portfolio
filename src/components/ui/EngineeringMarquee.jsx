@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 
 const TICKER_ITEMS = [
@@ -17,9 +18,9 @@ const TICKER_ITEMS = [
   'DEPI & ITI SCHOLAR',
 ];
 
-export default function EngineeringMarquee() {
-  const repeated = [...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS];
+const repeated = [...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS];
 
+const EngineeringMarquee = memo(function EngineeringMarquee() {
   return (
     <div className="relative w-full overflow-hidden border-y-2 border-current bg-current/5 py-3 select-none">
       {/* Subtle CAD Ambient Backdrop */}
@@ -46,4 +47,6 @@ export default function EngineeringMarquee() {
       </div>
     </div>
   );
-}
+});
+
+export default EngineeringMarquee;

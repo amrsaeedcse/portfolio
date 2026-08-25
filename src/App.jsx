@@ -30,7 +30,6 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('home');
   const [soundOn, setSoundOn] = useState(() => isSoundEnabled());
   const [cadMode, setCadMode] = useState(false);
-  const [currentTime, setCurrentTime] = useState('');
 
   const handleLoaderDone = useCallback(() => {
     setLoaded(true);
@@ -39,24 +38,6 @@ export default function App() {
 
   const handleLoaderExiting = useCallback(() => {
     setHeroReady(true);
-  }, []);
-
-  /* Live Clock for Cairo/Zagazig Time */
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('en-US', {
-        timeZone: 'Africa/Cairo',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true,
-      });
-      setCurrentTime(timeStr);
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
   }, []);
 
   /* Toggle Dark CAD vs Light Parchment Mode */
@@ -224,14 +205,6 @@ export default function App() {
 
           {/* Right: Telemetry & Actions */}
           <div className="hidden sm:flex items-center gap-2.5 flex-none">
-            {/* Live Cairo Clock with clear separation */}
-            {currentTime && (
-              <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 bg-current/5 border border-current/15 font-mono text-[0.65rem] text-inherit font-bold tabular-nums mr-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#FF4400] animate-pulse" />
-                <span>{currentTime} · UTC+3</span>
-              </div>
-            )}
-
             {/* CAD / Parchment Inverter Toggle */}
             <button
               onClick={handleToggleCadMode}

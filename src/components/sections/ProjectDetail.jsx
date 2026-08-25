@@ -82,12 +82,11 @@ const ProjectDetail = React.memo(function ProjectDetail({ project, onClose }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      transition={{ duration: 0.25 }}
-      className="fixed inset-0 z-[200] overflow-y-auto bg-[#F2EFE7]/98 backdrop-blur-md text-[#111318] will-change-transform"
-      style={{ transform: 'translateZ(0)' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.18 }}
+      className="fixed inset-0 z-[200] overflow-y-auto bg-[#F2EFE7] text-[#111318]"
     >
       {/* ── Banner Cover ─────────────────────────────────────────────────── */}
       <div className="relative h-[24vh] sm:h-[30vh] min-h-[180px] sm:min-h-[220px] border-b border-[#111318] overflow-hidden bg-[#E1DCCE]">

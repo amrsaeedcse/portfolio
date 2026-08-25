@@ -46,7 +46,8 @@ export default function ProjectArchive({ onClose, onOpenProject }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[150] overflow-y-auto bg-[#F2EFE7]/98 backdrop-blur-2xl text-[#111318] flex flex-col items-center"
+      transition={{ duration: 0.18 }}
+      className="fixed inset-0 z-[150] overflow-y-auto bg-[#F2EFE7] text-[#111318] flex flex-col items-center"
     >
       <div className="w-full max-w-7xl px-6 py-12">
         {/* Header */}

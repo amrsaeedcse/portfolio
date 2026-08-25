@@ -5,13 +5,16 @@ import { playSwitchClick, initAudioContext } from '../lib/soundFx';
 export default function Loader({ onComplete, onExiting }) {
   const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [fontsReady, setFontsReady] = useState(false);
 
+  // Ensure fonts are fully decoded before showing text
   useEffect(() => {
     if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => setFontsLoaded(true)).catch(() => setFontsLoaded(true));
+      document.fonts.ready
+        .then(() => setFontsReady(true))
+        .catch(() => setFontsReady(true));
     } else {
-      setFontsLoaded(true);
+      setFontsReady(true);
     }
   }, []);
 
@@ -36,9 +39,12 @@ export default function Loader({ onComplete, onExiting }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleFinish]);
 
+  // Start progress ticker only once fonts are ready
   useEffect(() => {
+    if (!fontsReady) return;
+
     const start = performance.now();
-    const duration = 1200; // 1.2s sleek, fast, luxurious boot
+    const duration = 1100; // 1.1s sleek, fast, luxurious boot
     let raf;
 
     const tick = (now) => {
@@ -55,16 +61,20 @@ export default function Loader({ onComplete, onExiting }) {
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [handleFinish]);
+  }, [fontsReady, handleFinish]);
 
   return (
     <AnimatePresence>
       {!isDone && (
         <motion.div
           key="luxury-loader"
-          initial={{ opacity: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: fontsReady ? 1 : 0 }}
           exit={{ y: '-100%' }}
-          transition={{ duration: 0.55, ease: [0.87, 0, 0.13, 1] }}
+          transition={{
+            opacity: { duration: 0.2 },
+            exit: { duration: 0.55, ease: [0.87, 0, 0.13, 1] }
+          }}
           onClick={() => {
             initAudioContext();
             handleFinish();

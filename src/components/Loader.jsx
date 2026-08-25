@@ -5,6 +5,15 @@ import { playSwitchClick, initAudioContext } from '../lib/soundFx';
 export default function Loader({ onComplete, onExiting }) {
   const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => setFontsLoaded(true)).catch(() => setFontsLoaded(true));
+    } else {
+      setFontsLoaded(true);
+    }
+  }, []);
 
   const handleFinish = useCallback(() => {
     if (isDone) return;

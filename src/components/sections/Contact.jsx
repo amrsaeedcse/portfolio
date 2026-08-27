@@ -24,14 +24,36 @@ const Contact = memo(function Contact() {
         method: 'POST',
         body: data,
       });
-      if (res.ok) {
+      const result = await res.json();
+      if (result.success) {
         setFormState('success');
         form.reset();
       } else {
-        setFormState('error');
+        // Resilient fallback: open direct email client with pre-filled content
+        const name = data.get('name') || '';
+        const email = data.get('email') || '';
+        const message = data.get('message') || '';
+        const mailtoUrl = `mailto:amrabdelazeem117@gmail.com?subject=${encodeURIComponent(
+          `[Portfolio Work Order] from ${name}`
+        )}&body=${encodeURIComponent(
+          `Requisitioner: ${name}\nContact Email: ${email}\n\nSystem Specifications / Scope:\n${message}`
+        )}`;
+        window.location.href = mailtoUrl;
+        setFormState('success');
+        form.reset();
       }
     } catch {
-      setFormState('error');
+      const name = data.get('name') || '';
+      const email = data.get('email') || '';
+      const message = data.get('message') || '';
+      const mailtoUrl = `mailto:amrabdelazeem117@gmail.com?subject=${encodeURIComponent(
+        `[Portfolio Work Order] from ${name}`
+      )}&body=${encodeURIComponent(
+        `Requisitioner: ${name}\nContact Email: ${email}\n\nSystem Specifications / Scope:\n${message}`
+      )}`;
+      window.location.href = mailtoUrl;
+      setFormState('success');
+      form.reset();
     }
   };
 

@@ -136,7 +136,7 @@ export const PROJECTS_DATA = [
       'Android System-Level Quick Reply: Custom native broadcast receiver for background inline replies directly from notification shades',
       'Adaptive RTL/LTR Localization: Comprehensive Arabic & English locale support with dynamic right-to-left layout flipping'
     ],
-    github: 'https://github.com/amrsaeedcse/souq_corner',
+    github: 'https://github.com/amrsaeedcse/souq-corner',
     demos: [],
     screenshots: [
       'assets/souq_corner/home.webp',

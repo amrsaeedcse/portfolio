@@ -29,31 +29,10 @@ const Contact = memo(function Contact() {
         setFormState('success');
         form.reset();
       } else {
-        // Resilient fallback: open direct email client with pre-filled content
-        const name = data.get('name') || '';
-        const email = data.get('email') || '';
-        const message = data.get('message') || '';
-        const mailtoUrl = `mailto:amrabdelazeem117@gmail.com?subject=${encodeURIComponent(
-          `[Portfolio Work Order] from ${name}`
-        )}&body=${encodeURIComponent(
-          `Requisitioner: ${name}\nContact Email: ${email}\n\nSystem Specifications / Scope:\n${message}`
-        )}`;
-        window.location.href = mailtoUrl;
-        setFormState('success');
-        form.reset();
+        setFormState('error');
       }
     } catch {
-      const name = data.get('name') || '';
-      const email = data.get('email') || '';
-      const message = data.get('message') || '';
-      const mailtoUrl = `mailto:amrabdelazeem117@gmail.com?subject=${encodeURIComponent(
-        `[Portfolio Work Order] from ${name}`
-      )}&body=${encodeURIComponent(
-        `Requisitioner: ${name}\nContact Email: ${email}\n\nSystem Specifications / Scope:\n${message}`
-      )}`;
-      window.location.href = mailtoUrl;
-      setFormState('success');
-      form.reset();
+      setFormState('error');
     }
   };
 
